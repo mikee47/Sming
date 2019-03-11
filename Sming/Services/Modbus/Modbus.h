@@ -156,10 +156,7 @@ static inline uint16_t modbus_makeword(const uint8_t* buffer)
 	return (buffer[0] << 8) | buffer[1];
 }
 
-/** @brief Public details of a transaction
- *
- *
- */
+/** @brief Public details of a transaction */
 struct ModbusTransaction {
 	// The callback parameter
 	uint32_t param;

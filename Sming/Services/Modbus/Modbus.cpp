@@ -1,8 +1,6 @@
 /*
  *
  * Modbus uses UART0 via MAX485 chip with extra GPIO to control direction.
- * We use custom serial port code because it's actually simpler and much more efficient
- * than using the framework.
  *
  *  - Transactions will easily fit into hardware FIFO so no need for additional memory overhead;
  *  - ISR set to trigger on completion of transmit/receive packets rather than individual bytes;
@@ -175,13 +173,6 @@ bool Modbus::execute(ModbusTransaction& mbt)
  * Called from ISR on receive timeout, so we should have complete response in FIFO.
  *
  * Check/validate response, invoke callback.
- *
- * We'll need a task queue for callbacks. HardwareSerial uses USER_TASK_PRIO_0 so we'll use 1 or 2
- * in our main program code. That will handle all tasks and callbacks for the application.
- *
- * All we need to do here is define the data structure(s) and code(s) for CModbus callbacks.
- * We'll need some code (probably in common) which lets us post to the queue.
- *
  */
 void Modbus::receiveComplete()
 {
