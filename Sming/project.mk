@@ -283,35 +283,6 @@ $(foreach v,$(CONFIG_VARS) $(CACHE_VARS),$(eval export $v))
 
 ##@Building
 
-# Apply patch to a submodule
-# $1 -> patch file with relative path
-define ApplyPatch
-	$(GIT) apply -v $1 --ignore-whitespace --whitespace=nowarn
-endef
-
-# If there's a patch for this submodule, apply it
-# We look for patch in .. and in ../.patches
-# $1 -> submodule path
-# $2 -> name of patch file
-define TryApplyPatch
-	cd $1 && if [ -f ../$2 ]; then \
-		$(call ApplyPatch,../$2); \
-	elif [ -f ../.patches/$2 ]; then \
-		$(call ApplyPatch,../.patches/$2); \
-	fi
-endef
-
-# Update and patch submodule
-# Patch file is either in submodule parent directory itself or subdirectory .patches from there
-.NOTPARALLEL: %/.submodule
-%/.submodule:
-	$(info )
-	$(info Fetching submodule '$*' ...)
-	$(Q) cd $*/.. && $(GIT) submodule update --init --force --recursive $(*F)
-	$(Q) $(call TryApplyPatch,$*,$(*F).patch)
-	$(Q) touch $@
-
-
 # Define target for building a component library
 # We add a pseudo-target for each Component (using its name) to (re)build all contained targets
 # e.g. spiffs: libspiffs.a spiffy.exe
@@ -398,11 +369,6 @@ $(BUILD_DIRS) $(FW_BASE) $(TOOLS_BASE) $(APP_LIBDIR) $(USER_LIBDIR):
 # Build all Component (user) libraries
 .PHONY: components
 components: $(SUBMODULES:=/.submodule) $(ALL_COMPONENT_TARGETS) $(CUSTOM_TARGETS)
-
-# Pull in all submodules, regardless of whether they're used or not
-.PHONY: all-submodules
-all-submodules: $(ALL_SUBMODULES:=/.submodule) ##Fetch all third-party submodules (but do not build)
-
 
 ##@Cleaning
 
