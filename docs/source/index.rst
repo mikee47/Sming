@@ -373,6 +373,7 @@ Thank you to all the people who have backed Sming or sponsored it.
    features
    information/index
    experimental/index
+   contribute/index
    tools/index
    troubleshooting/index
 
