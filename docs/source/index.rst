@@ -372,6 +372,7 @@ Thank you to all the people who have backed Sming or sponsored it.
    quick-start/index
    host-emulator
    features
+   samples/index
    libraries/index
    api/index
    information/index
