@@ -369,6 +369,7 @@ Thank you to all the people who have backed Sming or sponsored it.
    :maxdepth: 3
    :caption: Contents:
 
+   host-emulator
    features
 
 
