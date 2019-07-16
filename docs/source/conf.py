@@ -13,6 +13,7 @@
 import re
 import os
 import sys
+import subprocess
 from docutils import nodes, utils
 from sphinx import roles, addnodes
 from sphinx.util.nodes import set_role_source_info, split_explicit_title
@@ -86,6 +87,11 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+
+##
+subprocess.run(["make", "-C", "../../Sming", "submodules", "SMING_ARCH=Host"])
+subprocess.run(["make", "-C", "..", "setup", "api"])
 
 # -- Use sphinx_rtd_theme for local builds --------------------------------
 # ref. https://github.com/snide/sphinx_rtd_theme#using-this-theme-locally-then-building-on-read-the-docs
