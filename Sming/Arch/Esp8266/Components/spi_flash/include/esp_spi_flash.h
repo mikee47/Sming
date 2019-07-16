@@ -132,7 +132,7 @@ uint32_t flashmem_find_sector(uint32_t address, uint32_t* pstart, uint32_t* pend
 uint32_t flashmem_get_sector_of_address(uint32_t addr);
 
 /** @brief write to flash memory
- *  @param to buffer to read data from - MUST be word-aligned
+ *  @param from to buffer to read data from - MUST be word-aligned
  *  @param toaddr flash address (offset) to write to - MUST be word-aligned
  *  @param size number of bytes to write - MUST be word-aligned
  *  @retval number of bytes actually written

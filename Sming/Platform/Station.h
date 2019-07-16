@@ -158,7 +158,7 @@ public:
 	IPAddress getIP();
 
 	/**	@brief	Get WiFi station MAC address
-	 *  @param optional separator between bytes (e.g. ':')
+	 *  @param sep Optional separator between bytes (e.g. ':')
 	 *	@retval	String WiFi station MAC address
 	 */
 	String getMAC(char sep = '\0');

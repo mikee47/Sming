@@ -92,10 +92,10 @@ public:
 protected:
 	/**
 	 * @brief Inherited class implements this method to transform a block of data
-	 * @param const uint8_t* in source data
-	 * @param size_t inLength source data length
-	 * @param uint8_t* out output buffer
-	 * @param size_t outLength size of output buffer
+	 * @param in source data
+	 * @param inLength source data length
+	 * @param out output buffer
+	 * @param outLength size of output buffer
 	 * @retval size_t number of output bytes written
 	 * @note Called with `in = nullptr` and `inLength = 0` at end of input stream
 	 */
