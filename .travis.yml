@@ -14,6 +14,7 @@ jobs:
         - clang-format-6.0
         - gcc-multilib
         - g++-multilib
+        - doxygen
     env: SMING_ARCH=Host
 
   - stage: build
