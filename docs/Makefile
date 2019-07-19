@@ -4,6 +4,8 @@
 # Don't bother with implicit checks
 .SUFFIXES:
 
+SHELL = /bin/bash
+
 SMINGDIR := ..
 override SMING_HOME := $(SMINGDIR)/Sming
 
@@ -12,6 +14,9 @@ SPHINXOPTS		?=
 SPHINXBUILD		?= sphinx-build
 SOURCEDIR		= source
 BUILDDIR		= build
+
+# Documentation is copied into this directory so it gets pulled into build
+SOURCE_INCDIR	:= $(SOURCEDIR)/_inc
 
 V ?= $(VERBOSE)
 ifeq ("$(V)","1")
@@ -24,6 +29,24 @@ endif
 
 define Sphinx
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+endef
+
+# Display variable and list values, e.g. $(call PrintVariable,LIBS)
+# $1 -> Name of variable containing values
+define PrintVariable
+	$(info $1)
+	$(foreach item,$($1),$(info - $(item)))
+endef
+
+# $1 -> Directories to look for README and image files
+define FindSourceFiles
+$(foreach d,$1,$(wildcard $d/*.rst $d/README.md $d/*.svg $d/*.png $d/*.jpg))
+endef
+
+# Translate a source path into the corresponding INCDIR location
+# $1 -> Path(s) to source file in code tree
+define GetIncPath
+$(patsubst $(SMINGDIR)/%,$(SOURCE_INCDIR)/%,$1)
 endef
 
 # Put it first so that "make" without argument is like "make help".
@@ -42,9 +65,6 @@ latexpdf: latex
 	@echo "Running LaTeX files through pdflatex..."
 	$(Q) $(MAKE) -C $(BUILDDIR)/latex all-pdf
 
-# List of documentation files to be included from source tree
-SOURCE_FILES		:= CONTRIBUTING.md
-
 # List immediate sub-directories for a list of root directories
 # Results are sorted and without trailing path separator
 # $1 -> Root paths
@@ -52,88 +72,179 @@ define ListSubDirs
 $(sort $(foreach d,$(dir $(wildcard $1/*/.)),$(d:/=)))
 endef
 
-SRC_INCDIR			:= $(SOURCEDIR)/_inc
+# Non-component locations to copy docs from
+SOURCE_DIRS := \
+	$(SMINGDIR)/docs \
+	$(call ListSubDirs,$(SMING_HOME)/Arch)
+
+# List of documentation files to be included from source tree
+SOURCE_FILES := \
+	$(SMINGDIR)/CONTRIBUTING.md \
+	$(call FindSourceFiles,$(SOURCE_DIRS))
 
 # Each sample, library and Component MUST have a README.rst or README.md file
 # This is a list of directories where such files may exist
 # If a component.mk file exists, then it is parsed and any dependencies handled
-SOURCE_DIRS := \
-	$(SMING_HOME)/Arch \
-	$(SMING_HOME)/Arch/*/Components \
+COMPONENT_ROOT_DIRS := \
+	$(wildcard $(SMING_HOME)/Arch/*/Components) \
 	$(SMING_HOME)/Components \
 	$(SMING_HOME)/Libraries \
 	$(SMINGDIR)/samples
 
-SOURCE_DIRS := $(sort $(SMINGDIR)/docs $(SMING_HOME) \
-	$(foreach d,$(wildcard $(SOURCE_DIRS)),$(call ListSubDirs,$d)))
+# All directories where a README file should/must exist, and where a component.mk file could exist
+COMPONENT_DIRS := $(SMING_HOME) $(foreach d,$(COMPONENT_ROOT_DIRS),$(call ListSubDirs,$d))
+
+# Fetch a list of URLs once rather than invoking shell each time we need a lookup
+SUBMODULE_URLS := $(shell awk '/path = .*/ { path = $$3 } /url = .*/ { printf "%s=%s ", path, $$3 } ' $(SMINGDIR)/.gitmodules)
+
+# Lookup the URL for a submodule given its path
+# awk '/^path = .*/ { path = $3 } /^url = .*/ { printf "%s = %s", path, $3 }' $(SMINGDIR)/.gitmodules
+# $1 -> path
+define GetSubmoduleURL
+$(subst $1=,,$(filter $1=%,$(SUBMODULE_URLS)))
+endef
+
+# Generate index.rst file for sample, library or Component
+# This provides a template to automate as much as possible
+# $1 -> name
+# $2 -> Path
+# $3 -> Source path relative to working root directory (SMINGDIR)
+define GenIndex
+$(if $(filter $2/README.rst,$(SOURCE_FILES)),
+.. include:: README.rst,
+.. mdinclude:: README.md
+)
+
+References
+------------
+* :source:`Source Code <$3>`
+$(if $(findstring $3=,$(SUBMODULE_URLS)),
+* This is a submodule: `GIT repository <$(call GetSubmoduleURL,$3)>`__ for details.
+)
+$(foreach d,$(sort $(COMPONENT_DEPEND_DIRS)),
+* :doc:`$d/index` Component
+)
+$(foreach l,$(sort $(ARDUINO_LIBRARIES)),
+* :library:`$l` Library
+)
+
+$(if $(COMPONENT_ENVVARS),
+Environment Variables
+---------------------
+$(foreach v,$(COMPONENT_ENVVARS),
+* :envvar:`$v`
+))
+
+$(foreach m,$(COMPONENT_SUBMODULES),
+Submodule: `$m <$(call GetSubmoduleURL,$3/$m)>`__
+-----------------------------------------------------------------------------------------------------
+
+.. toctree::
+
+   $m/README
+
+)
+endef
+
+
+# Used to escape above generated text
+define NewLine
+
+
+endef
+
+# Additional library dependencies
+-include $(SMING_HOME)/Libraries/components.mk
 
 # This macro sets the default component variables before including the (optional) component.mk file.
-# $1 -> Component path
+# $1 -> name
+# $2 -> path
 define ParseComponent
-$(if $V,$(info -- Parsing $1))
+$(if $V,$(info -- Parsing $2))
+COMPONENT_SUBMODULES	:=
+COMPONENT_DOCFILES		:=
 # Process any component.mk file (optional)
-ifneq (,$(wildcard $1/component.mk))
 COMPONENT_RULE			:= __no_build__
-COMPONENT_NAME			:= $(notdir $1)
-COMPONENT_PATH			:= $1
+COMPONENT_NAME			:= $1
+COMPONENT_PATH			:= $2
 COMPONENT_VARS			:=
 CONFIG_VARS				:=
 RELINK_VARS				:=
 DEBUG_VARS				:=
-COMPONENT_SUBMODULES	:=
-COMPONENT_DOCFILES		:=
 COMPONENT_DEPENDS		:=
+ARDUINO_LIBRARIES		:=
 ENABLE_ESPCONN			:=
 ENABLE_CUSTOM_LWIP		:=
-include $1/component.mk
-CMP_$1_DEPENDS			:= $$(COMPONENT_DEPENDS)
-CMP_$1_VARS				:= $$(sort $$(COMPONENT_VARS))
-SOURCE_DIRS				+= $$(addprefix $$(COMPONENT_PATH)/,$$(COMPONENT_SUBMODULES))
-SOURCE_FILES			+= $$(addprefix $$(COMPONENT_PATH)/,$$(COMPONENT_DOCFILES))
+-include $2/component.mk
+CMP_$2_VARS				:= $$(sort $$(COMPONENT_VARS))
+CMP_$2_DIRS := \
+	$$(COMPONENT_PATH) \
+	$$(addprefix $$(COMPONENT_PATH)/,$$(COMPONENT_SUBMODULES))
+CMP_$2_FILES := \
+	$$(call FindSourceFiles,$$(CMP_$2_DIRS)) \
+	$$(wildcard $$(addprefix $$(COMPONENT_PATH)/,$$(COMPONENT_DOCFILES)))
+SOURCE_FILES			+= $$(CMP_$2_FILES)
+
+#
+COMPONENT_ENVVARS		:= $$(sort $$(COMPONENT_VARS) $$(CONFIG_VARS) $$(RELINK_VARS) $$(DEBUG_VARS))
+
+CMP_$2_DEPENDS := $$(COMPONENT_DEPENDS)
+
+# Resolve dependencies
+#
+# If this is an Arch component, then match this Arch only, or **main components** (e.g. Host/heap -> malloc_count)
+#
+ifneq (,$(findstring /Arch/,$2))
+FILTERED_DIRS	:= $$(filter $(dir $2)% $(SMING_HOME)/Components/%,$(COMPONENT_DIRS))
+else
+FILTERED_DIRS	:= $(COMPONENT_DIRS)
 endif
+COMPONENT_DEPEND_DIRS := \
+	$(if $(findstring /samples/,$2),/_inc/Sming) \
+	$$(foreach d,$$(patsubst $(SMINGDIR)/%,/_inc/%,$$(foreach c,$$(COMPONENT_DEPENDS),$$(filter %/$$c,$$(FILTERED_DIRS)))),$$d)
+
+CMP_$2_INDEX			:= $$(subst $$(NewLine),\n,$$(call GenIndex,$1,$2,$(patsubst $(SMINGDIR)/%,%,$2)))
+
+$$(call GetIncPath,$$(COMPONENT_PATH))/index.rst: $$(call GetIncPath,$$(CMP_$2_FILES))
+ifeq ($V,1)
+	$$(info Creating $$@...)
+endif
+	@echo -e '$$(CMP_$2_INDEX)' > $$@
+
 endef # ParseComponent
 
-$(foreach d,$(SOURCE_DIRS),$(eval $(call ParseComponent,$d)))
+$(foreach d,$(COMPONENT_DIRS),$(eval $(call ParseComponent,$(notdir $d),$d)))
 
-SOURCE_FILES			+= $(foreach d,$(SOURCE_DIRS),$(wildcard $d/*.rst $d/README.md $d/*.svg $d/*.png $d/*.jpg))
-SOURCE_FILES			:= $(patsubst $(SMINGDIR)/%,%,$(SOURCE_FILES))
-SOURCE_DIRS				:= $(patsubst $(SMINGDIR)/%,%,$(SOURCE_DIRS))
-
-SOURCE_FILE_DIRS		:= $(dir $(SOURCE_FILES))
+SOURCE_FILE_DIRS		:= $(sort $(dir $(SOURCE_FILES)))
 MISSING_README_DIRS		:= $(filter-out $(SOURCE_FILE_DIRS:/=),$(SOURCE_DIRS))
-
-SOURCE_DIRS				:= $(patsubst %,$(SRC_INCDIR)/%,$(SOURCE_DIRS))
-
-# Display variable and list values, e.g. $(call PrintVariable,LIBS)
-# $1 -> Name of variable containing values
-define PrintVariable
-	$(info $1)
-	$(foreach item,$($1),$(info - $(item)))
-endef
-
-ifeq ($V,1)
-$(eval $(call PrintVariable,SOURCE_DIRS))
-$(eval $(call PrintVariable,SOURCE_FILES))
-endif
 
 .PHONY: clean
 clean:
 	$(call Sphinx)
-	$(Q) rm -rf $(SRC_INCDIR) api
+	$(Q) rm -rf $(SOURCE_INCDIR) api
+
+SOURCE_INCDIRS			:= $(call GetIncPath,$(SOURCE_FILE_DIRS))
+SOURCE_INCFILES			:= $(call GetIncPath,$(SOURCE_FILES)) $(addsuffix /index.rst,$(call GetIncPath,$(COMPONENT_DIRS)))
 
 .PHONY: setup
-setup: $(addprefix $(SRC_INCDIR)/,$(SOURCE_FILES))
-	$(call PrintVariable,MISSING_README_DIRS)
+setup: checkdirs $(SOURCE_INCFILES)
+ifeq ($V,1)
+	$(call PrintVariable,SOURCE_DIRS)
+	$(call PrintVariable,SOURCE_FILES)
+endif
+	$(if $(MISSING_README_DIRS),$(call PrintVariable,MISSING_README_DIRS))
 
-# $1 -> source file (in incdir)
+# $1 -> document file in Sming code tree
 define CopyFileTarget
-$(SRC_INCDIR)/$1: $(SMINGDIR)/$1 | $(patsubst %/,%,$(dir $(SRC_INCDIR)/$1))
+$(call GetIncPath,$1): $1
 	$(Q) cp $$< $$@
 endef
 
 $(foreach f,$(SOURCE_FILES),$(eval $(call CopyFileTarget,$f)))
 
-$(SRC_INCDIR) $(SOURCE_DIRS):
+.PHONY: checkdirs
+checkdirs: | $(SOURCE_INCDIRS)
+$(SOURCE_INCDIRS):
 	$(Q) mkdir -p $@
 
 .PHONY: api
