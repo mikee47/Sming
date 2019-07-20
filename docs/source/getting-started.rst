@@ -1,6 +1,8 @@
 Getting Started
 ===============
 
+.. highlight:: c++
+
 Development System Installation
 -------------------------------
 Sming supports multiple architectures. Choose the architecture of your choice to install the needed development software and toolchain(s).

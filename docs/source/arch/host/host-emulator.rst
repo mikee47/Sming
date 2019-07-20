@@ -177,8 +177,11 @@ Make sure to install the 32bit version of the GNU C and C++ compiler,
 development package and libraries.
 
 
-.. toctree::
+Further reading
+---------------
 
+.. toctree::
+   :titlesonly:
 
    /_inc/Sming/Arch/Host/README
 

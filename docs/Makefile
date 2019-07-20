@@ -119,7 +119,7 @@ References
 ------------
 * :source:`Source Code <$3>`
 $(if $(findstring $3=,$(SUBMODULE_URLS)),
-* This is a submodule: `GIT repository <$(call GetSubmoduleURL,$3)>`__ for details.
+* This is a submodule: `GIT repository <$(call GetSubmoduleURL,$3)>`__.
 )
 $(foreach d,$(sort $(COMPONENT_DEPEND_DIRS)),
 * :doc:`$d/index` Component

@@ -5,7 +5,7 @@ Upgrading to Sming 4.0
 Summary
 =======
 
-With the new Sming version 4.0 there will be a lot of backwards
+With Sming version 4.0 there are some backwards
 incompatible changes. This page is provided to help with migrating your
 applications.
 
