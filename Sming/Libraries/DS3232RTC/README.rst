@@ -1,10 +1,10 @@
-Arduino DS3232RTC Library v1.0
+DS3232RTC Arduino Library v1.0
 ==============================
 
 | https://github.com/JChristensen/DS3232RTC ReadMe file
 | Jack Christensen Mar 2013
 
-.. figure:: http://mirrors.creativecommons.org/presskit/buttons/80x15/png/by-sa.png
+.. figure:: by-sa.png
    :alt: CC BY-SA
 
    CC BY-SA
