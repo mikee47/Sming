@@ -25,7 +25,7 @@ $(if $(CMP_$1_XREF),
 Referenced by
 -------------
 $(foreach c,$(sort $(CMP_$1_XREF)),
-* :doc:`$(call GetDocPath,$c)/index`))
+* :doc:`$(call GetDocPath,$c)/index` $(call GetComponentType,$c)))
 
 $(if $(CMP_$2_ENVVARS),
 Environment Variables

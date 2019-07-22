@@ -123,6 +123,11 @@ else
 GetMdIncludePath	= $(abspath $1)
 endif
 
+# $1 -> Path to a Component, sample or Library
+define GetComponentType
+$(if $(findstring /Libraries/,$1),Library,$(if $(findstring /samples/,$1),Sample,Component))
+endef
+
 include index.mk
 
 # Used to escape generated text so it can be handled as a single line
@@ -169,6 +174,7 @@ COMPONENT_ENVVARS		:= $$(sort $$(COMPONENT_VARS) $$(CONFIG_VARS) $$(RELINK_VARS)
 CMP_$2_ENVVARS			:= $$(COMPONENT_ENVVARS)
 
 CMP_$2_DEPENDS	:= $$(COMPONENT_DEPENDS)
+# TODO: XREF needs to be specific, so will list document directories rather than just the component name
 $$(foreach c,$$(COMPONENT_DEPENDS) $$(ARDUINO_LIBRARIES),$$(eval CMP_$$c_XREF += $2))
 
 # Resolve dependencies
