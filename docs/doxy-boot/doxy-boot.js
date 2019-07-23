@@ -98,6 +98,8 @@ $( document ).ready(function() {
     $('#main-nav > ul').addClass('nav navbar-nav navbar-right');
     $('#main-nav * li > ul').addClass('dropdown-menu');
 
+    var menu_button = $('#menu-button').detach();
+    $('#main-nav').prepend(menu_button.children());
 
 
   /* responsive search box */
