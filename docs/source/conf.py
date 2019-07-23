@@ -35,6 +35,8 @@ release = re.sub('^v', '', os.popen('git describe').read().strip())
 # The short X.Y version.
 version = release
 
+print ('VERSION: ' + version)
+
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
