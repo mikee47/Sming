@@ -103,15 +103,15 @@ print(env_readthedocs)
 
 if env_readthedocs:
     # Start the build from a clean slate
-    subprocess.call(["make", "-C", "../../Sming", "dist-clean"])
+    subprocess.call('make -C ../../Sming dist-clean SMING_ARCH=Host', shell=True)
 else:
     # only import and set the theme if we're building docs locally
     import sphinx_rtd_theme
     html_theme = 'sphinx_rtd_theme'
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
-subprocess.call(["make", "-C", "../../Sming", "submodules", "SMING_ARCH=Host"])
-subprocess.call(["make", "-C", "..", "setup", "api", "API_VERSION=" + version, "V=1"])
+subprocess.call('make -C ../../Sming submodules SMING_ARCH=Host', shell=True)
+subprocess.call('make -C .. setup api API_VERSION="' + version + '"', shell=True)
 
 def setup(app):
     app.add_stylesheet('custom.css')
