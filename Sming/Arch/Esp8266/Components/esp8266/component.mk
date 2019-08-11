@@ -37,8 +37,14 @@ export SDK_INTERNAL
 export SDK_LIBDIR
 export SDK_INCDIR
 
-# Required to ensure user-provided function gets linked instead of our 'weak' one
-COMPONENT_LDFLAGS += -u custom_crash_callback
-
 # Crash handler hooks this so debugger can be invoked
-COMPONENT_LDFLAGS += -Wl,-wrap,system_restart_local 
+EXTRA_LDFLAGS			+= -Wl,-wrap,system_restart_local 
+
+# Custom PHY data
+COMPONENT_VARS			+= ENABLE_CUSTOM_PHY 
+ENABLE_CUSTOM_PHY		?= 0
+ifeq ($(ENABLE_CUSTOM_PHY),1)
+	COMPONENT_APPCODE	+= custom_phy
+	APP_CFLAGS			+= -DENABLE_CUSTOM_PHY=1
+	EXTRA_LDFLAGS		:= -Wl,-wrap,register_chipv6_phy
+endif

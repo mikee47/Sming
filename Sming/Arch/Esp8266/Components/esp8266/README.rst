@@ -48,3 +48,10 @@ the current version 3 SDK as a submodule.
 .. envvar:: SDK_INCDIR
 
    **READONLY** Path to the directory containing SDK header files
+
+.. envvar:: ENABLE_CUSTOM_PHY
+
+   The initial physical data used to initialize an ESP8266 chip controls its behaviour is normally fixed,
+   supplied in an *esp_init_data_default.bin* file provided with the SDK.
+
+   If you want to customise that data, enable this option by building with ENABLE_CUSTOM_PHY=1.
