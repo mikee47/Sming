@@ -24,5 +24,8 @@ goto :%SMING_ARCH%
 
 :Host
 
+	REM Fix issue with "couldn't commit memory for cygwin heap" error - precise culprit in the path TBD
+	setx /m path "c:\mingw\bin;c:\mingw\msys\1.0\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\7-Zip;C:\Program Files (x86)\CMake\bin;C:\Python27;C:\Python27\Scripts;C:\Tools\curl\bin;C:\Program Files\PowerShell\6\;C:\Program Files\Git\cmd;C:\Program Files\Git\usr\bin"
+
 	goto :EOF
 
