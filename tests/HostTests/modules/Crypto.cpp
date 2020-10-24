@@ -103,14 +103,14 @@ public:
 		REQUIRE(state.count == FS_plainText.length());
 		auto s = Crypto::toString(state.value);
 		if(s != expectedState) {
-			debug_hex(ERR, "CRYPT_STATE", s.c_str(), s.length());
-			debug_hex(ERR, "EXPECTED   ", String(expectedState).c_str(), expectedState.length());
+			debug_hex(ERR, "CRYPT_STATE", state.value.data(), state.value.size());
+			debug_e("EXPECTED: ", String(expectedState).c_str());
 		}
 		//			REQUIRE(Crypto::toString(state.value) == expectedState);
 
 		if(hashText != expectedHash) {
-			debug_hex(ERR, "CRYPT_HASH", hashText.c_str(), hashText.length());
-			debug_hex(ERR, "EXPECTED  ", String(expectedHash).c_str(), expectedHash.length());
+			debug_hex(ERR, "CRYPT_HASH", hash.data(), hash.size());
+			debug_e("EXPECTED: ", String(expectedHash).c_str());
 		}
 		//		REQUIRE(hashText == expectedHash);
 	}
