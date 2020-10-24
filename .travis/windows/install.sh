@@ -1,7 +1,7 @@
 # Windows installation
 
 rm -rf /C/MinGW
-curl -LO $SMINGTOOLS/MinGW.7z
+curl -Lo MinGW.7z $SMINGTOOLS/MinGW-2020-10-19.7z
 7z -o/C/ x MinGW.7z
 
 choco install python --version=3.8.6
