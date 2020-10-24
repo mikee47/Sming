@@ -101,8 +101,18 @@ public:
 		Serial.println(sizeof(Context));
 
 		REQUIRE(state.count == FS_plainText.length());
-		REQUIRE(Crypto::toString(state.value) == expectedState);
-		REQUIRE(hashText == expectedHash);
+		auto s = Crypto::toString(state.value);
+		if(s != expectedState) {
+			debug_hex(ERR, "CRYPT_STATE", s.c_str(), s.length());
+			debug_hex(ERR, "EXPECTED   ", String(expectedState).c_str(), expectedState.length());
+		}
+		//			REQUIRE(Crypto::toString(state.value) == expectedState);
+
+		if(hashText != expectedHash) {
+			debug_hex(ERR, "CRYPT_HASH", hashText.c_str(), hashText.length());
+			debug_hex(ERR, "EXPECTED  ", String(expectedHash).c_str(), expectedHash.length());
+		}
+		//		REQUIRE(hashText == expectedHash);
 	}
 
 	/*
