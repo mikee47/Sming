@@ -31,6 +31,8 @@ jobs:
       os: windows
       env:
         - SMING_ARCH=Host
+        - PATH=/C/MinGW/msys/1.0/bin:/C/MinGW/bin:/C/Python38:$PATH
+        - PYTHON=/C/Python38/python
 
     - stage: build
       os: windows
@@ -41,6 +43,8 @@ jobs:
         - UDK_ROOT=/C/Espressif
         - EQT_ROOT=/C/esp-quick-toolchain
         - BUILD_COMPILER=eqt
+        - PATH=/C/MinGW/msys/1.0/bin:/C/MinGW/bin:/C/Python38:$PATH
+        - PYTHON=/C/Python38/python
 
 cache:
   directories:
