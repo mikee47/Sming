@@ -31,8 +31,6 @@ jobs:
       os: windows
       env:
         - SMING_ARCH=Host
-        - PATH=/C/MinGW/msys/1.0/bin:/C/MinGW/bin:/C/Python38:$PATH
-        - PYTHON=/C/Python38/python
 
     - stage: build
       os: windows
@@ -43,14 +41,20 @@ jobs:
         - UDK_ROOT=/C/Espressif
         - EQT_ROOT=/C/esp-quick-toolchain
         - BUILD_COMPILER=eqt
-        - PATH=/C/MinGW/msys/1.0/bin:/C/MinGW/bin:/C/Python38:$PATH
-        - PYTHON=/C/Python38/python
 
 cache:
   directories:
     - $HOME/AppData/Local/Temp/chocolatey
 #    - /C/MinGW/
 
+
+before_install:
+- |-
+    case $TRAVIS_OS_NAME in
+      windows)
+        export PATH=/C/MinGW/msys/1.0/bin:/C/MinGW/bin:$PATH
+        ;;
+    esac
 
 install: ".travis/install.sh"
 script: ".travis/build.sh"
