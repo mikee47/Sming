@@ -27,6 +27,9 @@ UNAME		:= $(shell uname -s)
 ifneq ($(filter MINGW32_NT%,$(UNAME)),)
 	UNAME		:= Windows
 	TOOL_EXT	:= .exe
+else ifneq ($(filter MINGW64_NT%,$(UNAME)),)
+	UNAME		:= Windows
+	TOOL_EXT	:= .exe
 else ifneq ($(filter CYGWIN%,$(UNAME)),)
 	# Cygwin Detected
 	UNAME		:= Linux
