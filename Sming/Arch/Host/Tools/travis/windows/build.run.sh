@@ -1,3 +1,4 @@
+export PATH=/C/MinGW/msys/1.0/bin:/C/MinGW/bin:$PATH
 
 $MAKE_PARALLEL Basic_Blink Basic_DateTime Basic_Delegates Basic_Interrupts Basic_ProgMem Basic_Serial Basic_Servo Basic_Ssl LiveDebug DEBUG_VERBOSE_LEVEL=3
 
