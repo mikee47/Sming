@@ -713,7 +713,7 @@ static void uart1_pin_restore(const unsigned pin)
 	}
 }
 
-smg_uart_t* smg_uart_init_ex(const smg_uart_config& cfg)
+smg_uart_t* smg_uart_init_ex(const smg_uart_config_t& cfg)
 {
 	// Already initialised?
 	if(smg_uart_get_uart(cfg.uart_nr) != nullptr) {
@@ -847,7 +847,7 @@ void smg_uart_uninit(smg_uart_t* uart)
 smg_uart_t* smg_uart_init(uint8_t uart_nr, uint32_t baudrate, uint32_t config, smg_uart_mode_t mode, uint8_t tx_pin,
 						  size_t rx_size, size_t tx_size)
 {
-	smg_uart_config cfg = {
+	smg_uart_config_t cfg = {
 		.uart_nr = uart_nr,
 		.tx_pin = tx_pin,
 		.rx_pin = UART_PIN_DEFAULT,

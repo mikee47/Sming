@@ -96,15 +96,28 @@ extern "C" {
 #define UART_7O2 (UART_NB_BIT_7 | UART_PARITY_ODD | UART_NB_STOP_BIT_2)
 #define UART_8O2 (UART_NB_BIT_8 | UART_PARITY_ODD | UART_NB_STOP_BIT_2)
 
+// Status values
+enum smg_uart_status_t {
+	UART_STATUS_RXFIFO_TOUT = BIT(8),
+	UART_STATUS_BRK_DET = BIT(7),
+	UART_STATUS_CTS_CHG = BIT(6),
+	UART_STATUS_DSR_CHG = BIT(5),
+	UART_STATUS_RXFIFO_OVF = BIT(4),
+	UART_STATUS_FRM_ERR = BIT(3),
+	UART_STATUS_PARITY_ERR = BIT(2),
+	UART_STATUS_TXFIFO_EMPTY = BIT(1),
+	UART_STATUS_RXFIFO_FULL = BIT(0),
+};
+
 /** @brief values for `mode` argument of uart_init */
-enum smg_uart_mode_ {
+enum smg_uart_mode_t {
 	UART_FULL,	///< Both receive and transmit - will revert to TX only if RX not supported
 	UART_RX_ONLY, ///< Receive only
 	UART_TX_ONLY  ///< Transmit only
 };
-typedef enum smg_uart_mode_ smg_uart_mode_t;
 
-typedef uint8_t uart_options_t;
+using uart_options_t = uint8_t;
+
 /** @brief bit values for `options` argument of uart_init
  *  @note use _BV(opt) to specify values
  */
@@ -116,8 +129,7 @@ enum smg_uart_option_bits_t {
 #define UART_RX_FIFO_SIZE 0x80
 #define UART_TX_FIFO_SIZE 0x80
 
-struct smg_uart_;
-typedef struct smg_uart_ smg_uart_t;
+struct smg_uart_t;
 
 /** @brief callback invoked directly from ISR
  *  @param arg the UART object
@@ -159,7 +171,7 @@ enum smg_uart_notify_code_t {
  *  @param info
  *  @retval bool true if callback handled operation, false to default to normal operation
  */
-typedef void (*smg_uart_notify_callback_t)(smg_uart_t* uart, smg_uart_notify_code_t code);
+using smg_uart_notify_callback_t = void (*)(smg_uart_t* uart, smg_uart_notify_code_t code);
 
 /** @brief Set the notification callback function
  *  @param uart_nr Which uart to register notifications for
@@ -170,7 +182,7 @@ bool smg_uart_set_notify(unsigned uart_nr, smg_uart_notify_callback_t callback);
 
 struct SerialBuffer;
 
-struct smg_uart_ {
+struct smg_uart_t {
 	uint8_t uart_nr;
 	uint32_t baud_rate;
 	smg_uart_mode_t mode;
@@ -185,7 +197,7 @@ struct smg_uart_ {
 	void* param;					///< User-supplied callback parameter
 };
 
-struct smg_uart_config {
+struct smg_uart_config_t {
 	uint8_t uart_nr;
 	uint8_t tx_pin; ///< Specify 2 for alternate pin, otherwise defaults to pin 1
 	uint8_t rx_pin;
@@ -201,7 +213,7 @@ struct smg_uart_config {
 smg_uart_t* smg_uart_init(uint8_t uart_nr, uint32_t baudrate, uint32_t config, smg_uart_mode_t mode, uint8_t tx_pin,
 						  size_t rx_size, size_t tx_size = 0);
 
-smg_uart_t* smg_uart_init_ex(const smg_uart_config& cfg);
+smg_uart_t* smg_uart_init_ex(const smg_uart_config_t& cfg);
 
 void smg_uart_uninit(smg_uart_t* uart);
 
