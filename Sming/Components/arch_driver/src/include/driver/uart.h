@@ -42,10 +42,6 @@ extern "C" {
 
 #include <esp_systemapi.h>
 
-#ifdef ARCH_ESP32
-#include_next <driver/uart.h>
-#endif
-
 /**
  * @defgroup uart_driver UART Driver
  * @ingroup drivers
@@ -53,6 +49,9 @@ extern "C" {
  */
 
 #define UART_NO -1 ///< No UART specified
+
+#define UART_PIN_DEFAULT (255)  ///< Use default pin assignments
+#define UART_PIN_NO_CHANGE (-1) ///< Use default pin assignments
 
 // Options for `config` argument of uart_init
 #define UART_NB_BIT_MASK 0B00001100
@@ -188,7 +187,8 @@ struct smg_uart_ {
 
 struct smg_uart_config {
 	uint8_t uart_nr;
-	uint8_t tx_pin;		  ///< Specify 2 for alternate pin, otherwise defaults to pin 1
+	uint8_t tx_pin; ///< Specify 2 for alternate pin, otherwise defaults to pin 1
+	uint8_t rx_pin;
 	smg_uart_mode_t mode; ///< Whether to enable receive, transmit or both
 	uart_options_t options;
 	uint32_t baudrate; ///< Requested baudrate; actual baudrate may differ
@@ -197,7 +197,7 @@ struct smg_uart_config {
 	size_t tx_size;
 };
 
-// @deprecated Use `uart_init_ex()` instead
+// @deprecated Use `smg_uart_init_ex()` instead
 smg_uart_t* smg_uart_init(uint8_t uart_nr, uint32_t baudrate, uint32_t config, smg_uart_mode_t mode, uint8_t tx_pin,
 						  size_t rx_size, size_t tx_size = 0);
 
@@ -261,8 +261,8 @@ static inline uart_options_t smg_uart_get_options(smg_uart_t* uart)
 }
 
 void smg_uart_swap(smg_uart_t* uart, int tx_pin);
-void smg_uart_set_tx(smg_uart_t* uart, int tx_pin);
-void smg_uart_set_pins(smg_uart_t* uart, int tx_pin, int rx_pin);
+bool smg_uart_set_tx(smg_uart_t* uart, int tx_pin);
+bool smg_uart_set_pins(smg_uart_t* uart, int tx_pin, int rx_pin);
 
 __forceinline bool smg_uart_tx_enabled(smg_uart_t* uart)
 {
