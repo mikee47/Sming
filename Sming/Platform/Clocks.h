@@ -97,14 +97,6 @@ struct CpuCycleClock
 	}
 };
 
-/**
- * @brief
- */
-using CpuCycleClockNormal = CpuCycleClock<eCF_80MHz>;
-
-/**
- * @brief
- */
-using CpuCycleClockFast = CpuCycleClock<eCF_160MHz>;
+#include_next <Platform/Clocks.h>
 
 /** @} */
