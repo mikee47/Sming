@@ -60,7 +60,7 @@ struct Timer2Clock : public NanoTime::Clock<Timer2Clock, HW_TIMER2_CLK, uint32_t
 
 	static uint32_t __forceinline ticks()
 	{
-		return NOW();
+		return hw_timer2_read();
 	}
 };
 
