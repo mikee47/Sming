@@ -54,7 +54,7 @@ public:
 			debug_w("System time elapsed: %u", time - startTime);
 			debug_w("%s ticks: %u", Clock::typeName(), endTicks - startTicks);
 			debug_w("Ratio: x %f", float(endTicks - startTicks) / (time - startTime));
-			debug_w("Apparent time: %u", Micros::ticksToTime(endTicks - startTicks));
+			debug_w("Apparent time: %u", uint32_t(Micros::ticksToTime(endTicks - startTicks)));
 		}
 	}
 

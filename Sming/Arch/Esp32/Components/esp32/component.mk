@@ -245,6 +245,7 @@ SDK_DEFAULT_PATH := $(COMPONENT_PATH)/sdk
 
 ##@Debugging
 
+CACHE_VARS += GDB_CMDLINE
 GDB_CMDLINE = trap '' INT; $(GDB) -x $(ARCH_TOOLS)/gdbinit $(TARGET_OUT)
      
 ##@Partitions

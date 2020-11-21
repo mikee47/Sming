@@ -447,8 +447,8 @@ size_t smg_uart_write(smg_uart_t* uart, const void* buffer, size_t size)
 
 	while(written < size) {
 		if(isPhysical) {
-			auto& hw = uartHardware[uart->uart_nr];
 			// If TX buffer not in use or it's empty then write directly to hardware FIFO
+			auto& hw = uartHardware[uart->uart_nr];
 			if(uart->tx_buffer == nullptr || uart->tx_buffer->isEmpty()) {
 				while(written < size && !uart_txfifo_full(uart->uart_nr)) {
 					hw.dev.fifo.rw_byte = buf[written++];

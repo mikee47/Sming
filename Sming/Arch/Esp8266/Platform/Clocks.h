@@ -14,6 +14,10 @@
  *  @{
  */
 
+using OsTimerClock = Timer2Clock;
+
+using PolledTimerClock = Timer2Clock;
+
 using CpuCycleClockSlow = CpuCycleClock<eCF_80MHz>;
 using CpuCycleClockNormal = CpuCycleClock<eCF_80MHz>;
 using CpuCycleClockFast = CpuCycleClock<eCF_160MHz>;

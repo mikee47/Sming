@@ -141,7 +141,7 @@ __forceinline uint32_t hw_timer1_read(void)
  *************************************/
 
 constexpr uint32_t HW_TIMER2_CLKDIV = TIMER_CLKDIV_1;
-constexpr uint32_t HW_TIMER2_CLK = (HW_TIMER_BASE_CLK >> HW_TIMER2_CLKDIV) / 80;
+constexpr uint32_t HW_TIMER2_CLK = HW_TIMER_BASE_CLK >> HW_TIMER2_CLKDIV;
 
 /**
  * @brief Read current timer2 value
