@@ -44,7 +44,7 @@
 [submodule "FlashString"]
 	path = Sming/Components/FlashString
 	url = https://github.com/mikee47/FlashString
-    ignore = dirty
+	ignore = dirty
 [submodule "http-parser"]
 	path = Sming/Components/http-parser
 	url = https://github.com/nodejs/http-parser.git
@@ -56,6 +56,10 @@
 [submodule "mqtt-codec"]
 	path = Sming/Components/mqtt-codec
 	url = https://github.com/slaff/mqtt-codec.git
+	ignore = dirty
+[submodule "nanopb"]
+	path = Sming/Components/nanopb/nanopb
+	url = https://github.com/nanopb/nanopb.git
 	ignore = dirty
 [submodule "rboot"]
 	path = Sming/Components/rboot/rboot
