@@ -197,6 +197,8 @@ void MD5Transform(uint32_t state[], const uint8_t block[])
 
 } // namespace
 
+#include <debug_progmem.h>
+
 CRYPTO_FUNC_INIT(md5)
 {
 	static const uint32_t md5_IV[4] PROGMEM = {
@@ -208,6 +210,8 @@ CRYPTO_FUNC_INIT(md5)
 
 	memcpy(ctx->state, md5_IV, sizeof(md5_IV));
 	ctx->count = 0;
+
+	debug_e(">>> MD5 INIT <<<");
 }
 
 CRYPTO_FUNC_UPDATE(md5)

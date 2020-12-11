@@ -101,16 +101,15 @@ public:
 		Serial.println(sizeof(Context));
 
 		REQUIRE(state.count == FS_plainText.length());
-		auto s = Crypto::toString(state.value);
-		if(s != expectedState) {
+		if(stateText != expectedState) {
 			debug_hex(ERR, "CRYPT_STATE", state.value.data(), state.value.size());
-			debug_e("EXPECTED: ", String(expectedState).c_str());
+			debug_e("EXPECTED: %s", String(expectedState).c_str());
 		}
-		//			REQUIRE(Crypto::toString(state.value) == expectedState);
+		//			REQUIRE(stateText == expectedState);
 
 		if(hashText != expectedHash) {
 			debug_hex(ERR, "CRYPT_HASH", hash.data(), hash.size());
-			debug_e("EXPECTED: ", String(expectedHash).c_str());
+			debug_e("EXPECTED: %s", String(expectedHash).c_str());
 		}
 		//		REQUIRE(hashText == expectedHash);
 	}

@@ -28,49 +28,9 @@ conditions: v1
 jobs:
   include:
     - stage: test
-      os: linux
-      addons:
-        apt:
-          packages:
-            - clang-format-6.0
-            - gcc-multilib
-            - g++-multilib
-            - doxygen
-            - python3-sphinx
-            - python3-pip
-            - python3-setuptools
-            - python3-cairocffi
-            - graphviz-dev
-            - xmlstarlet
-            - jq
-      env:
-        - SMING_ARCH=Host
-    - stage: test
       os: windows
       env:
         - SMING_ARCH=Host
-
-#    - stage: build
-#      os: linux
-#      name: C++11
-#      env:
-#        - SMING_ARCH=Esp8266
-#        - SDK_VERSION=3.0.1
-#        - ESP_HOME=$TRAVIS_BUILD_DIR/opt/esp-alt-sdk
-#
-#    - stage: build
-#      os: linux
-#      name: C++17
-#      env:
-#        - SMING_ARCH=Esp8266
-#        - SDK_VERSION=3.0.1
-#        - ESP_HOME=$TRAVIS_BUILD_DIR/opt/esp-quick-toolchain
-#
-#    - stage: build
-#      os: linux
-#      name: ESP-IDF
-#      env:
-#        - SMING_ARCH=Esp32
 
     - stage: build
       os: windows
