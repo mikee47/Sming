@@ -1,6 +1,3 @@
-#!/bin/bash
-set -ex # exit with nonzero exit code if anything fails
-
 # Check coding style
 make cs
 DIFFS=$(git diff)

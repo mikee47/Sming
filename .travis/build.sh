@@ -1,18 +1,24 @@
 #!/bin/bash
 set -ex # exit with nonzero exit code if anything fails
 
-export SMING_HOME=$TRAVIS_BUILD_DIR/Sming
-
 # Setup ARCH SDK
+export SMING_HOME=$TRAVIS_BUILD_DIR/Sming
 cd $SMING_HOME
 
 # Build times benefit from parallel building
 export MAKE_PARALLEL="make -j3"
 
-SETUP="$TRAVIS_OS_NAME/build.setup.sh"
+TRAVIS_OSDIR="$TRAVIS_BUILD_DIR/.travis/$TRAVIS_OS_NAME"
+TRAVIS_ARCHDIR="$SMING_HOME/Arch/$SMING_ARCH/Tools/travis/$TRAVIS_OS_NAME"
 
-if [ -f "$SMING_HOME/Arch/$SMING_ARCH/Tools/travis/$SETUP" ]; then
-       source "$SMING_HOME/Arch/$SMING_ARCH/Tools/travis/$SETUP"
+SOURCE="$TRAVIS_OSDIR/build.setup.sh"
+if [ -f "$SOURCE" ]; then
+       source "$SOURCE"
+fi
+
+SOURCE="$TRAVIS_ARCHDIR/build.setup.sh"
+if [ -f "$SOURCE" ]; then
+       source "$SOURCE"
 fi
 
 env
@@ -34,8 +40,12 @@ make list-config
 # Run ARCH SDK tests
 cd $SMING_HOME
 
-RUNNER="$TRAVIS_OS_NAME/build.run.sh"
+SOURCE="$TRAVIS_OSDIR/build.run.sh"
+if [ -f "$SOURCE" ]; then
+       source "$SOURCE"
+fi
 
-if [ -f "$SMING_HOME/Arch/$SMING_ARCH/Tools/travis/$RUNNER" ]; then
-   source "$SMING_HOME/Arch/$SMING_ARCH/Tools/travis/$RUNNER"
+SOURCE="$TRAVIS_ARCHDIR/build.run.sh"
+if [ -f "$SOURCE" ]; then
+       source "$SOURCE"
 fi

@@ -1,6 +1,3 @@
-#!/bin/bash
-set -ex # exit with nonzero exit code if anything fails
-
 if [ "$BUILD_COMPILER" = "udk" ]; then
     export ESP_HOME=$UDK_ROOT
 fi

@@ -1,6 +1,3 @@
-#!/bin/bash
-set -ex # exit with nonzero exit code if anything fails
-
 unset SPIFFY
 unset ESPTOOL2
 unset SDK_BASE

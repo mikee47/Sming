@@ -1,6 +1,3 @@
-#!/bin/bash
-set -ex # exit with nonzero exit code if anything fails
-
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
   DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
