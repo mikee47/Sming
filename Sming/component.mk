@@ -14,6 +14,7 @@ COMPONENT_INCDIRS := \
 
 COMPONENT_DEPENDS := \
 	Storage \
+	NVS \
 	sming-arch \
 	FlashString \
 	spiffs \

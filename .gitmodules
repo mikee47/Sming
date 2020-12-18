@@ -61,6 +61,10 @@
 	path = Sming/Components/mqtt-codec
 	url = https://github.com/slaff/mqtt-codec.git
 	ignore = dirty
+[submodule "NVS"]
+	path = Sming/Components/NVS
+	url = https://github.com/mikee47/Sming-NVS
+	ignore = dirty
 [submodule "rboot"]
 	path = Sming/Components/rboot/rboot
 	url = https://github.com/raburton/rboot.git

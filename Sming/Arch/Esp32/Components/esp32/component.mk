@@ -47,7 +47,6 @@ SDK_INCDIRS := \
 	soc/esp32/include \
 	heap/include \
 	log/include \
-	nvs_flash/include \
 	freertos/include \
 	esp_ringbuf/include \
 	esp_event/include \
@@ -148,7 +147,6 @@ SDK_COMPONENTS := \
 	mbedcrypto \
 	esp_netif \
 	newlib \
-	nvs_flash \
 	openssl \
 	protobuf-c \
 	protocomm \

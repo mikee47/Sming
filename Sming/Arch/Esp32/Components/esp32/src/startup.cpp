@@ -14,7 +14,7 @@
 #include <esp_event.h>
 #include <esp_log.h>
 #include <esp_task_wdt.h>
-#include <nvs_flash.h>
+#include <Nvs/nvs.h>
 #include <esp_tasks.h>
 #include <debug_progmem.h>
 #include <Platform/System.h>
