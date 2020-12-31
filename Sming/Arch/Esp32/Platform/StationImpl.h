@@ -71,7 +71,7 @@ private:
 #endif
 
 private:
-	bool runScan = false;
+	bool runScan{false};
 #ifdef ENABLE_SMART_CONFIG
 	std::unique_ptr<SmartConfigEventInfo> smartConfigEventInfo; ///< Set during smart handling
 #endif

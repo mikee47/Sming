@@ -315,8 +315,8 @@ void StationImpl::onSystemReady()
 
 void StationImpl::internalSmartConfig(sc_status status, void* pdata)
 {
-	if(smartConfigEventInfo == nullptr) {
-		debug_e("smartconfig eventInfo is NULL");
+	if(!smartConfigEventInfo) {
+		debug_e("smartconfig eventInfo not set");
 		return;
 	}
 
@@ -375,7 +375,7 @@ void StationImpl::internalSmartConfig(sc_status status, void* pdata)
 
 bool StationImpl::smartConfigStart(SmartConfigType sctype, SmartConfigDelegate callback)
 {
-	if(smartConfigEventInfo != nullptr) {
+	if(smartConfigEventInfo) {
 		return false; // Already in progress
 	}
 
@@ -384,8 +384,8 @@ bool StationImpl::smartConfigStart(SmartConfigType sctype, SmartConfigDelegate c
 		return false;
 	}
 
-	smartConfigEventInfo = new SmartConfigEventInfo;
-	if(smartConfigEventInfo == nullptr) {
+	smartConfigEventInfo.reset(new SmartConfigEventInfo);
+	if(!smartConfigEventInfo) {
 		return false;
 	}
 
@@ -400,8 +400,7 @@ bool StationImpl::smartConfigStart(SmartConfigType sctype, SmartConfigDelegate c
 	if(!smartconfig_start([](sc_status status, void* pdata) { station.internalSmartConfig(status, pdata); })) {
 		debug_e("smartconfig_start() failed");
 		smartConfigCallback = nullptr;
-		delete smartConfigEventInfo;
-		smartConfigEventInfo = nullptr;
+		smartConfigEventInfo.reset();
 		return false;
 	}
 
@@ -416,8 +415,7 @@ void StationImpl::smartConfigStop()
 {
 	smartconfig_stop();
 	smartConfigCallback = nullptr;
-	delete smartConfigEventInfo;
-	smartConfigEventInfo = nullptr;
+	smartConfigEventInfo.reset();
 }
 
 #endif // ENABLE_SMART_CONFIG
