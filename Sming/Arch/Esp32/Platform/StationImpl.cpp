@@ -375,9 +375,12 @@ void StationImpl::internalSmartConfig(sc_status status, void* pdata)
 
 bool StationImpl::smartConfigStart(SmartConfigType sctype, SmartConfigDelegate callback)
 {
-	if(smartConfigEventInfo) {
+	if(smartConfigStarted) {
 		return false; // Already in progress
 	}
+
+	wifi_mode_t mode;
+	ESP_ERROR_CHECK(esp_wifi_get_mode(&mode));
 
 	if(!smartconfig_set_type(sc_type(sctype))) {
 		debug_e("smartconfig_set_type(%u) failed", sctype);
