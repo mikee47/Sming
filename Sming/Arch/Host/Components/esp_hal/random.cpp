@@ -21,11 +21,11 @@
 #include <assert.h>
 
 // See https://codeforces.com/blog/entry/61587
-std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count());
+std::mt19937 os_rng(std::chrono::steady_clock::now().time_since_epoch().count());
 
 uint32_t os_random(void)
 {
-	return rng();
+	return os_rng();
 }
 
 int os_get_random(uint8_t* buf, size_t len)
@@ -39,7 +39,7 @@ int os_get_random(uint8_t* buf, size_t len)
 	uint32_t rand = 0;
 	for(unsigned i = 0; i < len; ++i) {
 		if(i % 4 == 0) {
-			rand = rng();
+			rand = os_rng();
 		}
 		buf[i] = rand;
 		rand >>= 8;
