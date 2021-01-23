@@ -4,12 +4,11 @@ DEBUG_VERBOSE_LEVEL = 2
 COMPONENT_INCDIRS := include
 COMPONENT_SRCDIRS := app modules
 
-ARDUINO_LIBRARIES := \
-	SmingTest \
-	ArduinoJson5 \
-	ArduinoJson6
-
 COMPONENT_DEPENDS := \
+	SmingTest \
+	NVS \
+	ArduinoJson5 \
+	ArduinoJson6 \
 	malloc_count \
 	axtls-8266 \
 	bearssl-esp8266

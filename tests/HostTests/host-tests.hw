@@ -12,6 +12,12 @@
 			"size": "0x10000",
 			"filename": ""
 		},
+		"nvs_test": {
+			"type": "data",
+			"subtype": "nvs",
+			"address": "0x280000",
+			"size": "0x10000"
+		},
 		"external1": {
 			"device": "testDevice",
 			"address": 0,
