@@ -1,6 +1,5 @@
-image:
-- Ubuntu2004
-- Visual Studio 2019
+build_cloud: ATHLONME Docker
+image: linux
 
 platform: x86
 
@@ -33,19 +32,6 @@ install:
       if ($env:APPVEYOR_PULL_REQUEST_HEAD_REPO_NAME) {
         $env:CI_PULL_REQUEST = "true"
       }
-      # Esp8266 
-      $env:UDK_ROOT = Join-Path $env:CI_BUILD_DIR "opt/esp-alt-sdk"
-      $env:EQT_ROOT = Join-Path $env:CI_BUILD_DIR "opt/esp-quick-toolchain"
-      if ($env:BUILD_COMPILER -eq "udk") {
-        $env:ESP_HOME = $env:UDK_ROOT
-      } else {
-        $env:ESP_HOME = $env:EQT_ROOT
-      }
-      # Esp32
-      $env:IDF_PATH = Join-Path $env:CI_BUILD_DIR "opt/esp-idf"
-      $env:IDF_TOOLS_PATH = Join-Path $env:CI_BUILD_DIR "opt/tools/esp32"
-      # General
-      $env:SMING_HOME = Join-Path $env:CI_BUILD_DIR "Sming"
 
   - cmd: |
       set PATH=C:\Python39;C:\MinGW\msys\1.0\bin;C:\MinGW\bin;%PATH%
@@ -55,11 +41,11 @@ install:
       set PATH=C:\Python39\Scripts;%PATH%;C:\Program Files\doxygen\bin
 
   - sh: |
-      export PYTHON=$HOME/venv3.9/bin/python
-      export ESP32_PYTHON_PATH=$HOME/venv3.9/bin
-      source $HOME/venv3.9/bin/activate
-      Tools/install.sh $INSTALL_OPTS
-      cd $CI_BUILD_DIR
+      export PYTHON=/usr/bin/python3
+      export ESP32_PYTHON_PATH=/usr/bin
+      source Tools/export.sh
+      sudo chown -R appveyor $IDF_PATH
+      sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 100
 
 
 before_build:
