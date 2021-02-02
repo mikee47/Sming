@@ -1,5 +1,7 @@
 build_cloud: ATHLONME Docker
-image: linux
+image:
+  - linux
+  - windows
 
 platform: x86
 
@@ -34,11 +36,7 @@ install:
       }
 
   - cmd: |
-      set PATH=C:\Python39;C:\MinGW\msys\1.0\bin;C:\MinGW\bin;%PATH%
-      set PYTHON=C:\Python39\python
       set ESP32_PYTHON_PATH=C:\Python39
-      Tools\ci\install.cmd
-      set PATH=C:\Python39\Scripts;%PATH%;C:\Program Files\doxygen\bin
 
   - sh: |
       export PYTHON=/usr/bin/python3
