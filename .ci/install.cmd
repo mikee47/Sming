@@ -1,6 +1,6 @@
 REM Windows install script
 
-python -m pip install --upgrade pip
+python -m pip install --upgrade pip -r Sming/Components/Storage/requirements.txt
 
 rmdir /s /q c:\MinGW
 curl -Lo MinGW.7z %SMINGTOOLS%/MinGW-2020-10-19.7z
