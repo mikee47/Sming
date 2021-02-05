@@ -130,7 +130,7 @@ fi
 
 sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-6.0 100
 
-python3 -m pip install --upgrade pip -r $SMING_HOME/Tools/requirements.txt
+python3 -m pip install --upgrade pip -r $SMING_HOME/../Tools/requirements.txt
 
 install() {
     source $SMING_HOME/Arch/$1/Tools/install.sh
