@@ -1,6 +1,8 @@
 REM Windows install script
 
-python -m pip install --upgrade pip -r Sming/Components/Storage/requirements.txt
+set SMINGTOOLS=https://github.com/SmingHub/SmingTools/releases/download/1.0
+
+python -m pip install --upgrade pip pyserial jsonschema
 
 rmdir /s /q c:\MinGW
 curl -Lo MinGW.7z %SMINGTOOLS%/MinGW-2020-10-19.7z
