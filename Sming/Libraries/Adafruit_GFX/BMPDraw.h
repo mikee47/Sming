@@ -60,7 +60,7 @@ template <class Adafruit_TFT> bool bmpDraw(Adafruit_TFT& tft, IDataSourceStream&
 		return false;
 	}
 
-	debug_i("Loading image");
+	debug_d("Loading image");
 
 	uint32_t startTime = millis();
 
@@ -88,39 +88,51 @@ template <class Adafruit_TFT> bool bmpDraw(Adafruit_TFT& tft, IDataSourceStream&
 	};
 
 	// Parse BMP header
-	bool goodBmp = false; // Set to true on valid header parse
+	bool goodBmp = false;
 	while(true) {
-		if(read16() != 0x4D42) { // BMP signature
-			debug_e("Invalid BMP signature");
+		// BMP signature
+		if(read16() != 0x4D42) {
+			debug_e("[BMP] Invalid signature");
 			break;
 		}
 
-		debug_i("File size: %d", read32()); // get File Size
-		(void)read32();						// Read & ignore creator bytes
-		uint32_t bmpImageoffset = read32(); // Start of image data
-		debug_i("Image Offset: %d", bmpImageoffset);
-		debug_i("Header size: %d", read32()); // Read DIB header
+		// Get File Size
+		size_t fileSize = read32();
+		(void)fileSize;
+		debug_d("[BMP] File size: %u", fileSize);
+
+		// Read & ignore creator bytes
+		(void)read32();
+
+		// Start of image data
+		uint32_t bmpImageoffset = read32();
+		debug_d("[BMP] Image Offset: %u", bmpImageoffset);
+
+		// Read DIB header
+		uint32_t dibHeaderSize = read32();
+		(void)dibHeaderSize;
+		debug_d("[BMP] Header size: %u", dibHeaderSize);
+
 		int bmpWidth = read32();
 		int bmpHeight = read32();
 		if(read16() != 1) { // # planes -- must be '1'
-			debug_e("Un-supported BMP planes");
+			debug_e("[BMP] Un-supported planes");
 			break;
 		}
 
-		uint8_t bmpDepth = read16(); // bits per pixel
-		debug_i("Bit Depth: %d", bmpDepth);
+		uint8_t bmpDepth = read16();			  // bits per pixel
 		if((bmpDepth != 24) || (read32() != 0)) { // 0 = uncompressed
-			debug_e("Un-supported BMP depth");
+			debug_e("[BMP] Un-supported depth %u", bmpDepth);
 			break;
 		}
 
 		// Supported BMP format -- proceed!
 		goodBmp = true;
 
-		debug_i("Image size: %d x %d", bmpWidth, bmpHeight);
+		debug_d("[BMP] Image size %u x %u", bmpWidth, bmpHeight);
 
 		// BMP rows are padded (if needed) to 4-byte boundary
-		uint32_t rowSize = (bmpWidth * 3 + 3) & ~3;
+		uint32_t rowSize = ALIGNUP4(bmpWidth * 3);
 
 		// If bmpHeight is negative, image is in top-down order.
 		// This is not canon but has been observed in the wild.
@@ -164,6 +176,7 @@ template <class Adafruit_TFT> bool bmpDraw(Adafruit_TFT& tft, IDataSourceStream&
 				streamPos = stream.seekFrom(pos, SeekOrigin::Start);
 				buffidx = sizeof(sdbuffer); // Force buffer reload
 			}
+			uint16_t lineBuffer[w];
 			for(int col = 0; col < w; col++) { // For each pixel...
 				// Time to read more pixel data?
 				if(buffidx >= sizeof(sdbuffer)) { // Indeed
@@ -175,15 +188,16 @@ template <class Adafruit_TFT> bool bmpDraw(Adafruit_TFT& tft, IDataSourceStream&
 				uint8_t b = sdbuffer[buffidx++];
 				uint8_t g = sdbuffer[buffidx++];
 				uint8_t r = sdbuffer[buffidx++];
-				tft.pushColor(color565(r, g, b));
+				lineBuffer[col] = color565(r, g, b);
 			} // end pixel
-		}	 // end scanline
-		debug_i("Loaded in %d ms", millis() - startTime);
+			tft.pushColors(lineBuffer, w);
+		} // end scanline
+		debug_d("[BMP] Loaded in %d ms", millis() - startTime);
 		break;
 	}
 
 	if(!goodBmp) {
-		debug_e("BMP format not recognized.");
+		debug_e("[BMP] Format not recognized");
 	}
 
 	return goodBmp;
@@ -193,10 +207,10 @@ template <class Adafruit_TFT> bool bmpDraw(Adafruit_TFT& tft, String fileName, u
 {
 	FileStream fs;
 	if(!fs.open(fileName)) {
-		debug_e("Error opening file '%s': %s", fileName.c_str(), fs.getLastErrorString().c_str());
+		debug_e("[BMP] Error opening file '%s': %s", fileName.c_str(), fs.getLastErrorString().c_str());
 		return false;
 	}
 
-	debug_i("Loading image", fileName.c_str());
+	debug_d("[BMP] Loading image '%s'", fileName.c_str());
 	return bmpDraw(tft, fs, x, y);
 }

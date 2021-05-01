@@ -12,6 +12,7 @@ class Adafruit_GFX : public Print {
 
   // This MUST be defined by the subclass:
   virtual void drawPixel(int16_t x, int16_t y, uint16_t color) = 0;
+	virtual void pushColor(uint16_t color) = 0;
 
   // These MAY be overridden by the subclass to provide device-specific
   // optimized code.  Otherwise 'generic' versions are used.
@@ -22,7 +23,9 @@ class Adafruit_GFX : public Print {
     drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
     fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color),
     fillScreen(uint16_t color),
-    invertDisplay(boolean i);
+    invertDisplay(boolean i),
+    pushColors(uint16_t* colors, size_t numColors);
+
 
   // These exist only with Adafruit_GFX (no subclass overrides)
   void

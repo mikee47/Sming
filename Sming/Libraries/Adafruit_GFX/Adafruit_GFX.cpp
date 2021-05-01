@@ -516,3 +516,8 @@ void Adafruit_GFX::invertDisplay(boolean i) {
   // Do nothing, must be subclassed if supported
 }
 
+void Adafruit_GFX::pushColors(uint16_t* colors, size_t numColors) {
+  for(unsigned i = 0; i < numColors; ++i) {
+    pushColor(colors[i]);
+  }
+}

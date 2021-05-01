@@ -190,6 +190,16 @@ void Adafruit_ILI9341::pushColor(uint16_t color)
 	transmitData(SWAPBYTES(color));
 }
 
+void Adafruit_ILI9341::pushColors(uint16_t* color, size_t numColors)
+{
+	for(unsigned i = 0; i < numColors; ++i) {
+		color[i] = SWAPBYTES(color[i]);
+	}
+	HSPI::Request req;
+	req.out.set(color, numColors * 2);
+	execute(req);
+}
+
 void Adafruit_ILI9341::drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color)
 {
 	// Rudimentary clipping
