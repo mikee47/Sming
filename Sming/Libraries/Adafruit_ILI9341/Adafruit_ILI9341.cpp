@@ -21,12 +21,6 @@
 
 #define SWAPBYTES(i) ((i >> 8) | (i << 8))
 
-#define TFT_CS_ACTIVE digitalWrite(TFT_CS_PIN, false)
-#define TFT_CS_DEACTIVE digitalWrite(TFT_CS_PIN, true)
-#define TFT_CS_INIT                                                                                                    \
-	pinMode(TFT_CS_PIN, OUTPUT);                                                                                       \
-	TFT_CS_DEACTIVE
-
 #define TFT_DC_DATA digitalWrite(TFT_DC_PIN, true)
 #define TFT_DC_COMMAND digitalWrite(TFT_DC_PIN, false)
 #define TFT_DC_INIT                                                                                                    \
@@ -46,74 +40,87 @@
 #define TFT_RST_INIT
 #endif
 
-// Constructor when using software SPI.  All output pins are configurable.
-Adafruit_ILI9341::Adafruit_ILI9341() : Adafruit_GFX(ILI9341_TFTWIDTH, ILI9341_TFTHEIGHT)
-{
-	tabcolor = 0;
-}
-
 void Adafruit_ILI9341::transmitCmdData(uint8_t cmd, uint8_t* data, uint8_t numDataByte)
 {
+	HSPI::Request req;
 	TFT_DC_COMMAND;
-	TFT_CS_ACTIVE;
-	SPI.transfer(cmd);
-	TFT_CS_DEACTIVE;
+	req.out.set8(cmd);
+	execute(req);
 
 	TFT_DC_DATA;
-	TFT_CS_ACTIVE;
-	SPI.transfer(data, numDataByte);
-	TFT_CS_DEACTIVE;
+	req.out.set(data, numDataByte);
+	execute(req);
 }
 
 void Adafruit_ILI9341::transmitData(uint16_t data)
 {
-	TFT_CS_ACTIVE;
-	SPI.transfer((uint8_t*)&data, 2);
-	TFT_CS_DEACTIVE;
+	HSPI::Request req;
+	req.out.set16(data);
+	execute(req);
 }
 
 void Adafruit_ILI9341::transmitCmdData(uint8_t cmd, uint32_t data)
 {
-	TFT_DC_COMMAND;
+	debug_d("[ILI] CMD-DATA 0x%02x 0x%08x", cmd, data);
 
-	TFT_CS_ACTIVE;
-	SPI.transfer(cmd);
-	TFT_CS_DEACTIVE;
+	HSPI::Request req;
+
+	TFT_DC_COMMAND;
+	req.out.set8(cmd);
+	execute(req);
 
 	TFT_DC_DATA;
-	TFT_CS_ACTIVE;
-	SPI.transfer32(data);
-	TFT_CS_DEACTIVE;
+	req.out.set32(data);
+	execute(req);
 }
 
-void Adafruit_ILI9341::transmitData(uint16_t data, int32_t repeats)
+void Adafruit_ILI9341::transmitData(uint16_t data, unsigned repeats)
 {
-	TFT_CS_ACTIVE;
-	while(repeats--) {
-		SPI.transfer16(data);
+	debug_d("[ILI] DATA 0x%04x x %u", data, repeats);
+
+	if(repeats == 0) {
+		return;
 	}
-	TFT_CS_DEACTIVE;
+
+	constexpr size_t bufLen{128};
+	uint16_t buffer[bufLen];
+	std::fill_n(buffer, std::min(repeats, bufLen), __builtin_bswap16(data));
+
+	HSPI::Request req;
+	do {
+		auto len = std::min(repeats, bufLen);
+		req.out.set(buffer, len * 2);
+		repeats -= len;
+		execute(req);
+	} while(repeats != 0);
 }
 
 void Adafruit_ILI9341::transmitCmd(uint8_t cmd)
 {
+	debug_d("[ILI] CMD 0x%02x", cmd);
+	HSPI::Request req;
 	TFT_DC_COMMAND;
-	TFT_CS_ACTIVE;
-	SPI.transfer(cmd);
-	TFT_CS_DEACTIVE;
+	req.out.set8(cmd);
+	req.in.set8(0);
+	execute(req);
 	TFT_DC_DATA;
 }
 
 #define DELAY 0x80
 
 //Set communication using HW SPI Port
-void Adafruit_ILI9341::begin()
+bool Adafruit_ILI9341::begin(HSPI::PinSet pinSet, uint8_t chipSelect)
 {
-	SPI.SPIDefaultSettings = SPISettings(20000000, LSBFIRST, SPI_MODE0);
-	SPI.begin();
+	if(!Device::begin(pinSet, chipSelect)) {
+		return false;
+	}
+	setSpeed(16000000U);
+	setBitOrder(MSBFIRST);
+	setClockMode(HSPI::ClockMode::mode0);
+	setIoMode(HSPI::IoMode::SPI);
+
 	TFT_DC_INIT;
 	TFT_RST_INIT;
-	TFT_CS_INIT;
 
 	TFT_RST_ACTIVE;
 	delayMicroseconds(10000);
@@ -231,6 +238,8 @@ void Adafruit_ILI9341::begin()
 
 	transmitCmd(0x29); //Display on
 	transmitCmd(0x2c);
+
+	return true;
 }
 
 void Adafruit_ILI9341::drawPixel(int16_t x, int16_t y, uint16_t color)

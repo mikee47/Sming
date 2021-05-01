@@ -18,7 +18,8 @@ DC GPIO5
 RST GPIO4
 */
 
-Adafruit_ILI9341 tft;
+HSPI::Controller spi;
+Adafruit_ILI9341 tft(spi);
 
 Timer guiTimer;
 

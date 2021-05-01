@@ -22,6 +22,7 @@
 
 #include <Digital.h>
 #include <Libraries/Adafruit_GFX/Adafruit_GFX.h>
+#include <HSPI/Device.h>
 
 #define ILI9341_TFTWIDTH 240
 #define ILI9341_TFTHEIGHT 320
@@ -106,12 +107,32 @@
 
 #define MAKEWORD(b1, b2, b3, b4) (uint32_t(b1) | ((b2) << 8) | ((b3) << 16) | ((b4) << 24))
 
-class Adafruit_ILI9341 : public Adafruit_GFX
+class Adafruit_ILI9341 : public Adafruit_GFX, public HSPI::Device
 {
-public:
-	Adafruit_ILI9341();
+private:
+	uint8_t tabcolor{0};
+	void transmitCmdData(uint8_t cmd, uint8_t* data, uint8_t numDataByte);
+	void transmitData(uint16_t data);
+	void transmitCmdData(uint8_t cmd, uint32_t data);
+	void transmitData(uint16_t data, unsigned repeats);
+	void transmitCmd(uint8_t cmd);
 
-	void begin();
+	template <typename T> void transmitCmdData(uint8_t cmd, T& data)
+	{
+		transmitCmdData(cmd, &data, sizeof(data));
+	}
+
+	HSPI::IoModes getSupportedIoModes() const override
+	{
+		return HSPI::IoMode::SPI;
+	}
+
+public:
+	Adafruit_ILI9341(HSPI::Controller& spi) : Adafruit_GFX(ILI9341_TFTWIDTH, ILI9341_TFTHEIGHT), Device(spi)
+	{
+	}
+
+	bool begin(HSPI::PinSet pinSet, uint8_t chipSelect);
 	void fillScreen(uint16_t color);
 	void pushColor(uint16_t color);
 	void drawPixel(int16_t x, int16_t y, uint16_t color);
@@ -120,21 +141,13 @@ public:
 	void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
 	void setRotation(uint8_t r);
 	void invertDisplay(bool i);
-	inline void setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
+	void setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
 	{
 		transmitCmdData(ILI9341_CASET, MAKEWORD(x0 >> 8, x0 & 0xFF, x1 >> 8, x1 & 0xFF));
 		transmitCmdData(ILI9341_PASET, MAKEWORD(y0 >> 8, y0 & 0xFF, y1 >> 8, y1 & 0xFF));
 		transmitCmd(ILI9341_RAMWR); // write to RAM
 	}
 	uint16_t color565(uint8_t r, uint8_t g, uint8_t b);
-
-private:
-	uint8_t tabcolor;
-	void transmitCmdData(uint8_t cmd, uint8_t* data, uint8_t numDataByte);
-	void transmitData(uint16_t data);
-	void transmitCmdData(uint8_t cmd, uint32_t data);
-	void transmitData(uint16_t data, int32_t repeats);
-	void transmitCmd(uint8_t cmd);
 };
 
 #endif
