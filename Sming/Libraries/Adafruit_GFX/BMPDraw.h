@@ -54,35 +54,31 @@ as well as Adafruit raw 1.8" TFT display
 
 #define BUFFPIXEL 20
 
-template <class Adafruit_TFT> bool bmpDraw(Adafruit_TFT& tft, String fileName, uint8_t x, uint8_t y)
+template <class Adafruit_TFT> bool bmpDraw(Adafruit_TFT& tft, IDataSourceStream& stream, uint8_t x, uint8_t y)
 {
 	if((x >= tft.width()) || (y >= tft.height())) {
 		return false;
 	}
 
-	debug_i("Loading image '%s'", fileName.c_str());
+	debug_i("Loading image");
 
 	uint32_t startTime = millis();
-
-	file_t handle = fileOpen(fileName.c_str(), File::ReadOnly);
-	if(handle < 0) {
-		debug_e("File wasn't found: %s", fileName.c_str());
-		return false;
-	}
 
 	// These read 16- and 32-bit types from the SPIFFS file.
 	// BMP data is stored little-endian, esp8266 is little-endian too.
 	// May need to reverse subscript order if porting elsewhere.
 
-	auto read16 = [handle]() -> uint16_t {
+	uint32_t streamPos{0};
+
+	auto read16 = [&]() -> uint16_t {
 		char bytes[2];
-		fileRead(handle, bytes, 2);
+		streamPos += stream.readBytes(bytes, 2);
 		return (bytes[1] << 8) + bytes[0];
 	};
 
-	auto read32 = [handle]() -> uint32_t {
+	auto read32 = [&]() -> uint32_t {
 		char bytes[4];
-		fileRead(handle, bytes, 4);
+		streamPos += stream.readBytes(bytes, 4);
 		return (bytes[3] << 24) + (bytes[2] << 16) + (bytes[1] << 8) + bytes[0];
 	};
 
@@ -164,14 +160,14 @@ template <class Adafruit_TFT> bool bmpDraw(Adafruit_TFT& tft, String fileName, u
 				// Bitmap is stored top-to-bottom
 				pos = bmpImageoffset + row * rowSize;
 			}
-			if(fileTell(handle) != int(pos)) {
-				fileSeek(handle, pos, SeekOrigin::Start);
+			if(streamPos != pos) {
+				streamPos = stream.seekFrom(pos, SeekOrigin::Start);
 				buffidx = sizeof(sdbuffer); // Force buffer reload
 			}
 			for(int col = 0; col < w; col++) { // For each pixel...
 				// Time to read more pixel data?
 				if(buffidx >= sizeof(sdbuffer)) { // Indeed
-					fileRead(handle, sdbuffer, sizeof(sdbuffer));
+					streamPos += stream.readBytes(reinterpret_cast<char*>(sdbuffer), sizeof(sdbuffer));
 					buffidx = 0; // Set index to beginning
 				}
 
@@ -186,10 +182,21 @@ template <class Adafruit_TFT> bool bmpDraw(Adafruit_TFT& tft, String fileName, u
 		break;
 	}
 
-	fileClose(handle);
 	if(!goodBmp) {
 		debug_e("BMP format not recognized.");
 	}
 
 	return goodBmp;
+}
+
+template <class Adafruit_TFT> bool bmpDraw(Adafruit_TFT& tft, String fileName, uint8_t x, uint8_t y)
+{
+	FileStream fs;
+	if(!fs.open(fileName)) {
+		debug_e("Error opening file '%s': %s", fileName.c_str(), fs.getLastErrorString().c_str());
+		return false;
+	}
+
+	debug_i("Loading image", fileName.c_str());
+	return bmpDraw(tft, fs, x, y);
 }
