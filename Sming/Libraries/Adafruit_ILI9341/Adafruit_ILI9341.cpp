@@ -102,12 +102,9 @@ void Adafruit_ILI9341::transmitCmd(uint8_t cmd)
 	HSPI::Request req;
 	TFT_DC_COMMAND;
 	req.out.set8(cmd);
-	req.in.set8(0);
 	execute(req);
 	TFT_DC_DATA;
 }
-
-#define DELAY 0x80
 
 // #define MEMORY_ACCESS_CONTROL 0x36, 1, 0x48				   // ili9341
 #define MEMORY_ACCESS_CONTROL 0x40, 1, 0x48, 0x08, 1, 0x48 // ili9341-9340-9340c
@@ -125,9 +122,6 @@ DEFINE_FSTR_ARRAY_LOCAL(				   //
 	0xC1, 1, 0x10,						   // Power control: SAP[2:0], BT[3:0]
 	0xC5, 2, 0x3e, 0x28,				   // VCM control: Contrast
 	0xC7, 1, 0x86,						   // VCM control2
-	0x36, 1, 0x48,						   // ili9341
-	0x40, 1, 0x48,						   // ili9341-9340-9340c
-	0x08, 1, 0x48,						   // ili9341-9340-9340c
 	MEMORY_ACCESS_CONTROL,				   //
 	0x3A, 1, 0x55,						   //
 	0xB1, 2, 0x00, 0x18,				   //
