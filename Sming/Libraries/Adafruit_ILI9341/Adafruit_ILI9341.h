@@ -137,14 +137,21 @@ inline uint32_t MAKEWORD(uint16_t w1, uint16_t w2)
 	return uint32_t(SWAPBYTES(w1)) | (SWAPBYTES(w2) << 16);
 }
 
+struct __attribute__((packed)) RGB {
+	uint8_t r, g, b;
+};
+
+static_assert(sizeof(RGB) == 3, "RGB not packed!");
+
 class Adafruit_ILI9341 : public Adafruit_GFX, public HSPI::Device
 {
 private:
-	void transmitCmdData(uint8_t cmd, uint8_t* data, uint8_t numDataByte);
+	void transmitCmdData(uint8_t cmd, const void* data, size_t size);
 	void transmitData(uint16_t data);
 	void transmitCmdData(uint8_t cmd, uint32_t data);
 	void transmitData(uint16_t data, unsigned repeats);
 	void transmitCmd(uint8_t cmd);
+	void receiveCmdData(uint8_t cmd, void* buffer, size_t bufSize);
 
 	HSPI::IoModes getSupportedIoModes() const override
 	{
@@ -170,7 +177,25 @@ public:
 	void setRotation(uint8_t r);
 	void invertDisplay(bool i);
 	void setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
-	uint16_t color565(uint8_t r, uint8_t g, uint8_t b);
+
+	// Pass 8-bit (each) R,G,B, get back 16-bit packed color
+	static uint16_t pack565(const RGB& col)
+	{
+		return ((col.r & 0xF8) << 8) | ((col.g & 0xFC) << 3) | (col.b >> 3);
+	}
+
+	static RGB unpack565(uint16_t col)
+	{
+		return RGB{uint8_t((col >> 8) & 0xF8), uint8_t((col >> 3) & 0xFC), uint8_t(col << 3)};
+	}
+
+	static uint16_t color565(uint8_t r, uint8_t g, uint8_t b)
+	{
+		return pack565(RGB{r, g, b});
+	}
+
+	void writeMem(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const void* data, size_t size);
+	void readMem(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, void* buffer, size_t size);
 
 	uint32_t readRegister(uint8_t cmd, uint8_t byteCount);
 

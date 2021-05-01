@@ -135,6 +135,29 @@ void run()
 	}
 }
 
+void readTest()
+{
+	constexpr size_t colSize{256};
+	RGB data[colSize];
+	for(unsigned i = 0; i < colSize; ++i) {
+		uint8_t c = i;
+		data[i] = RGB{c, c, c};
+	}
+
+	uint16_t outBuffer[colSize];
+	for(unsigned i = 0; i < colSize; ++i) {
+		outBuffer[i] = SWAPBYTES(tft.pack565(data[i]));
+	}
+	m_printHex("BUF OUT", outBuffer, sizeof(outBuffer));
+	tft.writeMem(0, 0, 0, colSize - 1, outBuffer, sizeof(outBuffer));
+
+	RGB inBuffer[colSize];
+	tft.readMem(0, 0, 0, colSize - 1, inBuffer, sizeof(inBuffer));
+
+	m_printHex("COL OUT", data, sizeof(data), -1, 24);
+	m_printHex("BUF IN ", inBuffer, sizeof(inBuffer), -1, 24);
+}
+
 void init()
 {
 	Serial.begin(SERIAL_BAUD_RATE); // 115200 by default
@@ -156,6 +179,8 @@ void init()
 	Serial.printf(_F("ImageFormat: 0x%02x\r\n"), tft.readImageFormat());
 	Serial.printf(_F("SignalMode: 0x%02x\r\n"), tft.readSignalMode());
 	Serial.printf(_F("SelfDiag: 0x%02x\r\n"), tft.readSelfDiag());
+
+	readTest();
 
 	guiTimer.initializeMs<2000>(run).start();
 }

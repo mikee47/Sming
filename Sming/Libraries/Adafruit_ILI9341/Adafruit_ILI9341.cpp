@@ -73,7 +73,7 @@ bool Adafruit_ILI9341::begin(HSPI::PinSet pinSet, uint8_t chipSelect)
 	if(!Device::begin(pinSet, chipSelect)) {
 		return false;
 	}
-	setSpeed(8000000U);
+	setSpeed(4000000U);
 	setBitOrder(MSBFIRST);
 	setClockMode(HSPI::ClockMode::mode0);
 	setIoMode(HSPI::IoMode::SPI);
@@ -105,7 +105,7 @@ bool Adafruit_ILI9341::begin(HSPI::PinSet pinSet, uint8_t chipSelect)
 	return true;
 }
 
-void Adafruit_ILI9341::transmitCmdData(uint8_t cmd, uint8_t* data, uint8_t numDataByte)
+void Adafruit_ILI9341::transmitCmdData(uint8_t cmd, const void* data, size_t size)
 {
 	HSPI::Request req;
 	TFT_DC_COMMAND;
@@ -113,7 +113,7 @@ void Adafruit_ILI9341::transmitCmdData(uint8_t cmd, uint8_t* data, uint8_t numDa
 	execute(req);
 
 	TFT_DC_DATA;
-	req.out.set(data, numDataByte);
+	req.out.set(data, size);
 	execute(req);
 }
 
@@ -244,12 +244,6 @@ void Adafruit_ILI9341::fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint
 	transmitData(SWAPBYTES(color), h * w);
 }
 
-// Pass 8-bit (each) R,G,B, get back 16-bit packed color
-uint16_t Adafruit_ILI9341::color565(uint8_t r, uint8_t g, uint8_t b)
-{
-	return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
-}
-
 void Adafruit_ILI9341::setRotation(uint8_t m)
 {
 	uint8_t data;
@@ -294,4 +288,29 @@ uint32_t Adafruit_ILI9341::readRegister(uint8_t cmd, uint8_t byteCount)
 	execute(req);
 	TFT_DC_DATA;
 	return req.in.data32;
+}
+
+void Adafruit_ILI9341::writeMem(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, const void* data, size_t size)
+{
+	transmitCmdData(ILI9341_CASET, MAKEWORD(x0, x1));
+	transmitCmdData(ILI9341_PASET, MAKEWORD(y0, y1));
+	transmitCmd(ILI9341_RAMWR);
+
+	HSPI::Request req;
+	req.out.set(data, size);
+	execute(req);
+}
+
+void Adafruit_ILI9341::readMem(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, void* buffer, size_t size)
+{
+	transmitCmdData(ILI9341_CASET, MAKEWORD(x0, x1));
+	transmitCmdData(ILI9341_PASET, MAKEWORD(y0, y1));
+
+	HSPI::Request req;
+	TFT_DC_COMMAND;
+	req.setCommand8(ILI9341_RAMRD);
+	req.dummyLen = 8;
+	req.in.set(buffer, size);
+	execute(req);
+	TFT_DC_DATA;
 }
