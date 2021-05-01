@@ -41,71 +41,6 @@
 #define TFT_RST_INIT
 #endif
 
-void Adafruit_ILI9341::transmitCmdData(uint8_t cmd, uint8_t* data, uint8_t numDataByte)
-{
-	HSPI::Request req;
-	TFT_DC_COMMAND;
-	req.out.set8(cmd);
-	execute(req);
-
-	TFT_DC_DATA;
-	req.out.set(data, numDataByte);
-	execute(req);
-}
-
-void Adafruit_ILI9341::transmitData(uint16_t data)
-{
-	HSPI::Request req;
-	req.out.set16(data);
-	execute(req);
-}
-
-void Adafruit_ILI9341::transmitCmdData(uint8_t cmd, uint32_t data)
-{
-	debug_d("[ILI] CMD-DATA 0x%02x 0x%08x", cmd, data);
-
-	HSPI::Request req;
-
-	TFT_DC_COMMAND;
-	req.out.set8(cmd);
-	execute(req);
-
-	TFT_DC_DATA;
-	req.out.set32(data);
-	execute(req);
-}
-
-void Adafruit_ILI9341::transmitData(uint16_t data, unsigned repeats)
-{
-	debug_d("[ILI] DATA 0x%04x x %u", data, repeats);
-
-	if(repeats == 0) {
-		return;
-	}
-
-	constexpr size_t bufLen{128};
-	uint16_t buffer[bufLen];
-	std::fill_n(buffer, std::min(repeats, bufLen), data);
-
-	HSPI::Request req;
-	do {
-		auto len = std::min(repeats, bufLen);
-		req.out.set(buffer, len * 2);
-		repeats -= len;
-		execute(req);
-	} while(repeats != 0);
-}
-
-void Adafruit_ILI9341::transmitCmd(uint8_t cmd)
-{
-	debug_d("[ILI] CMD 0x%02x", cmd);
-	HSPI::Request req;
-	TFT_DC_COMMAND;
-	req.out.set8(cmd);
-	execute(req);
-	TFT_DC_DATA;
-}
-
 // #define MEMORY_ACCESS_CONTROL 0x36, 1, 0x48				   // ili9341
 #define MEMORY_ACCESS_CONTROL 0x40, 1, 0x48, 0x08, 1, 0x48 // ili9341-9340-9340c
 
@@ -172,6 +107,78 @@ bool Adafruit_ILI9341::begin(HSPI::PinSet pinSet, uint8_t chipSelect)
 	return true;
 }
 
+void Adafruit_ILI9341::transmitCmdData(uint8_t cmd, uint8_t* data, uint8_t numDataByte)
+{
+	HSPI::Request req;
+	TFT_DC_COMMAND;
+	req.out.set8(cmd);
+	execute(req);
+
+	TFT_DC_DATA;
+	req.out.set(data, numDataByte);
+	execute(req);
+}
+
+void Adafruit_ILI9341::transmitData(uint16_t data)
+{
+	HSPI::Request req;
+	req.out.set16(data);
+	execute(req);
+}
+
+void Adafruit_ILI9341::transmitCmdData(uint8_t cmd, uint32_t data)
+{
+	debug_d("[ILI] CMD-DATA 0x%02x 0x%08x", cmd, data);
+
+	HSPI::Request req;
+
+	TFT_DC_COMMAND;
+	req.out.set8(cmd);
+	execute(req);
+
+	TFT_DC_DATA;
+	req.out.set32(data);
+	execute(req);
+}
+
+void Adafruit_ILI9341::transmitData(uint16_t data, unsigned repeats)
+{
+	debug_d("[ILI] DATA 0x%04x x %u", data, repeats);
+
+	if(repeats == 0) {
+		return;
+	}
+
+	constexpr size_t bufLen{128};
+	uint16_t buffer[bufLen];
+	std::fill_n(buffer, std::min(repeats, bufLen), data);
+
+	HSPI::Request req;
+	do {
+		auto len = std::min(repeats, bufLen);
+		req.out.set(buffer, len * 2);
+		repeats -= len;
+		execute(req);
+	} while(repeats != 0);
+}
+
+void Adafruit_ILI9341::transmitCmd(uint8_t cmd)
+{
+	debug_d("[ILI] CMD 0x%02x", cmd);
+	HSPI::Request req;
+	TFT_DC_COMMAND;
+	req.out.set8(cmd);
+	execute(req);
+	TFT_DC_DATA;
+}
+
+void Adafruit_ILI9341::setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
+{
+	transmitCmdData(ILI9341_CASET, MAKEWORD(x0 >> 8, x0 & 0xFF, x1 >> 8, x1 & 0xFF));
+	transmitCmdData(ILI9341_PASET, MAKEWORD(y0 >> 8, y0 & 0xFF, y1 >> 8, y1 & 0xFF));
+	transmitCmd(ILI9341_RAMWR); // write to RAM
+}
+
 void Adafruit_ILI9341::drawPixel(int16_t x, int16_t y, uint16_t color)
 {
 	if((x < 0) || (x >= _width) || (y < 0) || (y >= _height))
@@ -234,14 +241,6 @@ uint16_t Adafruit_ILI9341::color565(uint8_t r, uint8_t g, uint8_t b)
 {
 	return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
 }
-
-#define MADCTL_MY 0x80
-#define MADCTL_MX 0x40
-#define MADCTL_MV 0x20
-#define MADCTL_ML 0x10
-#define MADCTL_RGB 0x00
-#define MADCTL_BGR 0x08
-#define MADCTL_MH 0x04
 
 void Adafruit_ILI9341::setRotation(uint8_t m)
 {

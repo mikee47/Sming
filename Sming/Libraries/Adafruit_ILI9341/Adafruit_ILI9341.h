@@ -85,6 +85,15 @@
 
 */
 
+// MADCTL register bits
+#define MADCTL_MY 0x80
+#define MADCTL_MX 0x40
+#define MADCTL_MV 0x20
+#define MADCTL_ML 0x10
+#define MADCTL_RGB 0x00
+#define MADCTL_BGR 0x08
+#define MADCTL_MH 0x04
+
 // Color definitions
 #define ILI9341_BLACK 0x0000	   /*   0,   0,   0 */
 #define ILI9341_NAVY 0x000F		   /*   0,   0, 128 */
@@ -142,12 +151,7 @@ public:
 	void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
 	void setRotation(uint8_t r);
 	void invertDisplay(bool i);
-	void setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
-	{
-		transmitCmdData(ILI9341_CASET, MAKEWORD(x0 >> 8, x0 & 0xFF, x1 >> 8, x1 & 0xFF));
-		transmitCmdData(ILI9341_PASET, MAKEWORD(y0 >> 8, y0 & 0xFF, y1 >> 8, y1 & 0xFF));
-		transmitCmd(ILI9341_RAMWR); // write to RAM
-	}
+	void setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 	uint16_t color565(uint8_t r, uint8_t g, uint8_t b);
 
 	uint32_t readRegister(uint8_t cmd, uint8_t byteCount);
