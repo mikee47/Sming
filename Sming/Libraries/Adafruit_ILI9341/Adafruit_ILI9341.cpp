@@ -18,6 +18,7 @@
  ********************************/
 
 #include "Adafruit_ILI9341.h"
+#include <FlashString/Array.hpp>
 
 #define SWAPBYTES(i) ((i >> 8) | (i << 8))
 
@@ -108,13 +109,44 @@ void Adafruit_ILI9341::transmitCmd(uint8_t cmd)
 
 #define DELAY 0x80
 
+// #define MEMORY_ACCESS_CONTROL 0x36, 1, 0x48				   // ili9341
+#define MEMORY_ACCESS_CONTROL 0x40, 1, 0x48, 0x08, 1, 0x48 // ili9341-9340-9340c
+
+// Command, length data
+DEFINE_FSTR_ARRAY_LOCAL(				   //
+	displayInitData, uint8_t,			   //
+	0xCB, 5, 0x39, 0x2C, 0x00, 0x34, 0x02, //
+	0xCF, 3, 0x00, 0XC1, 0X30,			   //
+	0xE8, 3, 0x85, 0x00, 0x78,			   //
+	0xEA, 2, 0x00, 0x00,				   //
+	0xED, 4, 0x64, 0x03, 0X12, 0X81,	   //
+	0xF7, 1, 0x20,						   //
+	0xC0, 1, 0x23,						   // Power control: VRH[5:0]
+	0xC1, 1, 0x10,						   // Power control: SAP[2:0], BT[3:0]
+	0xC5, 2, 0x3e, 0x28,				   // VCM control: Contrast
+	0xC7, 1, 0x86,						   // VCM control2
+	0x36, 1, 0x48,						   // ili9341
+	0x40, 1, 0x48,						   // ili9341-9340-9340c
+	0x08, 1, 0x48,						   // ili9341-9340-9340c
+	MEMORY_ACCESS_CONTROL,				   //
+	0x3A, 1, 0x55,						   //
+	0xB1, 2, 0x00, 0x18,				   //
+	0xB6, 3, 0x08, 0x82, 0x27,			   // Display Function Control
+	0xF2, 1, 0x00,						   // 3Gamma Function Disable
+	0x26, 1, 0x01,						   // Gamma curve selected
+	0xE0, 15, 0x0F, 0x31, 0x2B, 0x0C, 0x0E, 0x08, 0x4E, 0xF1, 0x37, 0x07, 0x10, 0x03, 0x0E, 0x09,
+	0x00, // Set Gamma
+	0xE1, 15, 0x00, 0x0E, 0x14, 0x03, 0x11, 0x07, 0x31, 0xC1, 0x48, 0x08, 0x0F, 0x0C, 0x31, 0x36,
+	0x0F, // Set Gamma
+)
+
 //Set communication using HW SPI Port
 bool Adafruit_ILI9341::begin(HSPI::PinSet pinSet, uint8_t chipSelect)
 {
 	if(!Device::begin(pinSet, chipSelect)) {
 		return false;
 	}
-	setSpeed(16000000U);
+	setSpeed(8000000U);
 	setBitOrder(MSBFIRST);
 	setClockMode(HSPI::ClockMode::mode0);
 	setIoMode(HSPI::IoMode::SPI);
@@ -127,111 +159,15 @@ bool Adafruit_ILI9341::begin(HSPI::PinSet pinSet, uint8_t chipSelect)
 	TFT_RST_DEACTIVE;
 	delayMicroseconds(1000);
 
-	uint8_t data[15] = {0};
-
-	data[0] = 0x39;
-	data[1] = 0x2C;
-	data[2] = 0x00;
-	data[3] = 0x34;
-	data[4] = 0x02;
-	transmitCmdData(0xCB, data, 5);
-
-	data[0] = 0x00;
-	data[1] = 0XC1;
-	data[2] = 0X30;
-	transmitCmdData(0xCF, data, 3);
-
-	data[0] = 0x85;
-	data[1] = 0x00;
-	data[2] = 0x78;
-	transmitCmdData(0xE8, data, 3);
-
-	data[0] = 0x00;
-	data[1] = 0x00;
-	transmitCmdData(0xEA, data, 2);
-
-	data[0] = 0x64;
-	data[1] = 0x03;
-	data[2] = 0X12;
-	data[3] = 0X81;
-	transmitCmdData(0xED, data, 4);
-
-	data[0] = 0x20;
-	transmitCmdData(0xF7, data, 1);
-
-	data[0] = 0x23;					//VRH[5:0]
-	transmitCmdData(0xC0, data, 1); //Power control
-
-	data[0] = 0x10;					//SAP[2:0];BT[3:0]
-	transmitCmdData(0xC1, data, 1); //Power control
-
-	data[0] = 0x3e; //Contrast
-	data[1] = 0x28;
-	transmitCmdData(0xC5, data, 2); //VCM control
-
-	data[0] = 0x86;					//--
-	transmitCmdData(0xC7, data, 1); //VCM control2
-
-	data[0] = 0x48; //C8
-
-	//This command works with ili9341
-	//transmitCmdData(0x36, data, 1);    	// Memory Access Control
-
-	//This commands works with ili9341-9340-9340c
-	transmitCmdData(0x40, data, 1);
-	transmitCmdData(0x08, data, 1);
-
-	data[0] = 0x55;
-	transmitCmdData(0x3A, data, 1);
-
-	data[0] = 0x00;
-	data[1] = 0x18;
-	transmitCmdData(0xB1, data, 2);
-
-	data[0] = 0x08;
-	data[1] = 0x82;
-	data[2] = 0x27;
-	transmitCmdData(0xB6, data, 3); // Display Function Control
-
-	data[0] = 0x00;
-	transmitCmdData(0xF2, data, 1); // 3Gamma Function Disable
-
-	data[0] = 0x01;
-	transmitCmdData(0x26, data, 1); //Gamma curve selected
-
-	data[0] = 0x0F;
-	data[1] = 0x31;
-	data[2] = 0x2B;
-	data[3] = 0x0C;
-	data[4] = 0x0E;
-	data[5] = 0x08;
-	data[6] = 0x4E;
-	data[7] = 0xF1;
-	data[8] = 0x37;
-	data[9] = 0x07;
-	data[10] = 0x10;
-	data[11] = 0x03;
-	data[12] = 0x0E;
-	data[13] = 0x09;
-	data[14] = 0x00;
-	transmitCmdData(0xE0, data, 15); //Set Gamma
-
-	data[0] = 0x00;
-	data[1] = 0x0E;
-	data[2] = 0x14;
-	data[3] = 0x03;
-	data[4] = 0x11;
-	data[5] = 0x07;
-	data[6] = 0x31;
-	data[7] = 0xC1;
-	data[8] = 0x48;
-	data[9] = 0x08;
-	data[10] = 0x0F;
-	data[11] = 0x0C;
-	data[12] = 0x31;
-	data[13] = 0x36;
-	data[14] = 0x0F;
-	transmitCmdData(0xE1, data, 15); //Set Gamma
+	uint8_t buffer[displayInitData.size()];
+	displayInitData.read(0, buffer, displayInitData.size());
+	for(unsigned off = 0; off < displayInitData.length();) {
+		uint8_t cmd = buffer[off++];
+		uint8_t len = buffer[off++];
+		debug_hex(DBG, "CMD", buffer + off - 2, len + 2);
+		transmitCmdData(cmd, &buffer[off], len);
+		off += len;
+	}
 
 	transmitCmd(0x11); //Exit Sleep
 	delayMicroseconds(120000);
