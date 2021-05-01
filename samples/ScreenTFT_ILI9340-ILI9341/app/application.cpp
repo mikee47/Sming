@@ -149,5 +149,13 @@ void init()
 	Serial.println("Display start");
 	tft.begin(TFT_PINSET, TFT_CS);
 
+	Serial.printf(_F("DisplayID: 0x%08x\r\n"), tft.readDisplayId());
+	Serial.printf(_F("Status: 0x%02x\r\n"), tft.readDisplayStatus());
+	Serial.printf(_F("MADCTL: 0x%02x\r\n"), tft.readMADCTL());
+	Serial.printf(_F("PixelFormat: 0x%02x\r\n"), tft.readPixelFormat());
+	Serial.printf(_F("ImageFormat: 0x%02x\r\n"), tft.readImageFormat());
+	Serial.printf(_F("SignalMode: 0x%02x\r\n"), tft.readSignalMode());
+	Serial.printf(_F("SelfDiag: 0x%02x\r\n"), tft.readSelfDiag());
+
 	guiTimer.initializeMs<2000>(run).start();
 }
