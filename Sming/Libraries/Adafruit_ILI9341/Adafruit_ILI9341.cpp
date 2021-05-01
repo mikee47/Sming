@@ -20,8 +20,6 @@
 #include "Adafruit_ILI9341.h"
 #include <FlashString/Array.hpp>
 
-#define SWAPBYTES(i) ((i >> 8) | (i << 8))
-
 #define TFT_DC_DATA digitalWrite(TFT_DC_PIN, true)
 #define TFT_DC_COMMAND digitalWrite(TFT_DC_PIN, false)
 #define TFT_DC_INIT                                                                                                    \
@@ -174,8 +172,8 @@ void Adafruit_ILI9341::transmitCmd(uint8_t cmd)
 
 void Adafruit_ILI9341::setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
 {
-	transmitCmdData(ILI9341_CASET, MAKEWORD(x0 >> 8, x0 & 0xFF, x1 >> 8, x1 & 0xFF));
-	transmitCmdData(ILI9341_PASET, MAKEWORD(y0 >> 8, y0 & 0xFF, y1 >> 8, y1 & 0xFF));
+	transmitCmdData(ILI9341_CASET, MAKEWORD(x0, x1));
+	transmitCmdData(ILI9341_PASET, MAKEWORD(y0, y1));
 	transmitCmd(ILI9341_RAMWR); // write to RAM
 }
 

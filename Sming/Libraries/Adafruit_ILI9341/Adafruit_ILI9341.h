@@ -115,22 +115,29 @@
 #define ILI9341_GREENYELLOW 0xAFE5 /* 173, 255,  47 */
 #define ILI9341_PINK 0xF81F
 
-#define MAKEWORD(b1, b2, b3, b4) (uint32_t(b1) | ((b2) << 8) | ((b3) << 16) | ((b4) << 24))
+inline uint16_t SWAPBYTES(uint16_t w)
+{
+	return (w >> 8) | (w << 8);
+}
+
+inline uint32_t MAKEWORD(uint8_t b1, uint8_t b2, uint8_t b3, uint8_t b4)
+{
+	return uint32_t(b1) | (b2 << 8) | (b3 << 16) | (b4 << 24);
+}
+
+inline uint32_t MAKEWORD(uint16_t w1, uint16_t w2)
+{
+	return uint32_t(SWAPBYTES(w1)) | (SWAPBYTES(w2) << 16);
+}
 
 class Adafruit_ILI9341 : public Adafruit_GFX, public HSPI::Device
 {
 private:
-	uint8_t tabcolor{0};
 	void transmitCmdData(uint8_t cmd, uint8_t* data, uint8_t numDataByte);
 	void transmitData(uint16_t data);
 	void transmitCmdData(uint8_t cmd, uint32_t data);
 	void transmitData(uint16_t data, unsigned repeats);
 	void transmitCmd(uint8_t cmd);
-
-	template <typename T> void transmitCmdData(uint8_t cmd, T& data)
-	{
-		transmitCmdData(cmd, &data, sizeof(data));
-	}
 
 	HSPI::IoModes getSupportedIoModes() const override
 	{
