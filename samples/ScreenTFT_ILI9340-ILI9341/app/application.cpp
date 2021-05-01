@@ -20,34 +20,51 @@ RST GPIO4
 
 HSPI::Controller spi;
 Adafruit_ILI9341 tft(spi);
-
 Timer guiTimer;
 
-int r = 0;
+static constexpr HSPI::PinSet TFT_PINSET{HSPI::PinSet::overlap};
+static constexpr uint8_t TFT_CS{2};
+static unsigned state;
 
-int ara = 4, yerara = 15;
-int u1 = 100;
-int u2 = 320 - (u1 + ara);
-int s1 = 0;
-int s2 = (u1 + ara);
-int p1 = 50;
+class BasicGui
+{
+public:
+	void show();
 
-int g = 28;
-int y = 90;
-int satir = 6;
+private:
+	int r{0};
+	int ara{4};
+	int yerara{15};
+	int u1{100};
+	int u2 = 320 - (u1 + ara);
+	int s1{0};
+	int s2 = u1 + ara;
+	int p1{50};
 
-String lists[] = {"a", "b", "c", "d", "e", "f"};
+	int g{28};
+	int y{90};
+	int satir{6};
+};
 
-void basicBPM()
+BasicGui gui;
+
+void basicBitmap()
 {
 	tft.fillScreen(ILI9341_BLACK);			// Clear display
 	tft.setRotation(tft.getRotation() + 1); // Inc rotation 90 degrees
-	for(uint8_t i = 0; i < 4; i++)			// Draw 4 parrots
-		bmpDraw(tft, "sming.bmp", tft.width() / 4 * i, tft.height() / 4 * i);
+	// Draw 4 images
+	for(unsigned i = 0; i < 4; i++) {
+		auto x = i * tft.width() / 4;
+		auto y = i * tft.height() / 4;
+		bmpDraw(tft, F("sming.bmp"), x, y);
+	}
 }
 
-void basicGui()
+void BasicGui::show()
 {
+	PSTR_ARRAY(lists, "abcdef")
+
+	tft.fillScreen(0);
 	tft.setTextSize(1);
 
 	tft.setRotation(1);
@@ -55,7 +72,7 @@ void basicGui()
 	tft.setTextSize(3);
 	tft.fillRect(s1, 0, u1 * 2, 48, ILI9341_OLIVE);
 	tft.setCursor(15, 15);
-	tft.println("Sming");
+	tft.println(F("Sming"));
 	tft.setTextSize(2);
 	tft.fillRect((u1 * 2) + ara, 0, 318 - (u1 * 2), 48, ILI9341_RED);
 	for(int a = 0; a < satir; a++) {
@@ -71,7 +88,48 @@ void basicGui()
 	}
 	p1 = 50;
 	r++;
-	guiTimer.initializeMs(1000, basicBPM).start(false);
+}
+
+void startPage()
+{
+	tft.fillScreen(0);
+	tft.setRotation(1);
+	tft.setTextSize(2);
+
+	tft.setTextColor(ILI9341_GREEN);
+	tft.setCursor(0, 0);
+	tft.setCursor(60, 60);
+	tft.println(F("Sming  Framework"));
+	tft.setTextColor(ILI9341_WHITE, ILI9341_BLACK);
+	tft.setCursor(60, 75);
+	tft.println(F("              v1.1"));
+	tft.setTextColor(ILI9341_CYAN);
+	tft.setCursor(60, 90);
+	tft.println(F("ili9340-40C-41 "));
+	tft.setCursor(60, 125);
+	tft.println(F("M.Bozkurt"));
+}
+
+void run()
+{
+	++state;
+
+	switch(state) {
+	case 1:
+		startPage();
+		break;
+	case 2:
+		gui.show();
+		break;
+	case 3:
+		basicBitmap();
+		break;
+	case 4:
+	case 5:
+		break;
+	default:
+		state = 0;
+	}
 }
 
 void init()
@@ -86,31 +144,10 @@ void init()
 #endif
 
 	spiffs_mount();
-	Serial.println("FileSystem mounted.");
+	Serial.println(F("FileSystem mounted."));
 
-	//	delay(2000);
 	Serial.println("Display start");
+	tft.begin(TFT_PINSET, TFT_CS);
 
-	// text display tests
-	tft.begin();
-	tft.fillScreen(0);
-	tft.setRotation(1);
-	tft.setTextSize(2);
-
-	tft.setTextColor(ILI9341_GREEN);
-	tft.setCursor(0, 0);
-	tft.setCursor(60, 60);
-	tft.println("Sming  Framework");
-	tft.setTextColor(ILI9341_WHITE, ILI9341_BLACK); // text
-	tft.setCursor(60, 75);
-	tft.println("              v1.1");
-	tft.setTextColor(ILI9341_CYAN);
-	tft.setCursor(60, 90);
-	tft.println("ili9340-40C-41 ");
-	tft.setCursor(60, 125);
-	tft.println("M.Bozkurt");
-	delay(2000);
-	tft.fillScreen(0);
-	guiTimer.initializeMs(1000, basicGui).start(false);
-	//runTest();
+	guiTimer.initializeMs<2000>(run).start();
 }
