@@ -40,7 +40,8 @@
 #define ILI9341_RDMODE 0x0A
 #define ILI9341_RDMADCTL 0x0B
 #define ILI9341_RDPIXFMT 0x0C
-#define ILI9341_RDIMGFMT 0x0A
+#define ILI9341_RDIMGFMT 0x0D
+#define ILI9341_RDSIGMODE 0x0E
 #define ILI9341_RDSELFDIAG 0x0F
 
 #define ILI9341_INVOFF 0x20
@@ -148,6 +149,48 @@ public:
 		transmitCmd(ILI9341_RAMWR); // write to RAM
 	}
 	uint16_t color565(uint8_t r, uint8_t g, uint8_t b);
+
+	uint32_t readRegister(uint8_t cmd, uint8_t byteCount);
+
+	uint32_t readDisplayId()
+	{
+		return readRegister(ILI9341_RDDID, 3);
+	}
+
+	uint32_t readDisplayStatus()
+	{
+		return readRegister(ILI9341_RDDST, 4);
+	}
+
+	uint8_t readPowerMode()
+	{
+		return readRegister(ILI9341_RDMODE, 1);
+	}
+
+	uint8_t readMADCTL()
+	{
+		return readRegister(ILI9341_RDMADCTL, 1);
+	}
+
+	uint8_t readPixelFormat()
+	{
+		return readRegister(ILI9341_RDPIXFMT, 1);
+	}
+
+	uint8_t readImageFormat()
+	{
+		return readRegister(ILI9341_RDIMGFMT, 1);
+	}
+
+	uint8_t readSignalMode()
+	{
+		return readRegister(ILI9341_RDSIGMODE, 1);
+	}
+
+	uint8_t readSelfDiag()
+	{
+		return readRegister(ILI9341_RDSELFDIAG, 1);
+	}
 };
 
 #endif

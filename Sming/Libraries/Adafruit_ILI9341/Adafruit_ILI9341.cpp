@@ -276,3 +276,15 @@ void Adafruit_ILI9341::invertDisplay(bool i)
 {
 	transmitCmd(i ? ILI9341_INVON : ILI9341_INVOFF);
 }
+
+uint32_t Adafruit_ILI9341::readRegister(uint8_t cmd, uint8_t byteCount)
+{
+	HSPI::Request req;
+	TFT_DC_COMMAND;
+	req.setCommand8(cmd);
+	req.dummyLen = (byteCount > 1);
+	req.in.set32(0, byteCount);
+	execute(req);
+	TFT_DC_DATA;
+	return req.in.data32;
+}
