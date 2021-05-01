@@ -85,7 +85,7 @@ void Adafruit_ILI9341::transmitData(uint16_t data, unsigned repeats)
 
 	constexpr size_t bufLen{128};
 	uint16_t buffer[bufLen];
-	std::fill_n(buffer, std::min(repeats, bufLen), __builtin_bswap16(data));
+	std::fill_n(buffer, std::min(repeats, bufLen), data);
 
 	HSPI::Request req;
 	do {
