@@ -1,4 +1,3 @@
-HWCONFIG := spiffs
 ARDUINO_LIBRARIES := Adafruit_ILI9341
 
 TFT_DC_PIN := 5

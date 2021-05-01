@@ -26,6 +26,8 @@ static constexpr HSPI::PinSet TFT_PINSET{HSPI::PinSet::overlap};
 static constexpr uint8_t TFT_CS{2};
 static unsigned state;
 
+IMPORT_FSTR(SMING_BMP, PROJECT_DIR "/files/sming.bmp")
+
 class BasicGui
 {
 public:
@@ -56,7 +58,8 @@ void basicBitmap()
 	for(unsigned i = 0; i < 4; i++) {
 		auto x = i * tft.width() / 4;
 		auto y = i * tft.height() / 4;
-		bmpDraw(tft, F("sming.bmp"), x, y);
+		FlashMemoryStream bitmap(SMING_BMP);
+		bmpDraw(tft, bitmap, x, y);
 	}
 }
 
@@ -142,9 +145,6 @@ void init()
 	WifiStation.enable(false);
 	WifiAccessPoint.enable(false);
 #endif
-
-	spiffs_mount();
-	Serial.println(F("FileSystem mounted."));
 
 	Serial.println("Display start");
 	tft.begin(TFT_PINSET, TFT_CS);
