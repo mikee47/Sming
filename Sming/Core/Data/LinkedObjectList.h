@@ -18,11 +18,13 @@
 class LinkedObjectList
 {
 public:
-	LinkedObjectList()
+	constexpr LinkedObjectList()
 	{
 	}
 
-	LinkedObjectList(LinkedObject* object) : mHead(object)
+	LinkedObjectList(const LinkedObjectList& other) = delete;
+
+	constexpr LinkedObjectList(LinkedObject* object) : mHead(object)
 	{
 	}
 
@@ -33,7 +35,34 @@ public:
 		return add(const_cast<LinkedObject*>(object));
 	}
 
+	bool insert(LinkedObject* object)
+	{
+		if(object == nullptr) {
+			return false;
+		}
+
+		object->mNext = mHead;
+		mHead = object;
+		return true;
+	}
+
+	bool insert(const LinkedObject* object)
+	{
+		return insert(const_cast<LinkedObject*>(object));
+	}
+
 	bool remove(LinkedObject* object);
+
+	LinkedObject* pop()
+	{
+		if(mHead == nullptr) {
+			return nullptr;
+		}
+		auto obj = mHead;
+		mHead = mHead->mNext;
+		obj->mNext = nullptr;
+		return obj;
+	}
 
 	void clear()
 	{
@@ -50,9 +79,37 @@ public:
 		return mHead;
 	}
 
+	LinkedObject* tail()
+	{
+		if(mHead == nullptr) {
+			return nullptr;
+		}
+		auto it = mHead;
+		while(it->mNext != nullptr) {
+			it = it->mNext;
+		}
+		return it;
+	}
+
+	const LinkedObject* tail() const
+	{
+		return const_cast<LinkedObjectList*>(this)->tail();
+	}
+
 	bool isEmpty() const
 	{
 		return mHead == nullptr;
+	}
+
+	int indexOf(const LinkedObject* obj) const
+	{
+		unsigned n{0};
+		for(auto p = mHead; p != nullptr; p = p->mNext, ++n) {
+			if(p == obj) {
+				return n;
+			}
+		}
+		return -1;
 	}
 
 protected:
@@ -62,9 +119,9 @@ protected:
 template <typename ObjectType> class LinkedObjectListTemplate : public LinkedObjectList
 {
 public:
-	LinkedObjectListTemplate() = default;
+	constexpr LinkedObjectListTemplate() = default;
 
-	LinkedObjectListTemplate(ObjectType* object) : LinkedObjectList(object)
+	constexpr LinkedObjectListTemplate(ObjectType* object) : LinkedObjectList(object)
 	{
 	}
 
@@ -76,6 +133,16 @@ public:
 	const ObjectType* head() const
 	{
 		return reinterpret_cast<const ObjectType*>(mHead);
+	}
+
+	ObjectType* tail()
+	{
+		return reinterpret_cast<ObjectType*>(LinkedObjectList::tail());
+	}
+
+	const ObjectType* tail() const
+	{
+		return reinterpret_cast<const ObjectType*>(LinkedObjectList::tail());
 	}
 
 	typename ObjectType::Iterator begin()
@@ -98,12 +165,24 @@ public:
 		return nullptr;
 	}
 
+	template <typename... ParamTypes> bool add(ParamTypes... params)
+	{
+		return LinkedObjectList::add(params...);
+	}
+
+	template <typename... ParamTypes> bool insert(ParamTypes... params)
+	{
+		return LinkedObjectList::insert(params...);
+	}
+
+	ObjectType* pop()
+	{
+		return reinterpret_cast<ObjectType*>(LinkedObjectList::pop());
+	}
+
 	size_t count() const
 	{
-		size_t n{0};
-		for(auto p = mHead; p != nullptr; ++n, p = p->next()) {
-		}
-		return n;
+		return std::count_if(begin(), end(), [](const ObjectType&) { return true; });
 	}
 
 	bool contains(const ObjectType& object) const
@@ -119,6 +198,14 @@ public:
 template <typename ObjectType> class OwnedLinkedObjectListTemplate : public LinkedObjectListTemplate<ObjectType>
 {
 public:
+	OwnedLinkedObjectListTemplate()=default;
+
+	OwnedLinkedObjectListTemplate(OwnedLinkedObjectListTemplate&& other)
+	{
+		this->mHead = other.mHead;
+		other.mHead = nullptr;
+	}
+
 	~OwnedLinkedObjectListTemplate()
 	{
 		clear();

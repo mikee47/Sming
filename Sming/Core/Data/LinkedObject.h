@@ -35,6 +35,16 @@ public:
 		return mNext;
 	}
 
+	bool insertAfter(LinkedObject* object)
+	{
+		if(object == nullptr) {
+			return false;
+		}
+		object->mNext = mNext;
+		mNext = object;
+		return true;
+	}
+
 	bool operator==(const LinkedObject& other) const
 	{
 		return this == &other;
