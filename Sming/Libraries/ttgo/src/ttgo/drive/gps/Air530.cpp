@@ -28,18 +28,15 @@ github:https://github.com/lewisxhe/Air530_Library
 */
 /////////////////////////////////////////////////////////////////
 
-
-
 #include "Air530.h"
 
-#define _LOOP_TO_TIMEOUT(func)      do{                             \
-                                    uint32_t start = millis() + 500;\
-                                    while (millis() < start ){      \
-                                            func;                   \
-                                    }                               \
-                                } while (0);
-
-
+#define _LOOP_TO_TIMEOUT(func)                                                                                         \
+	do {                                                                                                               \
+		uint32_t start = millis() + 500;                                                                               \
+		while(millis() < start) {                                                                                      \
+			func;                                                                                                      \
+		}                                                                                                              \
+	} while(0);
 
 /**
  * @brief   Air530
@@ -47,20 +44,19 @@ github:https://github.com/lewisxhe/Air530_Library
  * @param  wakeupPin:   Wake-up pin
  * @retval None
  */
-Air530::Air530(Stream *ser, uint8_t wakeupPin)
+Air530::Air530(Stream* ser, uint8_t wakeupPin)
 {
-    stream = ser;
-    wakeup_pin = wakeupPin;
-    if (wakeup_pin > 0) {
-        pinMode(wakeup_pin, OUTPUT);
-    }
-    wakeup();
+	stream = ser;
+	wakeup_pin = wakeupPin;
+	if(wakeup_pin > 0) {
+		pinMode(wakeup_pin, OUTPUT);
+	}
+	wakeup();
 }
-
 
 Air530::~Air530()
 {
-    stream = nullptr;
+	stream = nullptr;
 }
 
 /**
@@ -71,9 +67,8 @@ Air530::~Air530()
  */
 void Air530::restart(Air530_RestartMode mode)
 {
-    sendCmd("$PGKC030,%d,1", mode);
+	sendCmd("$PGKC030,%d,1", mode);
 }
-
 
 /**
  * @brief   erase
@@ -82,7 +77,7 @@ void Air530::restart(Air530_RestartMode mode)
  */
 void Air530::erase(void)
 {
-    sendCmd("$PGKC040*2B");
+	sendCmd("$PGKC040*2B");
 }
 
 /**
@@ -92,7 +87,7 @@ void Air530::erase(void)
  */
 void Air530::sleep(void)
 {
-    sendCmd("$PGKC051,0*37");
+	sendCmd("$PGKC051,0*37");
 }
 
 /**
@@ -102,7 +97,7 @@ void Air530::sleep(void)
  */
 void Air530::stop(void)
 {
-    sendCmd("$PGKC051,1*36");
+	sendCmd("$PGKC051,1*36");
 }
 
 /**
@@ -112,13 +107,14 @@ void Air530::stop(void)
  */
 void Air530::wakeup(void)
 {
-    if (wakeup_pin > 0) {
-        digitalWrite(wakeup_pin, HIGH); delay(60);
-        digitalWrite(wakeup_pin, LOW); delay(200);
-        digitalWrite(wakeup_pin, HIGH);
-    }
+	if(wakeup_pin > 0) {
+		digitalWrite(wakeup_pin, HIGH);
+		delay(60);
+		digitalWrite(wakeup_pin, LOW);
+		delay(200);
+		digitalWrite(wakeup_pin, HIGH);
+	}
 }
-
 
 /**
  * @brief   setNormalMode
@@ -127,7 +123,7 @@ void Air530::wakeup(void)
  */
 void Air530::setNormalMode(void)
 {
-    sendCmd("$PGKC105,0*37");
+	sendCmd("$PGKC105,0*37");
 }
 
 /**
@@ -139,8 +135,8 @@ void Air530::setNormalMode(void)
  */
 void Air530::setCycleTrackingMode(uint32_t runMillis, uint32_t sleepMillis)
 {
-    //TODO:Unknown error parameter
-    sendCmd("$PGKC105,1,%u,%u", runMillis, sleepMillis);
+	//TODO:Unknown error parameter
+	sendCmd("$PGKC105,1,%u,%u", runMillis, sleepMillis);
 }
 
 /**
@@ -152,8 +148,8 @@ void Air530::setCycleTrackingMode(uint32_t runMillis, uint32_t sleepMillis)
  */
 void Air530::setCycleLowPowerMode(uint32_t runMillis, uint32_t sleepMillis)
 {
-    //TODO:Unknown error parameter
-    sendCmd("$PGKC105,2,%u,%u", runMillis, sleepMillis);
+	//TODO:Unknown error parameter
+	sendCmd("$PGKC105,2,%u,%u", runMillis, sleepMillis);
 }
 
 /**
@@ -163,7 +159,7 @@ void Air530::setCycleLowPowerMode(uint32_t runMillis, uint32_t sleepMillis)
  */
 void Air530::setTrackingMode(void)
 {
-    sendCmd("$PGKC105,4*33");
+	sendCmd("$PGKC105,4*33");
 }
 
 /**
@@ -173,7 +169,7 @@ void Air530::setTrackingMode(void)
  */
 void Air530::setAutoLowPowerMode(void)
 {
-    sendCmd("$PGKC105,8*3F");
+	sendCmd("$PGKC105,8*3F");
 }
 
 /**
@@ -183,7 +179,7 @@ void Air530::setAutoLowPowerMode(void)
  */
 void Air530::setAutoTrackingMode(void)
 {
-    sendCmd("$PGKC105,9*3E");
+	sendCmd("$PGKC105,9*3E");
 }
 
 /**
@@ -193,7 +189,7 @@ void Air530::setAutoTrackingMode(void)
  */
 void Air530::enableQZSS_NMEA(void)
 {
-    sendCmd("$PGKC113,0*30");
+	sendCmd("$PGKC113,0*30");
 }
 
 /**
@@ -203,7 +199,7 @@ void Air530::enableQZSS_NMEA(void)
  */
 void Air530::disableQZSS_NMEA(void)
 {
-    sendCmd("$PGKC113,1*31");
+	sendCmd("$PGKC113,1*31");
 }
 
 /**
@@ -213,7 +209,7 @@ void Air530::disableQZSS_NMEA(void)
  */
 void Air530::enableQZSS(void)
 {
-    sendCmd("$PGKC114,0*37");
+	sendCmd("$PGKC114,0*37");
 }
 
 /**
@@ -223,7 +219,7 @@ void Air530::enableQZSS(void)
  */
 void Air530::disableQZSS(void)
 {
-    sendCmd("$PGKC114,1*36");
+	sendCmd("$PGKC114,1*36");
 }
 
 /**
@@ -237,9 +233,8 @@ void Air530::disableQZSS(void)
  */
 void Air530::setSearchMode(bool gps, bool glonass, bool beidou, bool galieo)
 {
-    sendCmd("$PGKC115,%u,%u,%u,%u", gps, glonass, beidou, galieo);
+	sendCmd("$PGKC115,%u,%u,%u,%u", gps, glonass, beidou, galieo);
 }
-
 
 /**
   * @brief  setNMEABaud
@@ -249,8 +244,8 @@ void Air530::setSearchMode(bool gps, bool glonass, bool beidou, bool galieo)
   */
 void Air530::setNMEABaud(uint32_t baud)
 {
-    (void)baud;
-    // TODO: Don't change
+	(void)baud;
+	// TODO: Don't change
 }
 
 /**
@@ -261,7 +256,7 @@ void Air530::setNMEABaud(uint32_t baud)
  */
 void Air530::setBaud(uint32_t baud)
 {
-    sendCmd("$PGKC147,%u", baud);
+	sendCmd("$PGKC147,%u", baud);
 }
 
 /**
@@ -274,14 +269,14 @@ void Air530::setBaud(uint32_t baud)
  */
 bool Air530::setPPS(Air530_1PPS_Mode mode, uint16_t ppsWidth, uint16_t ppsPeriod)
 {
-    if (ppsWidth >= 999) {
-        ppsWidth = 998;
-    }
-    if (ppsWidth < ppsPeriod) {
-        return false;
-    }
-    sendCmd("$PGKC161,%u,%u,%u", mode, ppsWidth, ppsPeriod);
-    return true;
+	if(ppsWidth >= 999) {
+		ppsWidth = 998;
+	}
+	if(ppsWidth < ppsPeriod) {
+		return false;
+	}
+	sendCmd("$PGKC161,%u,%u,%u", mode, ppsWidth, ppsPeriod);
+	return true;
 }
 
 /**
@@ -291,18 +286,17 @@ bool Air530::setPPS(Air530_1PPS_Mode mode, uint16_t ppsWidth, uint16_t ppsPeriod
  */
 uint32_t Air530::getNMEAInterval(void)
 {
-    sendCmd("$PGKC201*2C");
-    _LOOP_TO_TIMEOUT(
-    while (stream->available()) {
-    if (stream->read() == '$') {
-            if (!stream->readStringUntil(',').startsWith("PGKC202")) {
-                break;
-            } else {
-                return stream->readStringUntil('*').toInt();
-            }
-        }
-    });
-    return 0;
+	sendCmd("$PGKC201*2C");
+	_LOOP_TO_TIMEOUT(while(stream->available()) {
+		if(stream->read() == '$') {
+			if(!stream->readStringUntil(',').startsWith("PGKC202")) {
+				break;
+			} else {
+				return stream->readStringUntil('*').toInt();
+			}
+		}
+	});
+	return 0;
 }
 
 /**
@@ -313,15 +307,14 @@ uint32_t Air530::getNMEAInterval(void)
 */
 void Air530::setNMEAInterval(uint16_t ms)
 {
-    if (ms < 200) {
-        ms = 200;
-    }
-    if (ms > 10000) {
-        ms = 10000;
-    }
-    sendCmd("$PGKC101,%u", ms);
+	if(ms < 200) {
+		ms = 200;
+	}
+	if(ms > 10000) {
+		ms = 10000;
+	}
+	sendCmd("$PGKC101,%u", ms);
 }
-
 
 /**
  * @brief   enableSBAS
@@ -330,7 +323,7 @@ void Air530::setNMEAInterval(uint16_t ms)
  */
 void Air530::enableSBAS(void)
 {
-    sendCmd("$PGKC239,0*3B");
+	sendCmd("$PGKC239,0*3B");
 }
 
 /**
@@ -340,7 +333,7 @@ void Air530::enableSBAS(void)
  */
 void Air530::disableSBAS(void)
 {
-    sendCmd("$PGKC239,1*3A");
+	sendCmd("$PGKC239,1*3A");
 }
 
 /**
@@ -350,20 +343,18 @@ void Air530::disableSBAS(void)
  */
 bool Air530::getSBASEnable(void)
 {
-    sendCmd("$PGKC240*29");
-    _LOOP_TO_TIMEOUT(
-    while (stream->available()) {
-    if (stream->read() == '$') {
-            if (!stream->readStringUntil(',').startsWith("PGKC241")) {
-                break;
-            } else {
-                return stream->readStringUntil('*').toInt();
-            }
-        }
-    });
-    return false;
+	sendCmd("$PGKC240*29");
+	_LOOP_TO_TIMEOUT(while(stream->available()) {
+		if(stream->read() == '$') {
+			if(!stream->readStringUntil(',').startsWith("PGKC241")) {
+				break;
+			} else {
+				return stream->readStringUntil('*').toInt();
+			}
+		}
+	});
+	return false;
 }
-
 
 /**
  * @brief  setNMEAStatement
@@ -380,7 +371,7 @@ bool Air530::getSBASEnable(void)
  */
 void Air530::setNMEAStatement(bool gll, bool rmc, bool vtg, bool gga, bool gsa, bool gsv, bool grs, bool gst)
 {
-    sendCmd("$PGKC242,%d,%d,%d,%d,%d,%d,%d,%d,0,0,0,0,0,0,0,0,0,0,0", gll, rmc, vtg, gga, gsa, gsv, grs, gst);
+	sendCmd("$PGKC242,%d,%d,%d,%d,%d,%d,%d,%d,0,0,0,0,0,0,0,0,0,0,0", gll, rmc, vtg, gga, gsa, gsv, grs, gst);
 }
 
 /**
@@ -390,7 +381,7 @@ void Air530::setNMEAStatement(bool gll, bool rmc, bool vtg, bool gga, bool gsa, 
  */
 void Air530::disableNMEAOutput(void)
 {
-    setNMEAStatement(false, false, false, false, false, false, false, false);
+	setNMEAStatement(false, false, false, false, false, false, false, false);
 }
 
 /**
@@ -400,7 +391,7 @@ void Air530::disableNMEAOutput(void)
  */
 void Air530::enableNMEAOutput(void)
 {
-    setNMEAStatement(true, true, true, true, true, true, true, true);
+	setNMEAStatement(true, true, true, true, true, true, true, true);
 }
 
 // Command: 243
@@ -419,9 +410,8 @@ void Air530::enableNMEAOutput(void)
  */
 void Air530::setDateTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec)
 {
-    sendCmd("$PGKC278,%u,%u,%u,%u,%u,%u", year, month, day, hour, min, sec);
+	sendCmd("$PGKC278,%u,%u,%u,%u,%u,%u", year, month, day, hour, min, sec);
 }
-
 
 /**
  * @brief   getDateTime
@@ -434,26 +424,25 @@ void Air530::setDateTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour
  * @param   &sec:
  * @retval  None
  */
-bool Air530::getDateTime(uint16_t &year, uint8_t &month, uint8_t  &day, uint8_t  &hour, uint8_t &min, uint8_t  &sec)
+bool Air530::getDateTime(uint16_t& year, uint8_t& month, uint8_t& day, uint8_t& hour, uint8_t& min, uint8_t& sec)
 {
-    sendCmd("$PGKC279*23");
-    _LOOP_TO_TIMEOUT(
-    while (stream->available()) {
-    if (stream->read() == '$') {
-            if (!stream->readStringUntil(',').startsWith("PGKC280")) {
-                break;
-            } else {
-                year    = stream->readStringUntil(',').toInt();
-                month   = stream->readStringUntil(',').toInt();
-                day     = stream->readStringUntil(',').toInt();
-                hour    = stream->readStringUntil(',').toInt();
-                min     = stream->readStringUntil(',').toInt();
-                sec     = stream->readStringUntil('*').toInt();
-                return true;
-            }
-        }
-    });
-    return false;
+	sendCmd("$PGKC279*23");
+	_LOOP_TO_TIMEOUT(while(stream->available()) {
+		if(stream->read() == '$') {
+			if(!stream->readStringUntil(',').startsWith("PGKC280")) {
+				break;
+			} else {
+				year = stream->readStringUntil(',').toInt();
+				month = stream->readStringUntil(',').toInt();
+				day = stream->readStringUntil(',').toInt();
+				hour = stream->readStringUntil(',').toInt();
+				min = stream->readStringUntil(',').toInt();
+				sec = stream->readStringUntil('*').toInt();
+				return true;
+			}
+		}
+	});
+	return false;
 }
 
 //Command: 284  Set speed threshold
@@ -465,20 +454,19 @@ bool Air530::getDateTime(uint16_t &year, uint8_t &month, uint8_t  &day, uint8_t 
  * @note    Query the version number of the current software
  * @retval  version
  */
-const char *Air530::getSoftVersion(void)
+const char* Air530::getSoftVersion(void)
 {
-    sendCmd("$PGKC462*2F");
-    _LOOP_TO_TIMEOUT(
-    while (stream->available()) {
-    if (stream->read() == '$') {
-            if (!stream->readStringUntil(',').startsWith("PGKC463")) {
-                break;
-            } else {
-                return stream->readStringUntil(',').c_str();
-            }
-        }
-    });
-    return "None";
+	sendCmd("$PGKC462*2F");
+	_LOOP_TO_TIMEOUT(while(stream->available()) {
+		if(stream->read() == '$') {
+			if(!stream->readStringUntil(',').startsWith("PGKC463")) {
+				break;
+			} else {
+				return stream->readStringUntil(',').c_str();
+			}
+		}
+	});
+	return "None";
 }
 
 /**
@@ -487,9 +475,10 @@ const char *Air530::getSoftVersion(void)
  * @example:  setProbablyLoaction(28.166450,120.389700,0,2017,3,15,12,0,0)
  * @retval None
  */
-void Air530::setProbablyLoaction(float lat, float lng, uint16_t altitude, uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec)
+void Air530::setProbablyLoaction(float lat, float lng, uint16_t altitude, uint16_t year, uint8_t month, uint8_t day,
+								 uint8_t hour, uint8_t min, uint8_t sec)
 {
-    sendCmd("$PGKC639,%f,%f,%u,%u,%u,%u,%u,%u,%u", lat, lng, altitude, year, month, day, hour, min, sec);
+	sendCmd("$PGKC639,%f,%f,%u,%u,%u,%u,%u,%u,%u", lat, lng, altitude, year, month, day, hour, min, sec);
 }
 
 /**
@@ -497,53 +486,44 @@ void Air530::setProbablyLoaction(float lat, float lng, uint16_t altitude, uint16
   * @note    Processing sentences
   * @retval  True is running  ,False is abnormal
   */
-bool Air530::process(/*Stream *serial = nullptr*/void)
+bool Air530::process(/*Stream *serial = nullptr*/ void)
 {
-    if (!stream)return false;
-    while (stream->available()) {
-        char r = stream->read();
-        // if (serial) {
-        //     serial->write(r);
-        // }
-        encode(r);
-    }
+	if(!stream)
+		return false;
+	while(stream->available()) {
+		char r = stream->read();
+		// if (serial) {
+		//     serial->write(r);
+		// }
+		encode(r);
+	}
 
-    if (charsProcessed() < 10) {
-        // Serial.println(F("WARNING: No GPS data.  Check wiring."));
-        return false;
-    }
-    return true;
+	if(charsProcessed() < 10) {
+		// Serial.println(F("WARNING: No GPS data.  Check wiring."));
+		return false;
+	}
+	return true;
 }
 
-bool Air530::sendCmd(const char *format, ...)
+bool Air530::sendCmd(const char* format, ...)
 {
-    va_list args;
-    va_start(args, format);
-    int err = vsnprintf(buffer, sizeof(buffer), format, args);
-    va_end(args);
-    if (err < 0) {
-        return false;
-    }
-    uint8_t checksum = buffer[1];
-    int i = 2;
-    while (buffer[i] != '\0') {
-        checksum ^= buffer[i++];
-    }
-    while (stream->available()) {
-        stream->flush();
-    }
-    stream->write(buffer);
-    stream->write("*");
-    stream->println(checksum, HEX);
-    return true;
+	va_list args;
+	va_start(args, format);
+	int err = vsnprintf(buffer, sizeof(buffer), format, args);
+	va_end(args);
+	if(err < 0) {
+		return false;
+	}
+	uint8_t checksum = buffer[1];
+	int i = 2;
+	while(buffer[i] != '\0') {
+		checksum ^= buffer[i++];
+	}
+	while(stream->available()) {
+		stream->flush();
+	}
+	stream->write(buffer);
+	stream->write("*");
+	stream->println(checksum, HEX);
+	return true;
 }
-
-
-
-
-
-
-
-
-
-

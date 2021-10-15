@@ -13,10 +13,6 @@ Written by Lewis he //https://github.com/lewisxhe
 
 #include "TTGO.h"
 
-TTGOClass *TTGOClass::_ttgo = nullptr;
+TTGOClass* TTGOClass::_ttgo = nullptr;
 
 EventGroupHandle_t TTGOClass::_tpEvent = nullptr;
-
-
-
-

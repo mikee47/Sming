@@ -53,12 +53,12 @@ github:https://github.com/lewisxhe/AXP202X_Libraries
 #define _BV(b) (1ULL << (b))
 
 //! Error Code
-#define AXP_PASS            (0)
-#define AXP_FAIL            (-1)
-#define AXP_INVALID         (-2)
-#define AXP_NOT_INIT        (-3)
-#define AXP_NOT_SUPPORT     (-4)
-#define AXP_ARG_INVALID     (-5)
+#define AXP_PASS (0)
+#define AXP_FAIL (-1)
+#define AXP_INVALID (-2)
+#define AXP_NOT_INIT (-3)
+#define AXP_NOT_SUPPORT (-4)
+#define AXP_ARG_INVALID (-5)
 
 //! Chip Address
 #define AXP202_SLAVE_ADDRESS (0x35)
@@ -68,7 +68,7 @@ github:https://github.com/lewisxhe/AXP202X_Libraries
 //! Chip ID
 #define AXP202_CHIP_ID 0x41
 #define AXP192_CHIP_ID 0x03
-#define AXP173_CHIP_ID 0xAD     //!Axp173 does not have a chip ID, given a custom ID
+#define AXP173_CHIP_ID 0xAD //!Axp173 does not have a chip ID, given a custom ID
 
 //! Logic states
 #define AXP202_ON 1
@@ -159,8 +159,6 @@ github:https://github.com/lewisxhe/AXP202X_Libraries
 #define AXP192_GPIO2_CTL (0x93)
 #define AXP192_GPIO012_SIGNAL (0x94)
 #define AXP192_GPIO34_CTL (0x95)
-
-
 
 /* axp 192/202 adc data register */
 #define AXP202_BAT_AVERVOL_H8 (0x78)
@@ -276,422 +274,414 @@ github:https://github.com/lewisxhe/AXP202X_Libraries
 #define AXP202_GPIO3_STEP (0.5F)
 
 // AXP173
-#define AXP173_EXTEN_DC2_CTL   (0x10)
-#define AXP173_CTL_DC2_BIT      (0)
-#define AXP173_CTL_EXTEN_BIT    (2)
-#define AXP173_DC1_VLOTAGE      (0x26)
-#define AXP173_LDO4_VLOTAGE     (0x27)
+#define AXP173_EXTEN_DC2_CTL (0x10)
+#define AXP173_CTL_DC2_BIT (0)
+#define AXP173_CTL_EXTEN_BIT (2)
+#define AXP173_DC1_VLOTAGE (0x26)
+#define AXP173_LDO4_VLOTAGE (0x27)
 
 #define FORCED_OPEN_DCDC3(x) (x |= (AXP202_ON << AXP202_DCDC3))
 #define BIT_MASK(x) (1 << x)
 #define IS_OPEN(reg, channel) (bool)(reg & BIT_MASK(channel))
 
 enum {
-    AXP202_EXTEN = 0,
-    AXP202_DCDC3 = 1,
-    AXP202_LDO2 = 2,
-    AXP202_LDO4 = 3,
-    AXP202_DCDC2 = 4,
-    AXP202_LDO3 = 6,
-    AXP202_OUTPUT_MAX,
+	AXP202_EXTEN = 0,
+	AXP202_DCDC3 = 1,
+	AXP202_LDO2 = 2,
+	AXP202_LDO4 = 3,
+	AXP202_DCDC2 = 4,
+	AXP202_LDO3 = 6,
+	AXP202_OUTPUT_MAX,
 };
 
 enum {
-    AXP192_DCDC1 = 0,
-    AXP192_DCDC3 = 1,
-    AXP192_LDO2 = 2,
-    AXP192_LDO3 = 3,
-    AXP192_DCDC2 = 4,
-    AXP192_EXTEN = 6,
-    AXP192_OUTPUT_MAX,
+	AXP192_DCDC1 = 0,
+	AXP192_DCDC3 = 1,
+	AXP192_LDO2 = 2,
+	AXP192_LDO3 = 3,
+	AXP192_DCDC2 = 4,
+	AXP192_EXTEN = 6,
+	AXP192_OUTPUT_MAX,
 };
 
 enum {
-    AXP173_DCDC1 = 0,
-    AXP173_LDO4 = 1,
-    AXP173_LDO2 = 2,
-    AXP173_LDO3 = 3,
-    AXP173_DCDC2 = 4,
-    AXP173_EXTEN = 6,
-    AXP173_OUTPUT_MAX,
+	AXP173_DCDC1 = 0,
+	AXP173_LDO4 = 1,
+	AXP173_LDO2 = 2,
+	AXP173_LDO3 = 3,
+	AXP173_DCDC2 = 4,
+	AXP173_EXTEN = 6,
+	AXP173_OUTPUT_MAX,
 };
 
 typedef enum {
-    AXP202_STARTUP_TIME_128MS,
-    AXP202_STARTUP_TIME_3S,
-    AXP202_STARTUP_TIME_1S,
-    AXP202_STARTUP_TIME_2S,
+	AXP202_STARTUP_TIME_128MS,
+	AXP202_STARTUP_TIME_3S,
+	AXP202_STARTUP_TIME_1S,
+	AXP202_STARTUP_TIME_2S,
 } axp202_startup_time_t;
 
 typedef enum {
-    AXP192_STARTUP_TIME_128MS,
-    AXP192_STARTUP_TIME_512MS,
-    AXP192_STARTUP_TIME_1S,
-    AXP192_STARTUP_TIME_2S,
+	AXP192_STARTUP_TIME_128MS,
+	AXP192_STARTUP_TIME_512MS,
+	AXP192_STARTUP_TIME_1S,
+	AXP192_STARTUP_TIME_2S,
 } axp192_startup_time_t;
 
 typedef enum {
-    AXP_LONGPRESS_TIME_1S,
-    AXP_LONGPRESS_TIME_1S5,
-    AXP_LONGPRESS_TIME_2S,
-    AXP_LONGPRESS_TIME_2S5,
+	AXP_LONGPRESS_TIME_1S,
+	AXP_LONGPRESS_TIME_1S5,
+	AXP_LONGPRESS_TIME_2S,
+	AXP_LONGPRESS_TIME_2S5,
 } axp_loonPress_time_t;
 
 typedef enum {
-    AXP_POWER_OFF_TIME_4S,
-    AXP_POWER_OFF_TIME_65,
-    AXP_POWER_OFF_TIME_8S,
-    AXP_POWER_OFF_TIME_16S,
+	AXP_POWER_OFF_TIME_4S,
+	AXP_POWER_OFF_TIME_65,
+	AXP_POWER_OFF_TIME_8S,
+	AXP_POWER_OFF_TIME_16S,
 } axp_poweroff_time_t;
 
 //REG 33H: Charging control 1 Charging target-voltage setting
 typedef enum {
-    AXP202_TARGET_VOL_4_1V,
-    AXP202_TARGET_VOL_4_15V,
-    AXP202_TARGET_VOL_4_2V,
-    AXP202_TARGET_VOL_4_36V
+	AXP202_TARGET_VOL_4_1V,
+	AXP202_TARGET_VOL_4_15V,
+	AXP202_TARGET_VOL_4_2V,
+	AXP202_TARGET_VOL_4_36V
 } axp_chargeing_vol_t;
 
 //REG 82H: ADC Enable 1 register Parameter
 typedef enum {
-    AXP202_BATT_VOL_ADC1 = 1 << 7,
-    AXP202_BATT_CUR_ADC1 = 1 << 6,
-    AXP202_ACIN_VOL_ADC1 = 1 << 5,
-    AXP202_ACIN_CUR_ADC1 = 1 << 4,
-    AXP202_VBUS_VOL_ADC1 = 1 << 3,
-    AXP202_VBUS_CUR_ADC1 = 1 << 2,
-    AXP202_APS_VOL_ADC1 = 1 << 1,
-    AXP202_TS_PIN_ADC1 = 1 << 0
+	AXP202_BATT_VOL_ADC1 = 1 << 7,
+	AXP202_BATT_CUR_ADC1 = 1 << 6,
+	AXP202_ACIN_VOL_ADC1 = 1 << 5,
+	AXP202_ACIN_CUR_ADC1 = 1 << 4,
+	AXP202_VBUS_VOL_ADC1 = 1 << 3,
+	AXP202_VBUS_CUR_ADC1 = 1 << 2,
+	AXP202_APS_VOL_ADC1 = 1 << 1,
+	AXP202_TS_PIN_ADC1 = 1 << 0
 } axp_adc1_func_t;
 
 // REG 83H: ADC Enable 2 register Parameter
 typedef enum {
-    AXP202_TEMP_MONITORING_ADC2 = 1 << 7,
-    AXP202_GPIO1_FUNC_ADC2 = 1 << 3,
-    AXP202_GPIO0_FUNC_ADC2 = 1 << 2
+	AXP202_TEMP_MONITORING_ADC2 = 1 << 7,
+	AXP202_GPIO1_FUNC_ADC2 = 1 << 3,
+	AXP202_GPIO0_FUNC_ADC2 = 1 << 2
 } axp_adc2_func_t;
 
-typedef enum {
-    AXP202_LDO3_MODE_LDO,
-    AXP202_LDO3_MODE_DCIN
-} axp202_ldo3_mode_t;
-
-
+typedef enum { AXP202_LDO3_MODE_LDO, AXP202_LDO3_MODE_DCIN } axp202_ldo3_mode_t;
 
 typedef enum {
-    //! IRQ1 REG 40H
-    AXP202_VBUS_VHOLD_LOW_IRQ       = _BV(1),   //VBUS is available, but lower than V HOLD, IRQ enable
-    AXP202_VBUS_REMOVED_IRQ         = _BV(2),   //VBUS removed, IRQ enable
-    AXP202_VBUS_CONNECT_IRQ         = _BV(3),   //VBUS connected, IRQ enable
-    AXP202_VBUS_OVER_VOL_IRQ        = _BV(4),   //VBUS over-voltage, IRQ enable
-    AXP202_ACIN_REMOVED_IRQ         = _BV(5),   //ACIN removed, IRQ enable
-    AXP202_ACIN_CONNECT_IRQ         = _BV(6),   //ACIN connected, IRQ enable
-    AXP202_ACIN_OVER_VOL_IRQ        = _BV(7),   //ACIN over-voltage, IRQ enable
+	//! IRQ1 REG 40H
+	AXP202_VBUS_VHOLD_LOW_IRQ = _BV(1), //VBUS is available, but lower than V HOLD, IRQ enable
+	AXP202_VBUS_REMOVED_IRQ = _BV(2),   //VBUS removed, IRQ enable
+	AXP202_VBUS_CONNECT_IRQ = _BV(3),   //VBUS connected, IRQ enable
+	AXP202_VBUS_OVER_VOL_IRQ = _BV(4),  //VBUS over-voltage, IRQ enable
+	AXP202_ACIN_REMOVED_IRQ = _BV(5),   //ACIN removed, IRQ enable
+	AXP202_ACIN_CONNECT_IRQ = _BV(6),   //ACIN connected, IRQ enable
+	AXP202_ACIN_OVER_VOL_IRQ = _BV(7),  //ACIN over-voltage, IRQ enable
 
-    //! IRQ2 REG 41H
-    AXP202_BATT_LOW_TEMP_IRQ        = _BV(8),   //Battery low-temperature, IRQ enable
-    AXP202_BATT_OVER_TEMP_IRQ       = _BV(9),   //Battery over-temperature, IRQ enable
-    AXP202_CHARGING_FINISHED_IRQ    = _BV(10),  //Charge finished, IRQ enable
-    AXP202_CHARGING_IRQ             = _BV(11),  //Be charging, IRQ enable
-    AXP202_BATT_EXIT_ACTIVATE_IRQ   = _BV(12),  //Exit battery activate mode, IRQ enable
-    AXP202_BATT_ACTIVATE_IRQ        = _BV(13),  //Battery activate mode, IRQ enable
-    AXP202_BATT_REMOVED_IRQ         = _BV(14),  //Battery removed, IRQ enable
-    AXP202_BATT_CONNECT_IRQ         = _BV(15),  //Battery connected, IRQ enable
+	//! IRQ2 REG 41H
+	AXP202_BATT_LOW_TEMP_IRQ = _BV(8),		 //Battery low-temperature, IRQ enable
+	AXP202_BATT_OVER_TEMP_IRQ = _BV(9),		 //Battery over-temperature, IRQ enable
+	AXP202_CHARGING_FINISHED_IRQ = _BV(10),  //Charge finished, IRQ enable
+	AXP202_CHARGING_IRQ = _BV(11),			 //Be charging, IRQ enable
+	AXP202_BATT_EXIT_ACTIVATE_IRQ = _BV(12), //Exit battery activate mode, IRQ enable
+	AXP202_BATT_ACTIVATE_IRQ = _BV(13),		 //Battery activate mode, IRQ enable
+	AXP202_BATT_REMOVED_IRQ = _BV(14),		 //Battery removed, IRQ enable
+	AXP202_BATT_CONNECT_IRQ = _BV(15),		 //Battery connected, IRQ enable
 
-    //! IRQ3 REG 42H
-    AXP202_PEK_LONGPRESS_IRQ        = _BV(16),  //PEK long press, IRQ enable
-    AXP202_PEK_SHORTPRESS_IRQ       = _BV(17),  //PEK short press, IRQ enable
-    AXP202_LDO3_LOW_VOL_IRQ         = _BV(18),  //LDO3output voltage is lower than the set value, IRQ enable
-    AXP202_DC3_LOW_VOL_IRQ          = _BV(19),  //DC-DC3output voltage is lower than the set value, IRQ enable
-    AXP202_DC2_LOW_VOL_IRQ          = _BV(20),  //DC-DC2 output voltage is lower than the set value, IRQ enable
-    //**Reserved and unchangeable BIT 5
-    AXP202_CHARGE_LOW_CUR_IRQ       = _BV(22),  //Charge current is lower than the set current, IRQ enable
-    AXP202_CHIP_TEMP_HIGH_IRQ       = _BV(23),  //AXP202 internal over-temperature, IRQ enable
+	//! IRQ3 REG 42H
+	AXP202_PEK_LONGPRESS_IRQ = _BV(16),  //PEK long press, IRQ enable
+	AXP202_PEK_SHORTPRESS_IRQ = _BV(17), //PEK short press, IRQ enable
+	AXP202_LDO3_LOW_VOL_IRQ = _BV(18),   //LDO3output voltage is lower than the set value, IRQ enable
+	AXP202_DC3_LOW_VOL_IRQ = _BV(19),	//DC-DC3output voltage is lower than the set value, IRQ enable
+	AXP202_DC2_LOW_VOL_IRQ = _BV(20),	//DC-DC2 output voltage is lower than the set value, IRQ enable
+	//**Reserved and unchangeable BIT 5
+	AXP202_CHARGE_LOW_CUR_IRQ = _BV(22), //Charge current is lower than the set current, IRQ enable
+	AXP202_CHIP_TEMP_HIGH_IRQ = _BV(23), //AXP202 internal over-temperature, IRQ enable
 
-    //! IRQ4 REG 43H
-    AXP202_APS_LOW_VOL_LEVEL2_IRQ   = _BV(24),  //APS low-voltage, IRQ enable（LEVEL2）
-    APX202_APS_LOW_VOL_LEVEL1_IRQ   = _BV(25),  //APS low-voltage, IRQ enable（LEVEL1）
-    AXP202_VBUS_SESSION_END_IRQ     = _BV(26),  //VBUS Session End IRQ enable
-    AXP202_VBUS_SESSION_AB_IRQ      = _BV(27),  //VBUS Session A/B IRQ enable
-    AXP202_VBUS_INVALID_IRQ         = _BV(28),  //VBUS invalid, IRQ enable
-    AXP202_VBUS_VAILD_IRQ           = _BV(29),  //VBUS valid, IRQ enable
-    AXP202_NOE_OFF_IRQ              = _BV(30),  //N_OE shutdown, IRQ enable
-    AXP202_NOE_ON_IRQ               = _BV(31),  //N_OE startup, IRQ enable
+	//! IRQ4 REG 43H
+	AXP202_APS_LOW_VOL_LEVEL2_IRQ = _BV(24), //APS low-voltage, IRQ enable（LEVEL2）
+	APX202_APS_LOW_VOL_LEVEL1_IRQ = _BV(25), //APS low-voltage, IRQ enable（LEVEL1）
+	AXP202_VBUS_SESSION_END_IRQ = _BV(26),   //VBUS Session End IRQ enable
+	AXP202_VBUS_SESSION_AB_IRQ = _BV(27),	//VBUS Session A/B IRQ enable
+	AXP202_VBUS_INVALID_IRQ = _BV(28),		 //VBUS invalid, IRQ enable
+	AXP202_VBUS_VAILD_IRQ = _BV(29),		 //VBUS valid, IRQ enable
+	AXP202_NOE_OFF_IRQ = _BV(30),			 //N_OE shutdown, IRQ enable
+	AXP202_NOE_ON_IRQ = _BV(31),			 //N_OE startup, IRQ enable
 
-    //! IRQ5 REG 44H
-    AXP202_GPIO0_EDGE_TRIGGER_IRQ   = _BV(32),  //GPIO0 input edge trigger, IRQ enable
-    AXP202_GPIO1_EDGE_TRIGGER_IRQ   = _BV(33),  //GPIO1input edge trigger or ADC input, IRQ enable
-    AXP202_GPIO2_EDGE_TRIGGER_IRQ   = _BV(34),  //GPIO2input edge trigger, IRQ enable
-    AXP202_GPIO3_EDGE_TRIGGER_IRQ   = _BV(35),  //GPIO3 input edge trigger, IRQ enable
-    //**Reserved and unchangeable BIT 4
-    AXP202_PEK_FALLING_EDGE_IRQ     = _BV(37),  //PEK press falling edge, IRQ enable
-    AXP202_PEK_RISING_EDGE_IRQ      = _BV(38),  //PEK press rising edge, IRQ enable
-    AXP202_TIMER_TIMEOUT_IRQ        = _BV(39),  //Timer timeout, IRQ enable
+	//! IRQ5 REG 44H
+	AXP202_GPIO0_EDGE_TRIGGER_IRQ = _BV(32), //GPIO0 input edge trigger, IRQ enable
+	AXP202_GPIO1_EDGE_TRIGGER_IRQ = _BV(33), //GPIO1input edge trigger or ADC input, IRQ enable
+	AXP202_GPIO2_EDGE_TRIGGER_IRQ = _BV(34), //GPIO2input edge trigger, IRQ enable
+	AXP202_GPIO3_EDGE_TRIGGER_IRQ = _BV(35), //GPIO3 input edge trigger, IRQ enable
+	//**Reserved and unchangeable BIT 4
+	AXP202_PEK_FALLING_EDGE_IRQ = _BV(37), //PEK press falling edge, IRQ enable
+	AXP202_PEK_RISING_EDGE_IRQ = _BV(38),  //PEK press rising edge, IRQ enable
+	AXP202_TIMER_TIMEOUT_IRQ = _BV(39),	//Timer timeout, IRQ enable
 
-    AXP202_ALL_IRQ                  = (0xFFFFFFFFFFULL)
+	AXP202_ALL_IRQ = (0xFFFFFFFFFFULL)
 } axp_irq_t;
 
 typedef enum {
-    AXP202_LDO4_1250MV,
-    AXP202_LDO4_1300MV,
-    AXP202_LDO4_1400MV,
-    AXP202_LDO4_1500MV,
-    AXP202_LDO4_1600MV,
-    AXP202_LDO4_1700MV,
-    AXP202_LDO4_1800MV,
-    AXP202_LDO4_1900MV,
-    AXP202_LDO4_2000MV,
-    AXP202_LDO4_2500MV,
-    AXP202_LDO4_2700MV,
-    AXP202_LDO4_2800MV,
-    AXP202_LDO4_3000MV,
-    AXP202_LDO4_3100MV,
-    AXP202_LDO4_3200MV,
-    AXP202_LDO4_3300MV,
-    AXP202_LDO4_MAX,
+	AXP202_LDO4_1250MV,
+	AXP202_LDO4_1300MV,
+	AXP202_LDO4_1400MV,
+	AXP202_LDO4_1500MV,
+	AXP202_LDO4_1600MV,
+	AXP202_LDO4_1700MV,
+	AXP202_LDO4_1800MV,
+	AXP202_LDO4_1900MV,
+	AXP202_LDO4_2000MV,
+	AXP202_LDO4_2500MV,
+	AXP202_LDO4_2700MV,
+	AXP202_LDO4_2800MV,
+	AXP202_LDO4_3000MV,
+	AXP202_LDO4_3100MV,
+	AXP202_LDO4_3200MV,
+	AXP202_LDO4_3300MV,
+	AXP202_LDO4_MAX,
 } axp_ldo4_table_t;
 
 typedef enum {
-    AXP202_LDO5_1800MV,
-    AXP202_LDO5_2500MV,
-    AXP202_LDO5_2800MV,
-    AXP202_LDO5_3000MV,
-    AXP202_LDO5_3100MV,
-    AXP202_LDO5_3300MV,
-    AXP202_LDO5_3400MV,
-    AXP202_LDO5_3500MV,
+	AXP202_LDO5_1800MV,
+	AXP202_LDO5_2500MV,
+	AXP202_LDO5_2800MV,
+	AXP202_LDO5_3000MV,
+	AXP202_LDO5_3100MV,
+	AXP202_LDO5_3300MV,
+	AXP202_LDO5_3400MV,
+	AXP202_LDO5_3500MV,
 } axp_ldo5_table_t;
 
 typedef enum {
-    AXP20X_LED_OFF,
-    AXP20X_LED_BLINK_1HZ,
-    AXP20X_LED_BLINK_4HZ,
-    AXP20X_LED_LOW_LEVEL,
+	AXP20X_LED_OFF,
+	AXP20X_LED_BLINK_1HZ,
+	AXP20X_LED_BLINK_4HZ,
+	AXP20X_LED_LOW_LEVEL,
 } axp_chgled_mode_t;
 
 typedef enum {
-    AXP_ADC_SAMPLING_RATE_25HZ = 0,
-    AXP_ADC_SAMPLING_RATE_50HZ = 1,
-    AXP_ADC_SAMPLING_RATE_100HZ = 2,
-    AXP_ADC_SAMPLING_RATE_200HZ = 3,
+	AXP_ADC_SAMPLING_RATE_25HZ = 0,
+	AXP_ADC_SAMPLING_RATE_50HZ = 1,
+	AXP_ADC_SAMPLING_RATE_100HZ = 2,
+	AXP_ADC_SAMPLING_RATE_200HZ = 3,
 } axp_adc_sampling_rate_t;
 
 typedef enum {
-    AXP_TS_PIN_CURRENT_20UA = 0,
-    AXP_TS_PIN_CURRENT_40UA = 1,
-    AXP_TS_PIN_CURRENT_60UA = 2,
-    AXP_TS_PIN_CURRENT_80UA = 3,
+	AXP_TS_PIN_CURRENT_20UA = 0,
+	AXP_TS_PIN_CURRENT_40UA = 1,
+	AXP_TS_PIN_CURRENT_60UA = 2,
+	AXP_TS_PIN_CURRENT_80UA = 3,
 } axp_ts_pin_current_t;
 
 typedef enum {
-    AXP_TS_PIN_FUNCTION_BATT = 0,
-    AXP_TS_PIN_FUNCTION_ADC = 1,
+	AXP_TS_PIN_FUNCTION_BATT = 0,
+	AXP_TS_PIN_FUNCTION_ADC = 1,
 } axp_ts_pin_function_t;
 
 typedef enum {
-    AXP_TS_PIN_MODE_DISABLE = 0,
-    AXP_TS_PIN_MODE_CHARGING = 1,
-    AXP_TS_PIN_MODE_SAMPLING = 2,
-    AXP_TS_PIN_MODE_ENABLE = 3,
+	AXP_TS_PIN_MODE_DISABLE = 0,
+	AXP_TS_PIN_MODE_CHARGING = 1,
+	AXP_TS_PIN_MODE_SAMPLING = 2,
+	AXP_TS_PIN_MODE_ENABLE = 3,
 } axp_ts_pin_mode_t;
 
 //! Only AXP192 and AXP202 have gpio function
 typedef enum {
-    AXP_GPIO_0,
-    AXP_GPIO_1,
-    AXP_GPIO_2,
-    AXP_GPIO_3,
-    AXP_GPIO_4,
+	AXP_GPIO_0,
+	AXP_GPIO_1,
+	AXP_GPIO_2,
+	AXP_GPIO_3,
+	AXP_GPIO_4,
 } axp_gpio_t;
 
 typedef enum {
-    AXP_IO_OUTPUT_LOW_MODE,
-    AXP_IO_OUTPUT_HIGH_MODE,
-    AXP_IO_INPUT_MODE,
-    AXP_IO_LDO_MODE,
-    AXP_IO_ADC_MODE,
-    AXP_IO_FLOATING_MODE,
-    AXP_IO_OPEN_DRAIN_OUTPUT_MODE,
-    AXP_IO_PWM_OUTPUT_MODE,
-    AXP_IO_EXTERN_CHARGING_CTRL_MODE,
+	AXP_IO_OUTPUT_LOW_MODE,
+	AXP_IO_OUTPUT_HIGH_MODE,
+	AXP_IO_INPUT_MODE,
+	AXP_IO_LDO_MODE,
+	AXP_IO_ADC_MODE,
+	AXP_IO_FLOATING_MODE,
+	AXP_IO_OPEN_DRAIN_OUTPUT_MODE,
+	AXP_IO_PWM_OUTPUT_MODE,
+	AXP_IO_EXTERN_CHARGING_CTRL_MODE,
 } axp_gpio_mode_t;
 
 typedef enum {
-    AXP_IRQ_NONE,
-    AXP_IRQ_RISING,
-    AXP_IRQ_FALLING,
-    AXP_IRQ_DOUBLE_EDGE,
+	AXP_IRQ_NONE,
+	AXP_IRQ_RISING,
+	AXP_IRQ_FALLING,
+	AXP_IRQ_DOUBLE_EDGE,
 } axp_gpio_irq_t;
 
-
 typedef enum {
-    AXP192_GPIO_1V8,
-    AXP192_GPIO_1V9,
-    AXP192_GPIO_2V0,
-    AXP192_GPIO_2V1,
-    AXP192_GPIO_2V2,
-    AXP192_GPIO_2V3,
-    AXP192_GPIO_2V4,
-    AXP192_GPIO_2V5,
-    AXP192_GPIO_2V6,
-    AXP192_GPIO_2V7,
-    AXP192_GPIO_2V8,
-    AXP192_GPIO_2V9,
-    AXP192_GPIO_3V0,
-    AXP192_GPIO_3V1,
-    AXP192_GPIO_3V2,
-    AXP192_GPIO_3V3,
+	AXP192_GPIO_1V8,
+	AXP192_GPIO_1V9,
+	AXP192_GPIO_2V0,
+	AXP192_GPIO_2V1,
+	AXP192_GPIO_2V2,
+	AXP192_GPIO_2V3,
+	AXP192_GPIO_2V4,
+	AXP192_GPIO_2V5,
+	AXP192_GPIO_2V6,
+	AXP192_GPIO_2V7,
+	AXP192_GPIO_2V8,
+	AXP192_GPIO_2V9,
+	AXP192_GPIO_3V0,
+	AXP192_GPIO_3V1,
+	AXP192_GPIO_3V2,
+	AXP192_GPIO_3V3,
 } axp192_gpio_voltage_t;
 
 typedef enum {
-    AXP1XX_CHARGE_CUR_100MA,
-    AXP1XX_CHARGE_CUR_190MA,
-    AXP1XX_CHARGE_CUR_280MA,
-    AXP1XX_CHARGE_CUR_360MA,
-    AXP1XX_CHARGE_CUR_450MA,
-    AXP1XX_CHARGE_CUR_550MA,
-    AXP1XX_CHARGE_CUR_630MA,
-    AXP1XX_CHARGE_CUR_700MA,
-    AXP1XX_CHARGE_CUR_780MA,
-    AXP1XX_CHARGE_CUR_880MA,
-    AXP1XX_CHARGE_CUR_960MA,
-    AXP1XX_CHARGE_CUR_1000MA,
-    AXP1XX_CHARGE_CUR_1080MA,
-    AXP1XX_CHARGE_CUR_1160MA,
-    AXP1XX_CHARGE_CUR_1240MA,
-    AXP1XX_CHARGE_CUR_1320MA,
+	AXP1XX_CHARGE_CUR_100MA,
+	AXP1XX_CHARGE_CUR_190MA,
+	AXP1XX_CHARGE_CUR_280MA,
+	AXP1XX_CHARGE_CUR_360MA,
+	AXP1XX_CHARGE_CUR_450MA,
+	AXP1XX_CHARGE_CUR_550MA,
+	AXP1XX_CHARGE_CUR_630MA,
+	AXP1XX_CHARGE_CUR_700MA,
+	AXP1XX_CHARGE_CUR_780MA,
+	AXP1XX_CHARGE_CUR_880MA,
+	AXP1XX_CHARGE_CUR_960MA,
+	AXP1XX_CHARGE_CUR_1000MA,
+	AXP1XX_CHARGE_CUR_1080MA,
+	AXP1XX_CHARGE_CUR_1160MA,
+	AXP1XX_CHARGE_CUR_1240MA,
+	AXP1XX_CHARGE_CUR_1320MA,
 } axp1xx_charge_current_t;
 
-typedef uint8_t (*axp_com_fptr_t)(uint8_t dev_addr, uint8_t reg_addr, uint8_t *data, uint8_t len);
-
+typedef uint8_t (*axp_com_fptr_t)(uint8_t dev_addr, uint8_t reg_addr, uint8_t* data, uint8_t len);
 
 class AXP20X_Class
 {
 public:
-    int begin(TwoWire &port = Wire, uint8_t addr = AXP202_SLAVE_ADDRESS, bool isAxp173 = false);
-    int begin(axp_com_fptr_t read_cb, axp_com_fptr_t write_cb, uint8_t addr = AXP202_SLAVE_ADDRESS, bool isAxp173 = false);
+	int begin(TwoWire& port = Wire, uint8_t addr = AXP202_SLAVE_ADDRESS, bool isAxp173 = false);
+	int begin(axp_com_fptr_t read_cb, axp_com_fptr_t write_cb, uint8_t addr = AXP202_SLAVE_ADDRESS,
+			  bool isAxp173 = false);
 
-    // Power Output Control
-    int setPowerOutPut(uint8_t ch, bool en);
+	// Power Output Control
+	int setPowerOutPut(uint8_t ch, bool en);
 
-    bool isBatteryConnect();
-    bool isChargeing();
-    bool isLDO2Enable();
-    bool isLDO3Enable();
-    bool isLDO4Enable();
-    bool isDCDC3Enable();
-    bool isDCDC2Enable();
-    bool isChargeingEnable();
-    bool isVBUSPlug();
-    bool isExtenEnable();
+	bool isBatteryConnect();
+	bool isChargeing();
+	bool isLDO2Enable();
+	bool isLDO3Enable();
+	bool isLDO4Enable();
+	bool isDCDC3Enable();
+	bool isDCDC2Enable();
+	bool isChargeingEnable();
+	bool isVBUSPlug();
+	bool isExtenEnable();
 
-    //Only axp192 chip
-    bool isDCDC1Enable();
+	//Only axp192 chip
+	bool isDCDC1Enable();
 
+	//IRQ Status
+	bool isAcinOverVoltageIRQ();
+	bool isAcinPlugInIRQ();
+	bool isAcinRemoveIRQ();
+	bool isVbusOverVoltageIRQ();
+	bool isVbusPlugInIRQ();
+	bool isVbusRemoveIRQ();
+	bool isVbusLowVHOLDIRQ();
 
-    //IRQ Status
-    bool isAcinOverVoltageIRQ();
-    bool isAcinPlugInIRQ();
-    bool isAcinRemoveIRQ();
-    bool isVbusOverVoltageIRQ();
-    bool isVbusPlugInIRQ();
-    bool isVbusRemoveIRQ();
-    bool isVbusLowVHOLDIRQ();
+	bool isBattPlugInIRQ();
+	bool isBattRemoveIRQ();
+	bool isBattEnterActivateIRQ();
+	bool isBattExitActivateIRQ();
+	bool isChargingIRQ();
+	bool isChargingDoneIRQ();
+	bool isBattTempLowIRQ();
+	bool isBattTempHighIRQ();
 
-    bool isBattPlugInIRQ();
-    bool isBattRemoveIRQ();
-    bool isBattEnterActivateIRQ();
-    bool isBattExitActivateIRQ();
-    bool isChargingIRQ();
-    bool isChargingDoneIRQ();
-    bool isBattTempLowIRQ();
-    bool isBattTempHighIRQ();
+	bool isPEKShortPressIRQ();
+	bool isPEKLongtPressIRQ();
+	bool isTimerTimeoutIRQ();
 
-    bool isPEKShortPressIRQ();
-    bool isPEKLongtPressIRQ();
-    bool isTimerTimeoutIRQ();
+	//! Group4 ADC data
+	float getAcinVoltage();
+	float getAcinCurrent();
+	float getVbusVoltage();
+	float getVbusCurrent();
+	float getTemp();
+	float getTSTemp();
+	float getGPIO0Voltage();
+	float getGPIO1Voltage();
+	float getBattInpower();
+	float getBattVoltage();
+	float getBattChargeCurrent();
+	float getBattDischargeCurrent();
+	float getSysIPSOUTVoltage();
+	uint32_t getBattChargeCoulomb();
+	uint32_t getBattDischargeCoulomb();
+	float getSettingChargeCurrent();
 
-    //! Group4 ADC data
-    float getAcinVoltage();
-    float getAcinCurrent();
-    float getVbusVoltage();
-    float getVbusCurrent();
-    float getTemp();
-    float getTSTemp();
-    float getGPIO0Voltage();
-    float getGPIO1Voltage();
-    float getBattInpower();
-    float getBattVoltage();
-    float getBattChargeCurrent();
-    float getBattDischargeCurrent();
-    float getSysIPSOUTVoltage();
-    uint32_t getBattChargeCoulomb();
-    uint32_t getBattDischargeCoulomb();
-    float getSettingChargeCurrent();
+	int setChargingTargetVoltage(axp_chargeing_vol_t param);
+	int enableChargeing(bool en);
 
-    int setChargingTargetVoltage(axp_chargeing_vol_t param);
-    int enableChargeing(bool en);
+	int adc1Enable(uint16_t params, bool en);
+	int adc2Enable(uint16_t params, bool en);
 
-    int adc1Enable(uint16_t params, bool en);
-    int adc2Enable(uint16_t params, bool en);
+	int setTScurrent(axp_ts_pin_current_t current);
+	int setTSfunction(axp_ts_pin_function_t func);
+	int setTSmode(axp_ts_pin_mode_t mode);
 
-    int setTScurrent(axp_ts_pin_current_t current);
-    int setTSfunction(axp_ts_pin_function_t func);
-    int setTSmode(axp_ts_pin_mode_t mode);
+	int setTimer(uint8_t minutes);
+	int offTimer();
+	int clearTimerStatus();
 
-
-    int setTimer(uint8_t minutes);
-    int offTimer();
-    int clearTimerStatus();
-
-    /**
+	/**
      * param:   axp202_startup_time_t or axp192_startup_time_t
      */
-    int setStartupTime(uint8_t param);
+	int setStartupTime(uint8_t param);
 
-    /**
+	/**
      * Return : LongPress threshold x10 (so 15 = 1.5s)
      */
-    int getStartupTime();
+	int getStartupTime();
 
-    /**
+	/**
      * param: axp_loonPress_time_t
      */
-    int setlongPressTime(uint8_t param);
+	int setlongPressTime(uint8_t param);
 
-    /**
+	/**
      * Return : LongPress threshold x10 (so 15 = 1.5s)
      */
 	int getlongPressTime();
 
-    /**
+	/**
      * @param  param: axp_poweroff_time_t
      */
-    int setShutdownTime(uint8_t param);
+	int setShutdownTime(uint8_t param);
 
-    /**
+	/**
      * Return : shutdown Press threshold x10 (so 15 = 1.5s)
      */
 	int getShutdownTime();
 
-    int setTimeOutShutdown(bool en);
+	int setTimeOutShutdown(bool en);
 
-    int shutdown();
+	int shutdown();
 
-    /**
+	/**
      * params: axp_irq_t
      */
-    int enableIRQ(uint64_t params, bool en);
-    int readIRQ();
-    void clearIRQ();
+	int enableIRQ(uint64_t params, bool en);
+	int readIRQ();
+	void clearIRQ();
 
-    int setDCDC1Voltage(uint16_t mv); //! Only AXP192 support and AXP173
-    // return mv
-    uint16_t getDCDC1Voltage(); //! Only AXP192 support and AXP173
+	int setDCDC1Voltage(uint16_t mv); //! Only AXP192 support and AXP173
+	// return mv
+	uint16_t getDCDC1Voltage(); //! Only AXP192 support and AXP173
 
-    // -----------------
+	// -----------------
 
-    /*
+	/*
     !! Chip resource table
     | CHIP     | AXP173           | AXP192           | AXP202           |
     | -------- | ---------------- | ---------------- | ---------------- |
@@ -704,148 +694,145 @@ public:
     | LDO4     | 0v7~3v5  /500mA  | X                | 1v8~3v3  /200mA  |
     | LDO5/IO0 | X                | 1v8~3v3  /50mA   | 1v8~3v3  /50mA   |
     */
-    int setDCDC2Voltage(uint16_t mv);
-    uint16_t getDCDC2Voltage();
+	int setDCDC2Voltage(uint16_t mv);
+	uint16_t getDCDC2Voltage();
 
-    int setDCDC3Voltage(uint16_t mv);
-    uint16_t getDCDC3Voltage();
+	int setDCDC3Voltage(uint16_t mv);
+	uint16_t getDCDC3Voltage();
 
-    int setLDO2Voltage(uint16_t mv);
-    uint16_t getLDO2Voltage();
+	int setLDO2Voltage(uint16_t mv);
+	uint16_t getLDO2Voltage();
 
-    int setLDO3Voltage(uint16_t mv);
-    uint16_t getLDO3Voltage();
+	int setLDO3Voltage(uint16_t mv);
+	uint16_t getLDO3Voltage();
 
+	int setLDO4Voltage(axp_ldo4_table_t param); //! Only axp202 support
+	int setLDO4Voltage(uint16_t mv);			//! Only axp173 support
 
-    int setLDO4Voltage(axp_ldo4_table_t param); //! Only axp202 support
-    int setLDO4Voltage(uint16_t mv);            //! Only axp173 support
+	// return mv
+	uint16_t getLDO4Voltage(); //! Only axp173/axp202 support
 
-    // return mv
-    uint16_t getLDO4Voltage();                  //! Only axp173/axp202 support
-
-
-    /**
+	/**
      * @param  mode: axp_chgled_mode_t
      */
-    int setChgLEDMode(axp_chgled_mode_t mode);
+	int setChgLEDMode(axp_chgled_mode_t mode);
 
-    /**
+	/**
      * @param  mode: axp202_ldo3_mode_t
      */
-    int setLDO3Mode(uint8_t mode); //! Only AXP202 support
+	int setLDO3Mode(uint8_t mode); //! Only AXP202 support
 
-    int getBattPercentage();
+	int getBattPercentage();
 
-    int debugCharging();
-    int debugStatus();
-    int limitingOff();
+	int debugCharging();
+	int debugStatus();
+	int limitingOff();
 
-    int setAdcSamplingRate(axp_adc_sampling_rate_t rate);
-    uint8_t getAdcSamplingRate();
-    float getCoulombData();
-    uint8_t getCoulombRegister();
-    int setCoulombRegister(uint8_t val);
-    int EnableCoulombcounter(void);
-    int DisableCoulombcounter(void);
-    int StopCoulombcounter(void);
-    int ClearCoulombcounter(void);
+	int setAdcSamplingRate(axp_adc_sampling_rate_t rate);
+	uint8_t getAdcSamplingRate();
+	float getCoulombData();
+	uint8_t getCoulombRegister();
+	int setCoulombRegister(uint8_t val);
+	int EnableCoulombcounter(void);
+	int DisableCoulombcounter(void);
+	int StopCoulombcounter(void);
+	int ClearCoulombcounter(void);
 
+	int setGPIOMode(axp_gpio_t gpio, axp_gpio_mode_t mode);
+	int setGPIOIrq(axp_gpio_t gpio, axp_gpio_irq_t irq);
+	int setLDO5Voltage(axp_ldo5_table_t vol);
 
-    int setGPIOMode(axp_gpio_t gpio, axp_gpio_mode_t mode);
-    int setGPIOIrq(axp_gpio_t gpio, axp_gpio_irq_t irq);
-    int setLDO5Voltage(axp_ldo5_table_t vol);
+	int gpioWrite(axp_gpio_t gpio, uint8_t vol);
+	int gpioRead(axp_gpio_t gpio);
 
-    int gpioWrite(axp_gpio_t gpio, uint8_t vol);
-    int gpioRead(axp_gpio_t gpio);
+	// When the chip is axp192 / 173, the allowed values are 0 ~ 15, corresponding to the axp1xx_charge_current_t enumeration
+	// When the chip is axp202 allows maximum charging current of 1800mA, minimum 300mA
+	int getChargeControlCur();
+	int setChargeControlCur(uint16_t mA);
 
-    // When the chip is axp192 / 173, the allowed values are 0 ~ 15, corresponding to the axp1xx_charge_current_t enumeration
-    // When the chip is axp202 allows maximum charging current of 1800mA, minimum 300mA
-    int getChargeControlCur();
-    int setChargeControlCur(uint16_t mA);
-
-		// Read register value at reg address 
-	uint8_t readRegister( uint8_t reg ){
+	// Read register value at reg address
+	uint8_t readRegister(uint8_t reg)
+	{
 		uint8_t dt;
-		_readByte( reg, 1, &dt );
+		_readByte(reg, 1, &dt);
 		return dt;
 	}
 
 private:
-    uint16_t _getRegistH8L5(uint8_t regh8, uint8_t regl5)
-    {
-        uint8_t hv, lv;
-        _readByte(regh8, 1, &hv);
-        _readByte(regl5, 1, &lv);
-        return (hv << 5) | (lv & 0x1F);
-    }
+	uint16_t _getRegistH8L5(uint8_t regh8, uint8_t regl5)
+	{
+		uint8_t hv, lv;
+		_readByte(regh8, 1, &hv);
+		_readByte(regl5, 1, &lv);
+		return (hv << 5) | (lv & 0x1F);
+	}
 
-    uint16_t _getRegistResult(uint8_t regh8, uint8_t regl4)
-    {
-        uint8_t hv, lv;
-        _readByte(regh8, 1, &hv);
-        _readByte(regl4, 1, &lv);
-        return (hv << 4) | (lv & 0x0F);
-    }
+	uint16_t _getRegistResult(uint8_t regh8, uint8_t regl4)
+	{
+		uint8_t hv, lv;
+		_readByte(regh8, 1, &hv);
+		_readByte(regl4, 1, &lv);
+		return (hv << 4) | (lv & 0x0F);
+	}
 
-    int _readByte(uint8_t reg, uint8_t nbytes, uint8_t *data)
-    {
-        if (_read_cb != nullptr) {
-            return _read_cb(_address, reg, data, nbytes);
-        }
-        if (nbytes == 0 || !data)
-            return -1;
-        _i2cPort->beginTransmission(_address);
-        _i2cPort->write(reg);
-        _i2cPort->endTransmission();
-        _i2cPort->requestFrom(_address, nbytes);
-        uint8_t index = 0;
-        while (_i2cPort->available())
-            data[index++] = _i2cPort->read();
-        return 0;
-    }
+	int _readByte(uint8_t reg, uint8_t nbytes, uint8_t* data)
+	{
+		if(_read_cb != nullptr) {
+			return _read_cb(_address, reg, data, nbytes);
+		}
+		if(nbytes == 0 || !data)
+			return -1;
+		_i2cPort->beginTransmission(_address);
+		_i2cPort->write(reg);
+		_i2cPort->endTransmission();
+		_i2cPort->requestFrom(_address, nbytes);
+		uint8_t index = 0;
+		while(_i2cPort->available())
+			data[index++] = _i2cPort->read();
+		return 0;
+	}
 
-    int _writeByte(uint8_t reg, uint8_t nbytes, uint8_t *data)
-    {
-        if (_write_cb != nullptr) {
-            return _write_cb(_address, reg, data, nbytes);
-        }
-        if (nbytes == 0 || !data)
-            return -1;
-        _i2cPort->beginTransmission(_address);
-        _i2cPort->write(reg);
-        for (uint8_t i = 0; i < nbytes; i++) {
-            _i2cPort->write(data[i]);
-        }
-        _i2cPort->endTransmission();
-        return 0;
-    }
+	int _writeByte(uint8_t reg, uint8_t nbytes, uint8_t* data)
+	{
+		if(_write_cb != nullptr) {
+			return _write_cb(_address, reg, data, nbytes);
+		}
+		if(nbytes == 0 || !data)
+			return -1;
+		_i2cPort->beginTransmission(_address);
+		_i2cPort->write(reg);
+		for(uint8_t i = 0; i < nbytes; i++) {
+			_i2cPort->write(data[i]);
+		}
+		_i2cPort->endTransmission();
+		return 0;
+	}
 
-    int _setGpioInterrupt(uint8_t *val, int mode, bool en);
-    int _axp_probe();
-    int _axp_irq_mask(axp_gpio_irq_t irq);
+	int _setGpioInterrupt(uint8_t* val, int mode, bool en);
+	int _axp_probe();
+	int _axp_irq_mask(axp_gpio_irq_t irq);
 
-    int _axp192_gpio_set(axp_gpio_t gpio, axp_gpio_mode_t mode);
-    int _axp192_gpio_0_select( axp_gpio_mode_t mode);
-    int _axp192_gpio_1_select( axp_gpio_mode_t mode);
-    int _axp192_gpio_3_select( axp_gpio_mode_t mode);
-    int _axp192_gpio_4_select( axp_gpio_mode_t mode);
+	int _axp192_gpio_set(axp_gpio_t gpio, axp_gpio_mode_t mode);
+	int _axp192_gpio_0_select(axp_gpio_mode_t mode);
+	int _axp192_gpio_1_select(axp_gpio_mode_t mode);
+	int _axp192_gpio_3_select(axp_gpio_mode_t mode);
+	int _axp192_gpio_4_select(axp_gpio_mode_t mode);
 
-    int _axp202_gpio_set(axp_gpio_t gpio, axp_gpio_mode_t mode);
-    int _axp202_gpio_0_select( axp_gpio_mode_t mode);
-    int _axp202_gpio_1_select( axp_gpio_mode_t mode);
-    int _axp202_gpio_2_select( axp_gpio_mode_t mode);
-    int _axp202_gpio_3_select( axp_gpio_mode_t mode);
-    int _axp202_gpio_irq_set(axp_gpio_t gpio, axp_gpio_irq_t irq);
-    int _axp202_gpio_write(axp_gpio_t gpio, uint8_t val);
-    int _axp202_gpio_read(axp_gpio_t gpio);
+	int _axp202_gpio_set(axp_gpio_t gpio, axp_gpio_mode_t mode);
+	int _axp202_gpio_0_select(axp_gpio_mode_t mode);
+	int _axp202_gpio_1_select(axp_gpio_mode_t mode);
+	int _axp202_gpio_2_select(axp_gpio_mode_t mode);
+	int _axp202_gpio_3_select(axp_gpio_mode_t mode);
+	int _axp202_gpio_irq_set(axp_gpio_t gpio, axp_gpio_irq_t irq);
+	int _axp202_gpio_write(axp_gpio_t gpio, uint8_t val);
+	int _axp202_gpio_read(axp_gpio_t gpio);
 
-
-    static const uint8_t startupParams[], longPressParams[], shutdownParams[], targetVolParams[];
-    static uint8_t _outputReg;
-    uint8_t _address, _irq[5], _chip_id, _gpio[4];
-    bool _init = false;
-    axp_com_fptr_t _read_cb = nullptr;
-    axp_com_fptr_t _write_cb = nullptr;
-    TwoWire *_i2cPort;
-    bool _isAxp173;
+	static const uint8_t startupParams[], longPressParams[], shutdownParams[], targetVolParams[];
+	static uint8_t _outputReg;
+	uint8_t _address, _irq[5], _chip_id, _gpio[4];
+	bool _init = false;
+	axp_com_fptr_t _read_cb = nullptr;
+	axp_com_fptr_t _write_cb = nullptr;
+	TwoWire* _i2cPort;
+	bool _isAxp173;
 };
