@@ -1,17 +1,7 @@
 #include "bma.h"
 #include <Arduino.h>
 
-I2CBus* BMA::_bus = nullptr;
-
-BMA::BMA(I2CBus& bus)
-{
-	_bus = &bus;
-	_init = false;
-}
-
-BMA::~BMA()
-{
-}
+I2CBus* BMA::_bus;
 
 uint16_t BMA::read(uint8_t addr, uint8_t reg, uint8_t* data, uint16_t len)
 {
@@ -23,11 +13,13 @@ uint16_t BMA::write(uint8_t addr, uint8_t reg, uint8_t* data, uint16_t len)
 	return _bus->writeBytes(addr, reg, data, len);
 }
 
-bool BMA::begin()
+bool BMA::begin(I2CBus& bus)
 {
 	if(_init) {
 		return true;
 	}
+
+	_bus = &bus;
 
 	_dev.dev_addr = BMA4_I2C_ADDR_SECONDARY;
 	_dev.interface = BMA4_I2C_INTERFACE;

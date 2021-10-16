@@ -20,9 +20,7 @@ typedef struct bma4_accel_config Acfg;
 class BMA
 {
 public:
-	BMA(I2CBus& bus);
-	~BMA();
-	bool begin();
+	bool begin(I2CBus& bus);
 	void reset();
 	uint8_t direction();
 	float temperature();
@@ -66,5 +64,5 @@ private:
 	Bma _dev;
 	static I2CBus* _bus;
 	uint16_t _irqStatus;
-	bool _init;
+	bool _init{false};
 };

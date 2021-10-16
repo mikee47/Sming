@@ -148,6 +148,21 @@ class TTGOClass
 {
 public:
 	TTGOClass()
+		:
+#ifdef LILYGO_WATCH_HAS_PCF8563
+		  rtc(i2c),
+#endif
+#ifdef LILYGO_WATCH_HAS_BACKLIGHT
+		  bl(TWATCH_TFT_BL),
+#endif
+#ifdef LILYGO_WATCH_HAS_GAMEPAD
+		  buzzer(GAMECONTROL_BUZZER),
+#endif
+#ifdef LILYGO_WATCH_HAS_BUTTON
+		  // In the 2020 version, Button IO36 is not used.
+		  button(USER_BUTTON),
+#endif
+		  initialised{false}
 	{
 		// _tpEvent = xEventGroupCreate();
 	}
@@ -161,37 +176,6 @@ public:
 
 	void begin(uint8_t disable = 0)
 	{
-		i2c = new I2CBus();
-
-#ifdef LILYGO_WATCH_HAS_PCF8563
-		rtc = new PCF8563_Class(*i2c);
-#endif /*LILYGO_WATCH_HAS_PCF8563*/
-
-#ifdef LILYGO_WATCH_HAS_BACKLIGHT
-		bl = new BackLight(TWATCH_TFT_BL);
-#endif /*LILYGO_WATCH_HAS_BACKLIGHT*/
-
-#ifdef LILYGO_WATCH_HAS_BMA423
-		bma = new BMA(*i2c);
-#endif /*LILYGO_WATCH_HAS_BMA423*/
-
-#ifdef LILYGO_WATCH_HAS_BUTTON
-		//In the 2020 version, Button IO36 is not used.
-		button = new Button2(USER_BUTTON);
-#endif /*LILYGO_WATCH_HAS_BUTTON*/
-
-#ifdef LILYGO_WATCH_HAS_AXP202
-		power = new AXP20X_Class();
-#endif /*LILYGO_WATCH_HAS_AXP202*/
-
-#ifdef LILYGO_WATCH_HAS_MPU6050
-		mpu = new MPU6050();
-#endif /*LILYGO_WATCH_HAS_MPU6050*/
-
-#ifdef LILYGO_WATCH_DRV2605
-		drv = new Adafruit_DRV2605();
-#endif /*LILYGO_WATCH_DRV2605*/
-
 		if(!(disable & NO_HARDWARE)) {
 			initHardware();
 			initPower();
@@ -414,9 +398,9 @@ public:
 	void touchWakup()
 	{
 #ifdef LILYGO_WATCH_2020_V2
-		power->setPowerOutPut(AXP202_EXTEN, false);
+		power.setPowerOutPut(AXP202_EXTEN, false);
 		delay(8); //Trst Min = 5ms
-		power->setPowerOutPut(AXP202_EXTEN, true);
+		power.setPowerOutPut(AXP202_EXTEN, true);
 #endif
 #ifdef LILYGO_WATCH_2020_V3
 		digitalWrite(TOUCH_RST, LOW);
@@ -436,18 +420,18 @@ public:
 	void enableAudio(void)
 	{
 #if defined(LILYGO_WATCH_2020_V2)
-		power->setPowerOutPut(AXP202_LDO3, AXP202_ON);
+		power.setPowerOutPut(AXP202_LDO3, AXP202_ON);
 #elif defined(LILYGO_WATCH_2020_V3)
-		power->setPowerOutPut(AXP202_LDO4, AXP202_ON);
+		power.setPowerOutPut(AXP202_LDO4, AXP202_ON);
 #endif
 	}
 
 	void disableAudio(void)
 	{
 #if defined(LILYGO_WATCH_2020_V2)
-		power->setPowerOutPut(AXP202_LDO3, AXP202_OFF);
+		power.setPowerOutPut(AXP202_LDO3, AXP202_OFF);
 #elif defined(LILYGO_WATCH_2020_V3)
-		power->setPowerOutPut(AXP202_LDO4, AXP202_OFF);
+		power.setPowerOutPut(AXP202_LDO4, AXP202_OFF);
 #endif
 	}
 
@@ -455,9 +439,9 @@ public:
 	void enableDrv2650(bool en = true)
 	{
 #ifdef LILYGO_WATCH_2020_V2
-		power->setGPIOMode(AXP_GPIO_0, en ? AXP_IO_OUTPUT_HIGH_MODE : AXP_IO_OUTPUT_LOW_MODE);
+		power.setGPIOMode(AXP_GPIO_0, en ? AXP_IO_OUTPUT_HIGH_MODE : AXP_IO_OUTPUT_LOW_MODE);
 #else
-		power->setPowerOutPut(AXP202_EXTEN, en);
+		power.setPowerOutPut(AXP202_EXTEN, en);
 #endif
 	}
 #endif
@@ -472,11 +456,9 @@ public:
 	{
 #ifdef LILYGO_WATCH_2020_V2
 		// 2020 v2 use axp202 ldo 4
-		if(power)
-			power->setPowerOutPut(AXP202_LDO4, true);
+		power.setPowerOutPut(AXP202_LDO4, true);
 #else
-		if(power)
-			power->setPowerOutPut(AXP202_LDO3, true);
+		power.setPowerOutPut(AXP202_LDO3, true);
 #endif
 	}
 
@@ -484,11 +466,9 @@ public:
 	{
 #ifdef LILYGO_WATCH_2020_V2
 		// 2020 v2 use axp202 ldo 4
-		if(power)
-			power->setPowerOutPut(AXP202_LDO4, false);
+		power.setPowerOutPut(AXP202_LDO4, false);
 #else
-		if(power)
-			power->setPowerOutPut(AXP202_LDO3, false);
+		power.setPowerOutPut(AXP202_LDO3, false);
 #endif
 	}
 
@@ -498,17 +478,17 @@ public:
 	void powerOff()
 	{
 #ifndef LILYGO_WATCH_2020_V1
-		power->setPowerOutPut(AXP202_EXTEN, false);
-		power->setPowerOutPut(AXP202_LDO4, false);
-		power->setPowerOutPut(AXP202_DCDC2, false);
-		power->setPowerOutPut(AXP202_LDO3, false);
-		power->setPowerOutPut(AXP202_LDO2, false);
+		power.setPowerOutPut(AXP202_EXTEN, false);
+		power.setPowerOutPut(AXP202_LDO4, false);
+		power.setPowerOutPut(AXP202_DCDC2, false);
+		power.setPowerOutPut(AXP202_LDO3, false);
+		power.setPowerOutPut(AXP202_LDO2, false);
 #else
-		power->setPowerOutPut(AXP202_EXTEN, false);
-		power->setPowerOutPut(AXP202_LDO4, false);
-		power->setPowerOutPut(AXP202_DCDC2, false);
-		power->setPowerOutPut(AXP202_LDO3, false);
-		// power->setPowerOutPut(AXP202_LDO2, false);
+		power.setPowerOutPut(AXP202_EXTEN, false);
+		power.setPowerOutPut(AXP202_LDO4, false);
+		power.setPowerOutPut(AXP202_DCDC2, false);
+		power.setPowerOutPut(AXP202_LDO3, false);
+		// power.setPowerOutPut(AXP202_LDO2, false);
 #endif /*LILYGO_WATCH_2020_V1*/
 	}
 
@@ -519,13 +499,13 @@ public:
     */
 	void enableLDO3(bool en = true)
 	{
-		power->setLDO3Mode(1);
-		power->setPowerOutPut(AXP202_LDO3, en);
+		power.setLDO3Mode(1);
+		power.setPowerOutPut(AXP202_LDO3, en);
 	}
 
 	void shutdown()
 	{
-		power->shutdown();
+		power.shutdown();
 	}
 #endif /*LILYGO_WATCH_HAS_AXP202*/
 
@@ -544,7 +524,7 @@ public:
 #define SIM868_MODEM_RX 34		 //SIM868 RX PIN
 	void enableModemGPSPower(bool en = true)
 	{
-		power->setPowerOutPut(AXP202_LDO3, en);
+		power.setPowerOutPut(AXP202_LDO3, en);
 	}
 #endif
 
@@ -628,22 +608,22 @@ public:
 	void openBL()
 	{
 #if !defined(LILYGO_WATCH_2020_V1) && defined(LILYGO_WATCH_HAS_AXP202)
-		power->setPowerOutPut(AXP202_LDO2, AXP202_ON);
+		power.setPowerOutPut(AXP202_LDO2, AXP202_ON);
 #endif /*LILYGO_WATCH_2020_V1*/
-		bl->on();
+		bl.on();
 	}
 
 	void closeBL()
 	{
 #if !defined(LILYGO_WATCH_2020_V1) && defined(LILYGO_WATCH_HAS_AXP202)
-		power->setPowerOutPut(AXP202_LDO2, AXP202_OFF);
+		power.setPowerOutPut(AXP202_LDO2, AXP202_OFF);
 #endif /*LILYGO_WATCH_2020_V1*/
-		bl->off();
+		bl.off();
 	}
 
 	void setBrightness(uint8_t level)
 	{
-		bl->adjust(level);
+		bl.adjust(level);
 	}
 #endif /*LILYGO_WATCH_HAS_BACKLIGHT*/
 
@@ -765,7 +745,8 @@ public:
      *              RTC
      * ***************************************/
 #ifdef LILYGO_WATCH_HAS_PCF8563
-	PCF8563_Class* rtc = nullptr;
+	PCF8563_Class rtc;
+
 	void rtcAttachInterrupt(void (*rtc_cb)(void))
 	{
 		pinMode(RTC_INT_PIN, INPUT_PULLUP); //need change to rtc_pin
@@ -774,31 +755,32 @@ public:
 #endif /*LILYGO_WATCH_HAS_PCF8563*/
 
 #ifdef LILYGO_WATCH_HAS_BACKLIGHT
-	BackLight* bl = nullptr;
+	BackLight bl;
 #endif
 
 #ifdef LILYGO_WATCH_HAS_AXP202
-	AXP20X_Class* power = nullptr;
+	AXP20X_Class power;
 #endif
 
 	// #if defined(LILYGO_WATCH_HAS_DISPLAY)
 	// 	TFT_eSPI* tft = nullptr;
 	// #endif
 
-#ifdef LILYGO_WATCH_HAS_BUZZER
-	Buzzer* buzzer = nullptr;
+#ifdef LILYGO_WATCH_HAS_GAMEPAD
+	Buzzer buzzer;
 #endif
 
 #ifdef LILYGO_WATCH_HAS_BMA423
-	BMA* bma = nullptr;
+	BMA bma;
 #endif
 
 #ifdef LILYGO_WATCH_HAS_BUTTON
-	Button2* button = nullptr;
+	// In the 2020 version, Button IO36 is not used.
+	Button2 button;
 #endif
 
 #ifdef LILYGO_WATCH_HAS_MPU6050
-	MPU6050* mpu = nullptr;
+	MPU6050 mpu;
 #endif
 
 #if defined(LILYGO_EINK_GDEW0371W7)
@@ -811,7 +793,7 @@ public:
 #endif
 
 #ifdef LILYGO_WATCH_DRV2605
-	Adafruit_DRV2605* drv = nullptr;
+	Adafruit_DRV2605 drv;
 #endif
 
 #ifdef LILYGO_WATCH_HAS_MOTOR
@@ -915,8 +897,8 @@ public:
     * * */
 	void enableLDO4()
 	{
-		power->setLDO4Voltage(AXP202_LDO4_1800MV);
-		power->setPowerOutPut(AXP202_LDO4, AXP202_ON);
+		power.setLDO4Voltage(AXP202_LDO4_1800MV);
+		power.setPowerOutPut(AXP202_LDO4, AXP202_ON);
 	}
 
 	void s7xg_begin()
@@ -941,8 +923,7 @@ public:
 		tft->setRotation(3);
 #endif
 
-		buzzer = new Buzzer(GAMECONTROL_BUZZER);
-		buzzer->begin();
+		buzzer.begin();
 		uint8_t pins[GAMECONTROL_CONTS] = GAMECONTROL_PINS;
 		gameControl = new Button2[GAMECONTROL_CONTS];
 		for(int i = 0; i < GAMECONTROL_CONTS; i++) {
@@ -952,9 +933,7 @@ public:
 
 	void gameControlBuzzer()
 	{
-		if(buzzer == nullptr)
-			return;
-		buzzer->onec();
+		buzzer.onec();
 	}
 
 	void gameControlHandler()
@@ -987,48 +966,34 @@ public:
 
 	void writeByte(uint8_t devAddress, uint8_t regAddress, uint8_t data)
 	{
-		if(!i2c)
-			return;
-		i2c->writeBytes(devAddress, regAddress, &data, 1);
-		;
+		i2c.writeBytes(devAddress, regAddress, &data, 1);
 	}
 
 	void writeBytes(uint8_t devAddress, uint8_t regAddress, uint8_t* data, uint16_t len)
 	{
-		if(!i2c)
-			return;
-		i2c->writeBytes(devAddress, regAddress, data, len);
-		;
+		i2c.writeBytes(devAddress, regAddress, data, len);
 	}
 
 	uint8_t readByte(uint8_t devAddress, uint8_t regAddress)
 	{
-		if(!i2c)
-			return 0;
 		uint8_t data;
-		i2c->readBytes(devAddress, regAddress, &data, 1);
+		i2c.readBytes(devAddress, regAddress, &data, 1);
 		return data;
 	}
 
 	void readBytes(uint8_t devAddress, uint8_t regAddress, uint8_t* data, uint16_t len)
 	{
-		if(!i2c)
-			return;
-		i2c->readBytes(devAddress, regAddress, data, len);
+		i2c.readBytes(devAddress, regAddress, data, len);
 	}
 
 	void readBytes(uint8_t devAddress, uint8_t* data, uint16_t len, uint16_t delay_ms = 0)
 	{
-		if(!i2c)
-			return;
-		i2c->readBytes(devAddress, data, len, delay_ms);
+		i2c.readBytes(devAddress, data, len, delay_ms);
 	}
 
 	bool deviceProbe(uint8_t addr)
 	{
-		if(!i2c)
-			return false;
-		return i2c->deviceProbe(addr);
+		return i2c.deviceProbe(addr);
 	}
 
 #ifdef LILYGO_WATCH_HAS_ADC
@@ -1102,7 +1067,7 @@ private:
 	{
 #if defined(LILYGO_WATCH_HAS_BMA423)
 		struct bma423_axes_remap remap_data;
-		if(!bma->begin()) {
+		if(!bma.begin(i2c)) {
 			debug_e("Begin BMA423 FAIL");
 			return false;
 		}
@@ -1138,7 +1103,7 @@ private:
 		remap_data.z_axis = 2;
 		remap_data.z_axis_sign = 0;
 #endif
-		bma->set_remap_axes(&remap_data);
+		bma.set_remap_axes(&remap_data);
 
 #elif defined(LILYGO_WATCH_HAS_MPU6050)
 		if(!mpu->begin(i2cReadBytes, i2cWriteBytes, MPU6050_SCALE_2000DPS, MPU6050_RANGE_2G)) {
@@ -1243,9 +1208,9 @@ private:
 	// 		touch = new CapacitiveTouch();
 	// #if defined(LILYGO_TOUCH_DRIVER_GTXXX)
 	// 		uint8_t address = 0x5D;
-	// 		if(i2c->deviceProbe(0x5D)) {
+	// 		if(i2c.deviceProbe(0x5D)) {
 	// 			address = 0x5D;
-	// 		} else if(i2c->deviceProbe(0x14)) {
+	// 		} else if(i2c.deviceProbe(0x14)) {
 	// 			address = 0x14;
 	// 		}
 	// 		if(!touch->begin(i2cReadBytes_u16, i2cWriteBytes_u16, address)) {
@@ -1309,7 +1274,7 @@ private:
 
 	void initPower()
 	{
-debug_i("initPower()");
+		debug_i("initPower()");
 #ifdef LILYGO_WATCH_HAS_ADC
 		esp_adc_cal_characteristics_t adc_chars;
 		if(esp_adc_cal_characterize(HAL_ADC_UNIT, ADC_ATTEN_DB_11, ADC_WIDTH_BIT_12, 1100, &adc_chars) ==
@@ -1319,70 +1284,70 @@ debug_i("initPower()");
 #endif /*LILYGO_WATCH_HAS_ADC*/
 
 #ifdef LILYGO_WATCH_HAS_AXP202
-		int ret = power->begin();
+		int ret = power.begin();
 		if(ret == AXP_FAIL) {
 			debug_e("AXP Power begin failed");
 		} else {
 			//Change the shutdown time to 4 seconds
-			power->setShutdownTime(AXP_POWER_OFF_TIME_4S);
+			power.setShutdownTime(AXP_POWER_OFF_TIME_4S);
 			// Turn off the charging instructions, there should be no
-			power->setChgLEDMode(AXP20X_LED_OFF);
+			power.setChgLEDMode(AXP20X_LED_OFF);
 			// Turn off external enable
-			power->setPowerOutPut(AXP202_EXTEN, false);
+			power.setPowerOutPut(AXP202_EXTEN, false);
 			//axp202 allows maximum charging current of 1800mA, minimum 300mA
-			power->setChargeControlCur(300);
+			power.setChargeControlCur(300);
 
 #ifdef LILYGO_WATCH_HAS_SIM868
 			//Setting gps power
-			power->setPowerOutPut(AXP202_LDO3, false);
-			power->setLDO3Mode(0);
-			power->setLDO3Voltage(3300);
+			power.setPowerOutPut(AXP202_LDO3, false);
+			power.setLDO3Mode(0);
+			power.setLDO3Voltage(3300);
 #endif /*LILYGO_WATCH_HAS_SIM868*/
 
-			power->setLDO2Voltage(3300);
+			power.setLDO2Voltage(3300);
 
 #ifdef LILYGO_WATCH_2020_V1
 			//In the 2020V1 version, the ST7789 chip power supply
 			//is shared with the backlight, so LDO2 cannot be turned off
-			power->setPowerOutPut(AXP202_LDO2, AXP202_ON);
+			power.setPowerOutPut(AXP202_LDO2, AXP202_ON);
 #endif /*LILYGO_WATCH_2020_V1*/
 
 #ifdef LILYGO_WATCH_2020_V2
 			// New features of Twatch V2
-			power->limitingOff();
+			power.limitingOff();
 
 			//GPS power domain is AXP202 LDO4
-			power->setPowerOutPut(AXP202_LDO4, false);
-			power->setLDO4Voltage(AXP202_LDO4_3300MV);
+			power.setPowerOutPut(AXP202_LDO4, false);
+			power.setLDO4Voltage(AXP202_LDO4_3300MV);
 
 			//Adding a hardware reset can reduce the current consumption of the capacitive touch
-			power->setPowerOutPut(AXP202_EXTEN, true);
+			power.setPowerOutPut(AXP202_EXTEN, true);
 			delay(10);
-			power->setPowerOutPut(AXP202_EXTEN, false);
+			power.setPowerOutPut(AXP202_EXTEN, false);
 			delay(8); //Trst Min = 5ms
-			power->setPowerOutPut(AXP202_EXTEN, true);
+			power.setPowerOutPut(AXP202_EXTEN, true);
 
 			/*
             In 2020V2, LDO3 is allocated to the display and touch screen power.
             When ESP32 is set to sleep or other situations where power consumption needs to be saved,
             LDO3 can be turned off
             */
-			power->setPowerOutPut(AXP202_LDO3, false);
-			power->setLDO3Voltage(3300);
-			power->setPowerOutPut(AXP202_LDO3, true);
+			power.setPowerOutPut(AXP202_LDO3, false);
+			power.setLDO3Voltage(3300);
+			power.setPowerOutPut(AXP202_LDO3, true);
 
 #endif /*LILYGO_WATCH_2020_V2*/
 
 #ifdef LILYGO_WATCH_2020_V3
 			// New features of Twatch V3
-			power->limitingOff();
+			power.limitingOff();
 
 			//Audio power domain is AXP202 LDO4
-			power->setPowerOutPut(AXP202_LDO4, false);
-			power->setLDO4Voltage(AXP202_LDO4_3300MV);
-			power->setPowerOutPut(AXP202_LDO4, true);
+			power.setPowerOutPut(AXP202_LDO4, false);
+			power.setLDO4Voltage(AXP202_LDO4_3300MV);
+			power.setPowerOutPut(AXP202_LDO4, true);
 			// No use
-			power->setPowerOutPut(AXP202_LDO3, false);
+			power.setPowerOutPut(AXP202_LDO3, false);
 #endif /*LILYGO_WATCH_2020_V3*/
 		}
 #endif /*LILYGO_WATCH_HAS_AXP202*/
@@ -1391,13 +1356,13 @@ debug_i("initPower()");
 	void initBlacklight()
 	{
 #ifdef LILYGO_WATCH_HAS_BACKLIGHT
-		bl->begin();
+		bl.begin();
 #endif /*LILYGO_WATCH_HAS_BACKLIGHT*/
 	}
 
 	// /**
-    //  * @brief  8-bit register interface write function
-    //  */
+	//  * @brief  8-bit register interface write function
+	//  */
 	// static uint8_t i2cWriteBytes(uint8_t devAddress, uint8_t regAddress, uint8_t* data, uint8_t len)
 	// {
 	// 	writeBytes(devAddress, regAddress, data, len);
@@ -1405,8 +1370,8 @@ debug_i("initPower()");
 	// }
 
 	// /**
-    //   * @brief  8-bit register interface read function
-    //   */
+	//   * @brief  8-bit register interface read function
+	//   */
 	// static uint8_t i2cReadBytes(uint8_t devAddress, uint8_t regAddress, uint8_t* data, uint8_t len)
 	// {
 	// 	readBytes(devAddress, regAddress, data, len);
@@ -1414,21 +1379,21 @@ debug_i("initPower()");
 	// }
 
 	// /**
-    //  * @brief  16-bit register interface write function
-    //  */
+	//  * @brief  16-bit register interface write function
+	//  */
 	// static uint8_t i2cWriteBytes_u16(int devAddress, uint16_t regAddress, uint8_t* data, int len)
 	// {
 	// 	configASSERT(i2c);
-	// 	return i2c->writeBytes_u16(devAddress, regAddress, data, len);
+	// 	return i2c.writeBytes_u16(devAddress, regAddress, data, len);
 	// }
 
 	// /**
-    //  * @brief  16-bit register interface read function
-    //  */
+	//  * @brief  16-bit register interface read function
+	//  */
 	// static uint8_t i2cReadBytes_u16(int devAddress, uint16_t regAddress, uint8_t* data, int len)
 	// {
 	// 	configASSERT(i2c);
-	// 	return i2c->readBytes_u16(devAddress, regAddress, data, len);
+	// 	return i2c.readBytes_u16(devAddress, regAddress, data, len);
 	// }
 
 #ifdef LILYGO_WATCH_HAS_NFC
@@ -1443,7 +1408,8 @@ debug_i("initPower()");
 	}
 #endif /*LILYGO_WATCH_HAS_NFC*/
 
-	I2CBus* i2c = nullptr;
+	bool initialised;
+	I2CBus i2c;
 	// static EventGroupHandle_t _tpEvent;
 
 #if defined(LILYGO_WATCH_LVGL)
@@ -1472,12 +1438,12 @@ protected:
 #if defined(ENABLE_LVGL_FLUSH_DMA)
 		tft->startWrite();
 		tft->setAddrWindow(area->x1, area->y1, (area->x2 - area->x1 + 1),
-								  (area->y2 - area->y1 + 1)); /* set the working window */
+						   (area->y2 - area->y1 + 1)); /* set the working window */
 		tft->pushPixelsDMA((uint16_t*)color_p, size);
 		tft->endWrite();
 #else
 		tft->setAddrWindow(area->x1, area->y1, (area->x2 - area->x1 + 1),
-								  (area->y2 - area->y1 + 1)); /* set the working window */
+						   (area->y2 - area->y1 + 1)); /* set the working window */
 		tft->pushColors((uint16_t*)color_p, size, false);
 #endif
 		lv_disp_flush_ready(disp_drv);
