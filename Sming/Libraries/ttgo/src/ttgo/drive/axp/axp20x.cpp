@@ -29,24 +29,45 @@ github:https://github.com/lewisxhe/AXP202X_Libraries
 /////////////////////////////////////////////////////////////////
 
 #include "axp20x.h"
-#include <math.h>
+#include <cmath>
+#include <Clock.h>
 
-const uint8_t AXP20X_Class::startupParams[] = {0b00000000, 0b01000000, 0b10000000, 0b11000000};
+namespace
+{
+const uint8_t startupParams[] PROGMEM = {
+	0b00000000,
+	0b01000000,
+	0b10000000,
+	0b11000000,
+};
 
-const uint8_t AXP20X_Class::longPressParams[] = {0b00000000, 0b00010000, 0b00100000, 0b00110000};
+const uint8_t longPressParams[] PROGMEM = {
+	0b00000000,
+	0b00010000,
+	0b00100000,
+	0b00110000,
+};
 
-const uint8_t AXP20X_Class::shutdownParams[] = {0b00000000, 0b00000001, 0b00000010, 0b00000011};
+const uint8_t shutdownParams[] PROGMEM = {
+	0b00000000,
+	0b00000001,
+	0b00000010,
+	0b00000011,
+};
 
-const uint8_t AXP20X_Class::targetVolParams[] = {0b00000000, 0b00100000, 0b01000000, 0b01100000};
-
-// Power Output Control register
-uint8_t AXP20X_Class::_outputReg;
+const uint8_t targetVolParams[] PROGMEM = {
+	0b00000000,
+	0b00100000,
+	0b01000000,
+	0b01100000,
+};
+} // namespace
 
 int AXP20X_Class::_axp_probe()
 {
-	uint8_t data;
 	if(_isAxp173) {
 		//!Axp173 does not have a chip ID, read the status register to see if it reads normally
+		uint8_t data;
 		_readByte(0x01, 1, &data);
 		if(data == 0 || data == 0xFF) {
 			return AXP_FAIL;
@@ -75,17 +96,6 @@ int AXP20X_Class::begin(TwoWire& port, uint8_t addr, bool isAxp173)
 	_address = addr;
 	_isAxp173 = isAxp173;
 
-	return _axp_probe();
-}
-
-int AXP20X_Class::begin(axp_com_fptr_t read_cb, axp_com_fptr_t write_cb, uint8_t addr, bool isAxp173)
-{
-	if(read_cb == nullptr || write_cb == nullptr)
-		return AXP_FAIL;
-	_read_cb = read_cb;
-	_write_cb = write_cb;
-	_address = addr;
-	_isAxp173 = isAxp173;
 	return _axp_probe();
 }
 

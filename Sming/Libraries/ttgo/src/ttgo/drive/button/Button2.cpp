@@ -1,14 +1,10 @@
-/////////////////////////////////////////////////////////////////
 /*
   Button2.cpp - Arduino Library to simplify working with buttons.
   Created by Lennart Hennigs, October 28, 2017.
 */
-/////////////////////////////////////////////////////////////////
 
 #include "Arduino.h"
 #include "Button2.h"
-
-/////////////////////////////////////////////////////////////////
 
 Button2::Button2(byte attachTo, byte buttonMode /*= INPUT_PULLUP*/, unsigned int debounceTimeout /*= DEBOUNCE_MS*/)
 {
@@ -17,110 +13,11 @@ Button2::Button2(byte attachTo, byte buttonMode /*= INPUT_PULLUP*/, unsigned int
 	pinMode(attachTo, buttonMode);
 }
 
-/////////////////////////////////////////////////////////////////
-
-bool Button2::operator==(Button2& rhs)
-{
-	return (this == &rhs);
-}
-
-/////////////////////////////////////////////////////////////////
-
-void Button2::setDebounceTime(unsigned int ms)
-{
-	debounce_time_ms = ms;
-}
-
-/////////////////////////////////////////////////////////////////
-
-void Button2::setChangedHandler(CallbackFunction f)
-{
-	change_cb = f;
-}
-
-/////////////////////////////////////////////////////////////////
-
-void Button2::setPressedHandler(CallbackFunction f)
-{
-	pressed_cb = f;
-}
-
-/////////////////////////////////////////////////////////////////
-
-void Button2::setReleasedHandler(CallbackFunction f)
-{
-	released_cb = f;
-}
-
-/////////////////////////////////////////////////////////////////
-
-void Button2::setClickHandler(CallbackFunction f)
-{
-	click_cb = f;
-}
-
-/////////////////////////////////////////////////////////////////
-
-void Button2::setTapHandler(CallbackFunction f)
-{
-	tap_cb = f;
-}
-
-/////////////////////////////////////////////////////////////////
-
-void Button2::setLongClickHandler(CallbackFunction f)
-{
-	long_cb = f;
-}
-
-/////////////////////////////////////////////////////////////////
-
-void Button2::setDoubleClickHandler(CallbackFunction f)
-{
-	double_cb = f;
-}
-
-/////////////////////////////////////////////////////////////////
-
-void Button2::setTripleClickHandler(CallbackFunction f)
-{
-	triple_cb = f;
-}
-
-/////////////////////////////////////////////////////////////////
-
-unsigned int Button2::wasPressedFor()
-{
-	return down_time_ms;
-}
-
-/////////////////////////////////////////////////////////////////
-
-boolean Button2::isPressed()
-{
-	return (state == LOW);
-}
-
-/////////////////////////////////////////////////////////////////
-
-unsigned int Button2::getNumberOfClicks()
-{
-	return click_count;
-}
-
-/////////////////////////////////////////////////////////////////
-
-unsigned int Button2::getClickType()
-{
-	return last_click_type;
-}
-
-/////////////////////////////////////////////////////////////////
-
 void Button2::loop()
 {
-	if(pin == 0xFF)
+	if(pin == 0xFF) {
 		return;
+	}
 
 	prev_state = state;
 	state = digitalRead(pin);
@@ -131,9 +28,11 @@ void Button2::loop()
 		pressed_triggered = false;
 		click_count++;
 		click_ms = down_ms;
+		return;
+	}
 
-		// is the button released?
-	} else if(prev_state == LOW && state == HIGH) {
+	// is the button released?
+	if(prev_state == LOW && state == HIGH) {
 		down_time_ms = millis() - down_ms;
 		// is it beyond debounce time?
 		if(down_time_ms >= debounce_time_ms) {
@@ -150,17 +49,22 @@ void Button2::loop()
 				longclick_detected = true;
 			}
 		}
+		return;
+	}
 
-		// trigger pressed event (after debounce has passed)
-	} else if(state == LOW && !pressed_triggered && (millis() - down_ms >= debounce_time_ms)) {
+	// trigger pressed event (after debounce has passed)
+	if(state == LOW && !pressed_triggered && (millis() - down_ms >= debounce_time_ms)) {
 		if(change_cb != NULL)
 			change_cb();
 		if(pressed_cb != NULL)
 			pressed_cb();
 		pressed_triggered = true;
 
-		// is the button pressed and the time has passed for multiple clicks?
-	} else if(state == HIGH && millis() - click_ms > DOUBLECLICK_MS) {
+		return;
+	}
+
+	// is the button pressed and the time has passed for multiple clicks?
+	if(state == HIGH && millis() - click_ms > DOUBLECLICK_MS) {
 		// was there a longclick?
 		if(longclick_detected) {
 			// was it part of a combination?
@@ -195,5 +99,3 @@ void Button2::loop()
 		click_ms = 0;
 	}
 }
-
-/////////////////////////////////////////////////////////////////

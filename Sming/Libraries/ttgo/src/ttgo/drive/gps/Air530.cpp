@@ -29,6 +29,7 @@ github:https://github.com/lewisxhe/Air530_Library
 /////////////////////////////////////////////////////////////////
 
 #include "Air530.h"
+#include <Digital.h>
 
 #define _LOOP_TO_TIMEOUT(func)                                                                                         \
 	do {                                                                                                               \
@@ -244,7 +245,7 @@ void Air530::setSearchMode(bool gps, bool glonass, bool beidou, bool galieo)
   */
 void Air530::setNMEABaud(uint32_t baud)
 {
-	()baud;
+	(void)baud;
 	// TODO: Don't change
 }
 

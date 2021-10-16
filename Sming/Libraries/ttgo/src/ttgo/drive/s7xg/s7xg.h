@@ -1,6 +1,7 @@
 #pragma once
 
-#include <Arduino.h>
+#include <cstdint>
+#include <HardwareSerial.h>
 
 #define S7XG_DEBUG(...) Serial.printf(__VA_ARGS__)
 
@@ -14,13 +15,29 @@
 #define S7XG_DEBUGW(...)
 #endif
 
-enum { GPS_DATA_TYPE_RAW, GPS_DATA_TYPE_DMS, GPS_DATA_TYPE_DD };
+enum {
+	GPS_DATA_TYPE_RAW,
+	GPS_DATA_TYPE_DMS,
+	GPS_DATA_TYPE_DD,
+};
 
-enum { GPS_MODE_AUTO, GPS_MODE_MANUAL, GPS_MODE_IDLE };
+enum {
+	GPS_MODE_AUTO,
+	GPS_MODE_MANUAL,
+	GPS_MODE_IDLE,
+};
 
-enum { GPS_UPLINK_FORMAT_RAW, GPS_UPLINK_FORMAT_IPSO, GPS_UPLINK_FORMAT_KIWI, GPS_UPLINK_FORMAT_UTC_POS };
+enum {
+	GPS_UPLINK_FORMAT_RAW,
+	GPS_UPLINK_FORMAT_IPSO,
+	GPS_UPLINK_FORMAT_KIWI,
+	GPS_UPLINK_FORMAT_UTC_POS,
+};
 
-enum { GPS_STATE_SYS_GPS, GPS_STATE_SYS_GPS_GLONASS };
+enum {
+	GPS_STATE_SYS_GPS,
+	GPS_STATE_SYS_GPS_GLONASS,
+};
 
 class GPS_Class
 {

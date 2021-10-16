@@ -1284,7 +1284,7 @@ private:
 #endif /*LILYGO_WATCH_HAS_ADC*/
 
 #ifdef LILYGO_WATCH_HAS_AXP202
-		int ret = power.begin();
+		int ret = power.begin(Wire);
 		if(ret == AXP_FAIL) {
 			debug_e("AXP Power begin failed");
 		} else {

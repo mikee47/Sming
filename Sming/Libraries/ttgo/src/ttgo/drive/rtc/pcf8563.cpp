@@ -1,34 +1,32 @@
-/////////////////////////////////////////////////////////////////
 /*
-MIT License
+	MIT License
 
-Copyright (c) 2019 lewis he
+	Copyright (c) 2019 lewis he
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
 
-pcf8563.cpp - Arduino library for NXP PCF8563 RTC chip.
-Created by Lewis he on April 1, 2019.
-github:https://github.com/lewisxhe/PCF8563_Library
+	pcf8563.cpp - Arduino library for NXP PCF8563 RTC chip.
+	Created by Lewis he on April 1, 2019.
+	github:https://github.com/lewisxhe/PCF8563_Library
 */
-/////////////////////////////////////////////////////////////////
+
 #include "pcf8563.h"
-#include <sys/time.h>
 
 PCF8563_Class::PCF8563_Class(I2CBus& bus, uint8_t addr)
 {
@@ -46,7 +44,6 @@ void PCF8563_Class::check()
 	if(now.year < compiled.year || (now.year == compiled.year && now.month < compiled.month) ||
 	   (now.year == compiled.year && now.month == compiled.month && now.day < compiled.day)) {
 		setDateTime(compiled);
-		debug_i("reset rtc date time");
 	}
 }
 
@@ -284,24 +281,24 @@ const char* PCF8563_Class::formatDateTime(uint8_t style)
 	RTC_Date t = getDateTime();
 	switch(style) {
 	case PCF_TIMEFORMAT_HM:
-		snprintf(format, sizeof(format), "%02d:%02d", t.hour, t.minute);
+		m_snprintf(format, sizeof(format), "%02d:%02d", t.hour, t.minute);
 		break;
 	case PCF_TIMEFORMAT_YYYY_MM_DD:
-		snprintf(format, sizeof(format), "%02d-%02d-%02d", t.year, t.month, t.day);
+		m_snprintf(format, sizeof(format), "%02d-%02d-%02d", t.year, t.month, t.day);
 		break;
 	case PCF_TIMEFORMAT_MM_DD_YYYY:
-		snprintf(format, sizeof(format), "%02d-%02d-%02d", t.month, t.day, t.year);
+		m_snprintf(format, sizeof(format), "%02d-%02d-%02d", t.month, t.day, t.year);
 		break;
 	case PCF_TIMEFORMAT_DD_MM_YYYY:
-		snprintf(format, sizeof(format), "%02d-%02d-%02d", t.day, t.month, t.year);
+		m_snprintf(format, sizeof(format), "%02d-%02d-%02d", t.day, t.month, t.year);
 		break;
 	case PCF_TIMEFORMAT_YYYY_MM_DD_H_M_S:
-		snprintf(format, sizeof(format), "%02d-%02d-%02d/%02d:%02d:%02d", t.year, t.month, t.day, t.hour, t.minute,
+		m_snprintf(format, sizeof(format), "%02d-%02d-%02d/%02d:%02d:%02d", t.year, t.month, t.day, t.hour, t.minute,
 				 t.second);
 		break;
 	case PCF_TIMEFORMAT_HMS:
 	default:
-		snprintf(format, sizeof(format), "%02d:%02d:%02d", t.hour, t.minute, t.second);
+		m_snprintf(format, sizeof(format), "%02d:%02d:%02d", t.hour, t.minute, t.second);
 		break;
 	}
 	return format;
@@ -312,7 +309,6 @@ void PCF8563_Class::syncToSystem()
 	struct tm t_tm;
 	struct timeval val;
 	RTC_Date dt = getDateTime();
-	// debug_i("syncToSystem: %d %d %d - %d %d %d \n",  dt.year, dt.month, dt.day,  dt.hour, dt.minute, dt.second);
 	t_tm.tm_hour = dt.hour;
 	t_tm.tm_min = dt.minute;
 	t_tm.tm_sec = dt.second;
@@ -323,7 +319,6 @@ void PCF8563_Class::syncToSystem()
 	val.tv_usec = 0;
 
 	settimeofday(&val, NULL);
-	// debug_i("syncToSystem: %d %d %d - %d %d %d \n", t_tm.tm_year, t_tm.tm_mon + 1, t_tm.tm_mday, t_tm.tm_hour, t_tm.tm_min, t_tm.tm_sec);
 }
 
 void PCF8563_Class::syncToRtc()

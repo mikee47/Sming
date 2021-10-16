@@ -20,14 +20,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 * Last change:  July 27, 2020 by Lewis He
 */
 
-#ifndef MPU6050_h
-#define MPU6050_h
+#pragma once
 
-#if ARDUINO >= 100
-#include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
+#include <cstdint>
 
 #define MPU6050_ADDRESS (0x68) // 0x69 when AD0 pin to Vcc
 
@@ -77,7 +72,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifndef VECTOR_STRUCT_H
 #define VECTOR_STRUCT_H
-struct Vector {
+struct GpsVector {
 	float XAxis;
 	float YAxis;
 	float ZAxis;
@@ -219,18 +214,18 @@ public:
 	void setThreshold(uint8_t multiple = 1);
 	uint8_t getThreshold();
 
-	Vector readRawGyro();
-	Vector readNormalizeGyro();
+	GpsVector readRawGyro();
+	GpsVector readNormalizeGyro();
 
-	Vector readRawAccel();
-	Vector readNormalizeAccel();
-	Vector readScaledAccel();
+	GpsVector readRawAccel();
+	GpsVector readNormalizeAccel();
+	GpsVector readScaledAccel();
 
 private:
-	Vector ra, rg; // Raw vectors
-	Vector na, ng; // Normalized vectors
-	Vector tg, dg; // Threshold and Delta for Gyro
-	Vector th;	 // Threshold
+	GpsVector ra, rg; // Raw vectors
+	GpsVector na, ng; // Normalized vectors
+	GpsVector tg, dg; // Threshold and Delta for Gyro
+	GpsVector th;	 // Threshold
 	Activites a;   // Activities
 
 	float dpsPerDigit, rangePerDigit;
@@ -252,5 +247,3 @@ private:
 	bool readRegisterBit(uint8_t reg, uint8_t pos);
 	void writeRegisterBit(uint8_t reg, uint8_t pos, bool state);
 };
-
-#endif

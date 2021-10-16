@@ -30,8 +30,8 @@ github:https://github.com/lewisxhe/Air530_Library
 
 #pragma once
 
-#include <Arduino.h>
-#include "TinyGPS++.h"
+#include "TinyGPSPlus.h"
+#include <Stream.h>
 
 typedef enum {
 	AIR530_NORMAL,				/*Normal operation mode*/

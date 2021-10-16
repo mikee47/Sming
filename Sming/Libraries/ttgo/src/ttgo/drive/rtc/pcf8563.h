@@ -29,8 +29,6 @@ github:https://github.com/lewisxhe/PCF8563_Library
 /////////////////////////////////////////////////////////////////
 #pragma once
 
-#include <Arduino.h>
-#include <Wire.h>
 #include "../i2c/i2c_bus.h"
 
 #define PCF8563_SLAVE_ADDRESS (0x51) //7-bit I2C Address
@@ -157,31 +155,20 @@ private:
 	{
 		return ((val / 16 * 10) + (val % 16));
 	}
+
 	uint8_t _dec_to_bcd(uint8_t val)
 	{
 		return ((val / 10 * 16) + (val % 10));
 	}
+
 	int _readByte(uint8_t reg, uint8_t nbytes, uint8_t* data)
 	{
-		return (int)_bus->readBytes(_address, reg, data, nbytes);
-		// _i2cPort->beginTransmission(_address);
-		// _i2cPort->write(reg);
-		// _i2cPort->endTransmission();
-		// _i2cPort->requestFrom(_address, nbytes);
-		// uint8_t index = 0;
-		// while (_i2cPort->available())
-		//     data[index++] = _i2cPort->read();
+		return _bus->readBytes(_address, reg, data, nbytes);
 	}
 
 	int _writeByte(uint8_t reg, uint8_t nbytes, uint8_t* data)
 	{
-		return (int)_bus->writeBytes(_address, reg, data, nbytes);
-		// _i2cPort->beginTransmission(_address);
-		// _i2cPort->write(reg);
-		// for (uint8_t i = 0; i < nbytes; i++) {
-		//     _i2cPort->write(data[i]);
-		// }
-		// _i2cPort->endTransmission();
+		return _bus->writeBytes(_address, reg, data, nbytes);
 	}
 
 	uint8_t _isValid = false;

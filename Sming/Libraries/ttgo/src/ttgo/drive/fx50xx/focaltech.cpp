@@ -327,45 +327,36 @@ uint8_t FocalTech_Class::getErrorCode()
 uint8_t FocalTech_Class::readRegister8(uint8_t reg)
 {
 	uint8_t value;
-	()readBytes(reg, &value, 1);
+	(void)readBytes(reg, &value, 1);
 	return value;
 }
 
 void FocalTech_Class::writeRegister8(uint8_t reg, uint8_t value)
 {
-	()writeBytes(reg, &value, 1);
+	(void)writeBytes(reg, &value, 1);
 }
 
 bool FocalTech_Class::readBytes(uint8_t reg, uint8_t* data, uint8_t nbytes)
 {
-	if(_readCallbackFunc != nullptr) {
-		return _readCallbackFunc(_address, reg, data, nbytes);
-	}
-#ifdef ARDUINO
 	_i2cPort->beginTransmission(_address);
 	_i2cPort->write(reg);
 	_i2cPort->endTransmission();
 	_i2cPort->requestFrom(_address, nbytes);
 	uint8_t index = 0;
-	while(_i2cPort->available())
+	while(_i2cPort->available()) {
 		data[index++] = _i2cPort->read();
-#endif
+	}
 	return nbytes == index;
 }
 
 bool FocalTech_Class::writeBytes(uint8_t reg, uint8_t* data, uint8_t nbytes)
 {
-	if(_writeCallbackFunc != nullptr) {
-		return _writeCallbackFunc(_address, reg, data, nbytes);
-	}
-#ifdef ARDUINO
 	_i2cPort->beginTransmission(_address);
 	_i2cPort->write(reg);
 	for(uint8_t i = 0; i < nbytes; i++) {
 		_i2cPort->write(data[i]);
 	}
 	return _i2cPort->endTransmission() != 0;
-#endif
 }
 
 /////////////////////GT9XX//////////////////////////////////////////////////
@@ -424,7 +415,7 @@ bool GT9xx_Class::probe()
 		return false;
 	}
 	uint8_t check_sum = 0;
-	for(int i = 0; i < (sizeof(config0) - 2); i++) {
+	for(unsigned i = 0; i < (sizeof(config0) - 2); i++) {
 		check_sum += config0[i];
 	}
 	config0[184] = (~check_sum) + 1;
@@ -436,39 +427,31 @@ bool GT9xx_Class::probe()
 uint8_t GT9xx_Class::readRegister(uint16_t reg)
 {
 	uint8_t value;
-	()readBytes(reg, &value, 1);
+	(void)readBytes(reg, &value, 1);
 	return value;
 }
 
 void GT9xx_Class::writeRegister(uint16_t reg, uint8_t value)
 {
-	()writeBytes(reg, &value, 1);
+	(void)writeBytes(reg, &value, 1);
 }
 
 bool GT9xx_Class::readBytes(uint16_t reg, uint8_t* data, int nbytes)
 {
-	if(_readCallbackFunc != nullptr) {
-		return _readCallbackFunc(_address, reg, data, nbytes);
-	}
-#ifdef ARDUINO
 	_i2cPort->beginTransmission(_address);
 	_i2cPort->write(reg >> 8);
 	_i2cPort->write(reg & 0xFF);
 	_i2cPort->endTransmission();
 	_i2cPort->requestFrom(_address, (uint8_t)nbytes);
 	int index = 0;
-	while(_i2cPort->available())
+	while(_i2cPort->available()) {
 		data[index++] = _i2cPort->read();
-#endif
+	}
 	return nbytes == index;
 }
 
 bool GT9xx_Class::writeBytes(uint16_t reg, uint8_t* data, int nbytes)
 {
-	if(_writeCallbackFunc != nullptr) {
-		return _writeCallbackFunc(_address, reg, data, nbytes);
-	}
-#ifdef ARDUINO
 	_i2cPort->beginTransmission(_address);
 	_i2cPort->write(reg >> 8);
 	_i2cPort->write(reg & 0xFF);
@@ -476,7 +459,6 @@ bool GT9xx_Class::writeBytes(uint16_t reg, uint8_t* data, int nbytes)
 		_i2cPort->write(data[i]);
 	}
 	return _i2cPort->endTransmission() != 0;
-#endif
 }
 
 void GT9xx_Class::setPins(int rst, int interrupt)
@@ -493,19 +475,6 @@ void GT9xx_Class::softReset()
 bool GT9xx_Class::begin(TwoWire& port, uint8_t addr)
 {
 	_i2cPort = &port;
-	_address = addr;
-	_readCallbackFunc = nullptr;
-	_writeCallbackFunc = nullptr;
-	return probe();
-}
-
-bool GT9xx_Class::begin(iic_com_fptr_t read_cb, iic_com_fptr_t write_cb, uint8_t addr)
-{
-	if(read_cb == nullptr || write_cb == nullptr) {
-		return false;
-	}
-	_readCallbackFunc = read_cb;
-	_writeCallbackFunc = write_cb;
 	_address = addr;
 	return probe();
 }

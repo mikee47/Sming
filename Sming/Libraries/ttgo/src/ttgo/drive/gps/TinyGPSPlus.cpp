@@ -21,11 +21,13 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include "TinyGPS++.h"
+#include "TinyGPSPlus.h"
 
-#include <string.h>
-#include <ctype.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cctype>
+#include <cstdlib>
+#include <cmath>
+#include <WConstants.h>
 
 #define _GPRMCterm "GPRMC"
 #define _GPGGAterm "GPGGA"
@@ -147,7 +149,7 @@ bool TinyGPSPlus::endOfTermHandler()
 {
 	// If it's the checksum term, and the checksum checks out, commit
 	if(isChecksumTerm) {
-		byte checksum = 16 * fromHex(term[0]) + fromHex(term[1]);
+		uint8_t checksum = 16 * fromHex(term[0]) + fromHex(term[1]);
 		if(checksum == parity) {
 			passedChecksumCount++;
 			if(sentenceHasFix)

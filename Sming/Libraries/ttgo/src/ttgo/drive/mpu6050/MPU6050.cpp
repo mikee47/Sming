@@ -20,16 +20,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 * Last change:  July 27, 2020 by Lewis He
 */
 
-#if ARDUINO >= 100
-#include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
-
-#include <Wire.h>
-#include <math.h>
-
 #include "MPU6050.h"
+#include <Wire.h>
+#include <Clock.h>
+#include <math.h>
 
 bool MPU6050::begin(imu_com_fptr_t read_callblack, imu_com_fptr_t write_callblack, mpu6050_dps_t scale,
 					mpu6050_range_t range, int mpua)
@@ -350,7 +344,7 @@ Activites MPU6050::readActivites()
 	return a;
 }
 
-Vector MPU6050::readRawAccel()
+GpsVector MPU6050::readRawAccel()
 {
 #ifdef DISABLE_I2C_CALLBLACK
 	Wire.beginTransmission(mpuAddress);
@@ -395,7 +389,7 @@ Vector MPU6050::readRawAccel()
 	return ra;
 }
 
-Vector MPU6050::readNormalizeAccel()
+GpsVector MPU6050::readNormalizeAccel()
 {
 	readRawAccel();
 
@@ -406,7 +400,7 @@ Vector MPU6050::readNormalizeAccel()
 	return na;
 }
 
-Vector MPU6050::readScaledAccel()
+GpsVector MPU6050::readScaledAccel()
 {
 	readRawAccel();
 
@@ -417,7 +411,7 @@ Vector MPU6050::readScaledAccel()
 	return na;
 }
 
-Vector MPU6050::readRawGyro()
+GpsVector MPU6050::readRawGyro()
 {
 #ifdef DISABLE_I2C_CALLBLACK
 	Wire.beginTransmission(mpuAddress);
@@ -461,7 +455,7 @@ Vector MPU6050::readRawGyro()
 	return rg;
 }
 
-Vector MPU6050::readNormalizeGyro()
+GpsVector MPU6050::readNormalizeGyro()
 {
 	readRawGyro();
 

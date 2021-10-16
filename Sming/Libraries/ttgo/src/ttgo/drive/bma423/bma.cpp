@@ -1,7 +1,7 @@
 #include "bma.h"
 #include <Arduino.h>
 
-I2CBus* BMA::_bus;
+I2CBus* BMA::_bus = nullptr;
 
 uint16_t BMA::read(uint8_t addr, uint8_t reg, uint8_t* data, uint16_t len)
 {

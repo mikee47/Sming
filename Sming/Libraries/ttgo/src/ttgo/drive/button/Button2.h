@@ -1,87 +1,131 @@
-/////////////////////////////////////////////////////////////////
 /*
   Button2.cpp - Arduino Library to simplify working with buttons.
   Created by Lennart Hennigs, October 28, 2017.
 */
-/////////////////////////////////////////////////////////////////
 #pragma once
 
-#ifndef Button2_h
-#define Button2_h
-
-/////////////////////////////////////////////////////////////////
-
-#include "Arduino.h"
-
-/////////////////////////////////////////////////////////////////
+#include <cstdint>
 
 #define DEBOUNCE_MS 50
 #define LONGCLICK_MS 2500
 #define DOUBLECLICK_MS 400
 
-#define SINGLE_CLICK 1
-#define DOUBLE_CLICK 2
-#define TRIPLE_CLICK 3
-#define LONG_CLICK 4
-
-/////////////////////////////////////////////////////////////////
+enum ClickType {
+	NO_CLICK = 0,
+	SINGLE_CLICK = 1,
+	DOUBLE_CLICK = 2,
+	TRIPLE_CLICK = 3,
+	LONG_CLICK = 4,
+};
 
 class Button2
 {
-private:
-	byte pin;
-	int prev_state;
-	int state = HIGH;
-	byte click_count = 0;
-	unsigned int last_click_type = 0;
-	unsigned long click_ms;
-	unsigned long down_ms;
-	unsigned int debounce_time_ms;
-	unsigned int down_time_ms = 0;
-	bool pressed_triggered = false;
-	bool longclick_detected = false;
-
-	typedef void (*CallbackFunction)();
-
-	CallbackFunction pressed_cb = NULL;
-	CallbackFunction released_cb = NULL;
-	CallbackFunction change_cb = NULL;
-	CallbackFunction tap_cb = NULL;
-	CallbackFunction click_cb = NULL;
-	CallbackFunction long_cb = NULL;
-	CallbackFunction double_cb = NULL;
-	CallbackFunction triple_cb = NULL;
-
 public:
+	using CallbackFunction = void (*)();
+
 	Button2()
 	{
 		pin = 0xFF;
 	}
-	Button2(byte attachTo, byte buttonMode = INPUT_PULLUP, unsigned int debounceTimeout = DEBOUNCE_MS);
-	void setDebounceTime(unsigned int ms);
 
-	void setChangedHandler(CallbackFunction f);
-	void setPressedHandler(CallbackFunction f);
-	void setReleasedHandler(CallbackFunction f);
-	void setClickHandler(CallbackFunction f);
-	void setTapHandler(CallbackFunction f);
-	void setLongClickHandler(CallbackFunction f);
-	void setDoubleClickHandler(CallbackFunction f);
-	void setTripleClickHandler(CallbackFunction f);
+	Button2(uint8_t attachTo, uint8_t buttonMode = INPUT_PULLUP, unsigned int debounceTimeout = DEBOUNCE_MS);
 
-	unsigned int wasPressedFor();
-	boolean isPressed();
+	void setDebounceTime(unsigned int ms)
+	{
+		debounce_time_ms = ms;
+	}
 
-	unsigned int getNumberOfClicks();
-	unsigned int getClickType();
+	void setChangedHandler(CallbackFunction f)
+	{
+		change_cb = f;
+	}
+
+	void setPressedHandler(CallbackFunction f)
+	{
+		pressed_cb = f;
+	}
+
+	void setReleasedHandler(CallbackFunction f)
+	{
+		released_cb = f;
+	}
+
+	void setClickHandler(CallbackFunction f)
+	{
+		click_cb = f;
+	}
+
+	void setTapHandler(CallbackFunction f)
+	{
+		tap_cb = f;
+	}
+
+	void setLongClickHandler(CallbackFunction f)
+	{
+		long_cb = f;
+	}
+
+	void setDoubleClickHandler(CallbackFunction f)
+	{
+		double_cb = f;
+	}
+
+	void setTripleClickHandler(CallbackFunction f)
+	{
+		triple_cb = f;
+	}
+
+	unsigned int wasPressedFor()
+	{
+		return down_time_ms;
+	}
+
+	bool isPressed()
+	{
+		return state == LOW;
+	}
+
+	unsigned int getNumberOfClicks()
+	{
+		return click_count;
+	}
+
+	unsigned int getClickType()
+	{
+		return last_click_type;
+	}
+
 	uint8_t getAttachPin()
 	{
 		return pin;
 	}
-	bool operator==(Button2& rhs);
+
+	bool operator==(Button2& rhs)
+	{
+		return this == &rhs;
+	}
 
 	void loop();
+
+private:
+	uint8_t pin;
+	int prev_state;
+	int state{HIGH};
+	uint8_t click_count{0};
+	ClickType last_click_type{NO_CLICK};
+	unsigned long click_ms;
+	unsigned long down_ms;
+	unsigned int debounce_time_ms;
+	unsigned int down_time_ms{0};
+	bool pressed_triggered{false};
+	bool longclick_detected{false};
+
+	CallbackFunction pressed_cb{nullptr};
+	CallbackFunction released_cb{nullptr};
+	CallbackFunction change_cb{nullptr};
+	CallbackFunction tap_cb{nullptr};
+	CallbackFunction click_cb{nullptr};
+	CallbackFunction long_cb{nullptr};
+	CallbackFunction double_cb{nullptr};
+	CallbackFunction triple_cb{nullptr};
 };
-/////////////////////////////////////////////////////////////////
-#endif
-/////////////////////////////////////////////////////////////////

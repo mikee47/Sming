@@ -1,4 +1,7 @@
 #include "s7xg.h"
+#include <debug_progmem.h>
+#include <Clock.h>
+
 #define GPS_RAW_FORMAT "\n\r>> RAW UTC( %d/%d/%d %d:%d:%d ) LAT( %f %c ) LONG( %f %c ) POSITIONING( %fs )"
 #define GPS_DMS_FORMAT                                                                                                 \
 	"\n\r>> DMS UTC( %d/%d/%d %d:%d:%d ) LAT( %d*%d'%f\" %c ) LONG( %d*%d'%f\" %c ) POSITIONING( %fs )"
@@ -58,7 +61,7 @@ bool S7XG_Class::_sendAndWaitForAck(const char* c, const char* resp, uint8_t tim
 		}
 		timerEnd = millis();
 		if(timerEnd - timerStart > 1000 * timeout) {
-			snprintf(_lastError, sizeof(_lastError), "%s TIMEOUT", c);
+			m_snprintf(_lastError, sizeof(_lastError), "%s TIMEOUT", c);
 			return false;
 		}
 	}
@@ -82,13 +85,13 @@ void S7XG_Class::gpsReset()
 
 bool S7XG_Class::gpsSetLevelShift(bool en)
 {
-	snprintf(_buffer, sizeof(_buffer), "gps set_level_shift %s", en ? "on" : "off");
+	m_snprintf(_buffer, sizeof(_buffer), "gps set_level_shift %s", en ? "on" : "off");
 	return _sendAndWaitForAck(_buffer, DEFALUT_ACK, DEFALUT_TIMEOUT);
 }
 
 bool S7XG_Class::gpsSetStart(bool hot)
 {
-	snprintf(_buffer, sizeof(_buffer), "gps set_start %s", hot ? "hot" : "cold");
+	m_snprintf(_buffer, sizeof(_buffer), "gps set_start %s", hot ? "hot" : "cold");
 	return _sendAndWaitForAck(_buffer, DEFALUT_ACK, DEFALUT_TIMEOUT);
 }
 
@@ -105,13 +108,13 @@ bool S7XG_Class::gpsSetPositioningCycle(uint32_t ms)
 	if(ms > 600000) {
 		ms = 600000;
 	}
-	snprintf(_buffer, sizeof(_buffer), "gps set_positioning_cycle %u", ms);
+	m_snprintf(_buffer, sizeof(_buffer), "gps set_positioning_cycle %u", ms);
 	return _sendAndWaitForAck(_buffer, DEFALUT_ACK, DEFALUT_TIMEOUT);
 }
 
 bool S7XG_Class::gpsSetPortUplink(uint8_t port)
 {
-	snprintf(_buffer, sizeof(_buffer), "gps set_port_uplink %u", port);
+	m_snprintf(_buffer, sizeof(_buffer), "gps set_port_uplink %u", port);
 	return _sendAndWaitForAck(_buffer, DEFALUT_ACK, DEFALUT_TIMEOUT);
 }
 
@@ -152,7 +155,8 @@ GPS_Class S7XG_Class::gpsGetData(uint8_t type)
 	_port->print(_gpsTypeArr[type]);
 
 	while(_port->available()) {
-		const char* data = _port->readString().c_str();
+		String s = _port->readString(256);
+		const char* data = s.c_str();
 
 		S7XG_DEBUG("%s\n", data);
 
@@ -231,80 +235,80 @@ void S7XG_Class::loraPingPongStop()
 String S7XG_Class::loraGetPingPongMessage()
 {
 	if(_port->available()) {
-		return _port->readString();
+		return _port->readString(256);
 	}
 	return String();
 }
 
 bool S7XG_Class::loraSetFrequency(uint32_t freq)
 {
-	snprintf(_buffer, sizeof(_buffer), "rf set_freq %u", freq);
+	m_snprintf(_buffer, sizeof(_buffer), "rf set_freq %u", freq);
 	return _sendAndWaitForAck(_buffer, DEFALUT_ACK, DEFALUT_TIMEOUT);
 }
 
 bool S7XG_Class::loraSetPower(uint8_t dbm)
 {
-	snprintf(_buffer, sizeof(_buffer), "rf set_pwr %u", dbm);
+	m_snprintf(_buffer, sizeof(_buffer), "rf set_pwr %u", dbm);
 	return _sendAndWaitForAck(_buffer, DEFALUT_ACK, DEFALUT_TIMEOUT);
 }
 
 bool S7XG_Class::loraSetSpreadingFactor(uint8_t sf)
 {
-	snprintf(_buffer, sizeof(_buffer), "rf set_sf %u", sf);
+	m_snprintf(_buffer, sizeof(_buffer), "rf set_sf %u", sf);
 	return _sendAndWaitForAck(_buffer, DEFALUT_ACK, DEFALUT_TIMEOUT);
 }
 
 bool S7XG_Class::loraSetBandWidth(uint16_t bw)
 {
-	snprintf(_buffer, sizeof(_buffer), "rf set_bw %u", bw);
+	m_snprintf(_buffer, sizeof(_buffer), "rf set_bw %u", bw);
 	return _sendAndWaitForAck(_buffer, DEFALUT_ACK, DEFALUT_TIMEOUT);
 }
 
 bool S7XG_Class::loraSetCodingRate(uint8_t cr)
 {
-	snprintf(_buffer, sizeof(_buffer), "rf set_cr 4/%u", cr);
+	m_snprintf(_buffer, sizeof(_buffer), "rf set_cr 4/%u", cr);
 	return _sendAndWaitForAck(_buffer, DEFALUT_ACK, DEFALUT_TIMEOUT);
 }
 
 bool S7XG_Class::loraSetPreambleLength(uint16_t pl)
 {
-	snprintf(_buffer, sizeof(_buffer), "rf set_prlen %u", pl);
+	m_snprintf(_buffer, sizeof(_buffer), "rf set_prlen %u", pl);
 	return _sendAndWaitForAck(_buffer, DEFALUT_ACK, DEFALUT_TIMEOUT);
 }
 
 bool S7XG_Class::loraSetCRC(bool en)
 {
-	snprintf(_buffer, sizeof(_buffer), "rf set_crc %s", en ? "on" : "off");
+	m_snprintf(_buffer, sizeof(_buffer), "rf set_crc %s", en ? "on" : "off");
 	return _sendAndWaitForAck(_buffer, DEFALUT_ACK, DEFALUT_TIMEOUT);
 }
 
 bool S7XG_Class::loraSetIQInvert(bool en)
 {
-	snprintf(_buffer, sizeof(_buffer), "rf set_iqi %s", en ? "on" : "off");
+	m_snprintf(_buffer, sizeof(_buffer), "rf set_iqi %s", en ? "on" : "off");
 	return _sendAndWaitForAck(_buffer, DEFALUT_ACK, DEFALUT_TIMEOUT);
 }
 
 bool S7XG_Class::loraSetSyncWord(uint8_t sw)
 {
-	snprintf(_buffer, sizeof(_buffer), "rf set_sync %x", sw);
+	m_snprintf(_buffer, sizeof(_buffer), "rf set_sync %x", sw);
 	return _sendAndWaitForAck(_buffer, DEFALUT_ACK, DEFALUT_TIMEOUT);
 }
 
 bool S7XG_Class::loraSetFreqDeviation(uint16_t dev)
 {
-	snprintf(_buffer, sizeof(_buffer), "rf set_fdev %u", dev);
+	m_snprintf(_buffer, sizeof(_buffer), "rf set_fdev %u", dev);
 	return _sendAndWaitForAck(_buffer, DEFALUT_ACK, DEFALUT_TIMEOUT);
 }
 
 bool S7XG_Class::loraTransmit(char* hex_data)
 {
-	snprintf(_buffer, sizeof(_buffer), "rf tx %s", hex_data);
+	m_snprintf(_buffer, sizeof(_buffer), "rf tx %s", hex_data);
 	return _sendAndWaitForAck(_buffer, DEFALUT_ACK, DEFALUT_TIMEOUT);
 }
 
 bool S7XG_Class::loraReceiveContinuous(bool en)
 {
-	snprintf(_buffer, sizeof(_buffer), "rf rx_con %s", en ? "on" : "off");
+	m_snprintf(_buffer, sizeof(_buffer), "rf rx_con %s", en ? "on" : "off");
 	return _sendAndWaitForAck(_buffer, DEFALUT_ACK, DEFALUT_TIMEOUT);
 }
 
