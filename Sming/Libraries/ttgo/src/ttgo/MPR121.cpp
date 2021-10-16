@@ -206,7 +206,7 @@ uint16_t MPR121_Class::baselineData(uint8_t t)
  *              of a sensor. For example, if bit 0 is set then channel 0 of the
  * device is currently deemed to be touched.
  */
-uint16_t MPR121_Class::touched(void)
+uint16_t MPR121_Class::touched()
 {
 	uint16_t t = readRegister16(MPR121_TOUCHSTATUS_L);
 	return t & 0x0FFF;

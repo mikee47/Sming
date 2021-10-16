@@ -62,7 +62,7 @@ class GT9xx_Class
 public:
 	bool begin(TwoWire& port, uint8_t addr = GT9XX_SLAVE_ADDRESS);
 
-	void softReset(void);
+	void softReset();
 	void setPins(int rst, int interrupt);
 
 	uint8_t scanPoint();
@@ -74,7 +74,7 @@ private:
 		uint16_t y;
 	} GT9xx_t;
 
-	bool probe(void);
+	bool probe();
 
 	uint8_t readRegister(uint16_t reg);
 	void writeRegister(uint16_t reg, uint8_t value);
@@ -95,44 +95,44 @@ public:
 	bool begin(TwoWire& port, uint8_t addr = FOCALTECH_SLAVE_ADDRESS);
 
 	void setTheshold(uint8_t value);
-	uint8_t getThreshold(void);
+	uint8_t getThreshold();
 
-	uint8_t getMonitorTime(void);
+	uint8_t getMonitorTime();
 	void setMonitorTime(uint8_t sec);
-	uint8_t getActivePeriod(void);
+	uint8_t getActivePeriod();
 	void setActivePeriod(uint8_t rate);
-	uint8_t getMonitorPeriod(void);
+	uint8_t getMonitorPeriod();
 	void setMonitorPeriod(uint8_t rate);
 
-	void enableAutoCalibration(void);
-	void disableAutoCalibration(void);
+	void enableAutoCalibration();
+	void disableAutoCalibration();
 
 	void getLibraryVersion(uint16_t& version);
 
 	void setPowerMode(PowerMode_t m);
-	PowerMode_t getPowerMode(void);
+	PowerMode_t getPowerMode();
 
-	uint8_t getVendorID(void);
-	uint8_t getVendor1ID(void);
-	uint8_t getErrorCode(void);
+	uint8_t getVendorID();
+	uint8_t getVendor1ID();
+	uint8_t getErrorCode();
 
-	void enableINT(void);
-	void disableINT(void);
-	uint8_t getINTMode(void);
+	void enableINT();
+	void disableINT();
+	uint8_t getINTMode();
 
 	bool getPoint(uint16_t& x, uint16_t& y);
 	// bool    getPoint(uint8_t *x, uint8_t *y);
 
-	uint8_t getTouched(void);
+	uint8_t getTouched();
 
-	uint8_t getControl(void);
-	uint8_t getDeviceMode(void);
-	GesTrue_t getGesture(void);
+	uint8_t getControl();
+	uint8_t getDeviceMode();
+	GesTrue_t getGesture();
 
 	EventFlag_t event;
 
 private:
-	bool probe(void);
+	bool probe();
 
 	uint8_t readRegister8(uint8_t reg);
 	void writeRegister8(uint8_t reg, uint8_t value);
@@ -142,5 +142,5 @@ private:
 	uint8_t _address;
 	bool initialization = false;
 
-	TwoWire* _i2cPort;
+	TwoWire* _i2cPort{nullptr};
 };

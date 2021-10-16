@@ -56,7 +56,7 @@ github:https://github.com/lewisxhe/FocalTech_Library
 #define FOCALTECH_REGISTER_VENDOR1_ID (0xA8)
 #define FOCALTECH_REGISTER_ERROR_STATUS (0xA9)
 
-bool FocalTech_Class::probe(void)
+bool FocalTech_Class::probe()
 {
 	// #ifdef ARDUINO
 	//     _i2cPort->beginTransmission(_address);
@@ -76,7 +76,7 @@ bool FocalTech_Class::begin(TwoWire& port, uint8_t addr)
 	return probe();
 }
 
-uint8_t FocalTech_Class::getControl(void)
+uint8_t FocalTech_Class::getControl()
 {
 	if(!initialization) {
 		return 0;
@@ -84,7 +84,7 @@ uint8_t FocalTech_Class::getControl(void)
 	return readRegister8(FOCALTECH_REGISTER_CONTROL);
 }
 
-uint8_t FocalTech_Class::getDeviceMode(void)
+uint8_t FocalTech_Class::getDeviceMode()
 {
 	if(!initialization) {
 		return 0;
@@ -92,7 +92,7 @@ uint8_t FocalTech_Class::getDeviceMode(void)
 	return (readRegister8(FOCALTECH_REGISTER_MODE) >> 4) & 0x07;
 }
 
-GesTrue_t FocalTech_Class::getGesture(void)
+GesTrue_t FocalTech_Class::getGesture()
 {
 	if(!initialization) {
 		return FOCALTECH_NO_GESTRUE;
@@ -125,7 +125,7 @@ void FocalTech_Class::setTheshold(uint8_t value)
 	writeRegister8(FOCALTECH_REGISTER_THRESHHOLD, value);
 }
 
-uint8_t FocalTech_Class::getThreshold(void)
+uint8_t FocalTech_Class::getThreshold()
 {
 	if(!initialization) {
 		return 0;
@@ -133,7 +133,7 @@ uint8_t FocalTech_Class::getThreshold(void)
 	return readRegister8(FOCALTECH_REGISTER_THRESHHOLD);
 }
 
-uint8_t FocalTech_Class::getMonitorTime(void)
+uint8_t FocalTech_Class::getMonitorTime()
 {
 	if(!initialization) {
 		return 0;
@@ -149,7 +149,7 @@ void FocalTech_Class::setMonitorTime(uint8_t sec)
 	writeRegister8(FOCALTECH_REGISTER_MONITORTIME, sec);
 }
 
-uint8_t FocalTech_Class::getActivePeriod(void)
+uint8_t FocalTech_Class::getActivePeriod()
 {
 	if(!initialization) {
 		return 0;
@@ -165,7 +165,7 @@ void FocalTech_Class::setActivePeriod(uint8_t period)
 	writeRegister8(FOCALTECH_REGISTER_ACTIVEPERIOD, period);
 }
 
-uint8_t FocalTech_Class::getMonitorPeriod(void)
+uint8_t FocalTech_Class::getMonitorPeriod()
 {
 	if(!initialization) {
 		return 0;
@@ -181,7 +181,7 @@ void FocalTech_Class::setMonitorPeriod(uint8_t period)
 	writeRegister8(FOCALTECH_REGISTER_MONITORPERIOD, period);
 }
 
-void FocalTech_Class::enableAutoCalibration(void)
+void FocalTech_Class::enableAutoCalibration()
 {
 	if(!initialization) {
 		return;
@@ -189,7 +189,7 @@ void FocalTech_Class::enableAutoCalibration(void)
 	writeRegister8(FOCALTECH_REGISTER_MONITORTIME, 0x00);
 }
 
-void FocalTech_Class::disableAutoCalibration(void)
+void FocalTech_Class::disableAutoCalibration()
 {
 	if(!initialization) {
 		return;
@@ -207,7 +207,7 @@ void FocalTech_Class::getLibraryVersion(uint16_t& version)
 	version = (buffer[0] << 8) | buffer[1];
 }
 
-void FocalTech_Class::enableINT(void)
+void FocalTech_Class::enableINT()
 {
 	if(!initialization) {
 		return;
@@ -215,7 +215,7 @@ void FocalTech_Class::enableINT(void)
 	writeRegister8(FOCALTECH_REGISTER_INT_STATUS, 1);
 }
 
-void FocalTech_Class::disableINT(void)
+void FocalTech_Class::disableINT()
 {
 	if(!initialization) {
 		return;
@@ -223,7 +223,7 @@ void FocalTech_Class::disableINT(void)
 	writeRegister8(FOCALTECH_REGISTER_INT_STATUS, 0);
 }
 
-uint8_t FocalTech_Class::getINTMode(void)
+uint8_t FocalTech_Class::getINTMode()
 {
 	if(!initialization) {
 		return 0;
@@ -269,7 +269,7 @@ void FocalTech_Class::setPowerMode(PowerMode_t m)
 	writeRegister8(FOCALTECH_REGISTER_POWER_MODE, m);
 }
 
-PowerMode_t FocalTech_Class::getPowerMode(void)
+PowerMode_t FocalTech_Class::getPowerMode()
 {
 	if(!initialization) {
 		return FOCALTECH_PMODE_DEEPSLEEP;
@@ -277,7 +277,7 @@ PowerMode_t FocalTech_Class::getPowerMode(void)
 	return (PowerMode_t)readRegister8(FOCALTECH_REGISTER_POWER_MODE);
 }
 
-uint8_t FocalTech_Class::getVendorID(void)
+uint8_t FocalTech_Class::getVendorID()
 {
 	if(!initialization) {
 		return 0;
@@ -285,7 +285,7 @@ uint8_t FocalTech_Class::getVendorID(void)
 	return readRegister8(FOCALTECH_REGISTER_VENDOR_ID);
 }
 
-uint8_t FocalTech_Class::getVendor1ID(void)
+uint8_t FocalTech_Class::getVendor1ID()
 {
 	if(!initialization) {
 		return 0;
@@ -293,7 +293,7 @@ uint8_t FocalTech_Class::getVendor1ID(void)
 	return readRegister8(FOCALTECH_REGISTER_VENDOR1_ID);
 }
 
-uint8_t FocalTech_Class::getErrorCode(void)
+uint8_t FocalTech_Class::getErrorCode()
 {
 	if(!initialization) {
 		return 0;
@@ -327,13 +327,13 @@ uint8_t FocalTech_Class::getErrorCode(void)
 uint8_t FocalTech_Class::readRegister8(uint8_t reg)
 {
 	uint8_t value;
-	(void)readBytes(reg, &value, 1);
+	()readBytes(reg, &value, 1);
 	return value;
 }
 
 void FocalTech_Class::writeRegister8(uint8_t reg, uint8_t value)
 {
-	(void)writeBytes(reg, &value, 1);
+	()writeBytes(reg, &value, 1);
 }
 
 bool FocalTech_Class::readBytes(uint8_t reg, uint8_t* data, uint8_t nbytes)
@@ -382,7 +382,7 @@ bool FocalTech_Class::writeBytes(uint8_t reg, uint8_t* data, uint8_t nbytes)
 #define GT9XX_CONFIG_CHECKSUM (0x80FF)
 #define GT9XX_FIRMWARE_VERSION (0x8144)
 
-bool GT9xx_Class::probe(void)
+bool GT9xx_Class::probe()
 {
 	uint8_t config0[] = {0x5D, 0x40, 0x01, 0xE0, 0x01, 0x05, 0x35, 0x00, 0x01, 0x08, 0x1E, 0x0F, 0x50, 0x32, 0x03, 0x05,
 						 0x00, 0x00, 0x00, 0x00, 0x22, 0x22, 0x00, 0x18, 0x1B, 0x1E, 0x14, 0x87, 0x27, 0x0A, 0x3C, 0x3E,
@@ -436,13 +436,13 @@ bool GT9xx_Class::probe(void)
 uint8_t GT9xx_Class::readRegister(uint16_t reg)
 {
 	uint8_t value;
-	(void)readBytes(reg, &value, 1);
+	()readBytes(reg, &value, 1);
 	return value;
 }
 
 void GT9xx_Class::writeRegister(uint16_t reg, uint8_t value)
 {
-	(void)writeBytes(reg, &value, 1);
+	()writeBytes(reg, &value, 1);
 }
 
 bool GT9xx_Class::readBytes(uint16_t reg, uint8_t* data, int nbytes)
@@ -485,7 +485,7 @@ void GT9xx_Class::setPins(int rst, int interrupt)
 	_interrupt = interrupt;
 }
 
-void GT9xx_Class::softReset(void)
+void GT9xx_Class::softReset()
 {
 	writeRegister(GT9XX_COMMAND, 0x01);
 }

@@ -2,7 +2,7 @@
 #include "Wire.h"
 #include <Arduino.h>
 
-void I2CBus::scan(void)
+void I2CBus::scan()
 {
 	uint8_t err, addr;
 	int nDevices = 0;

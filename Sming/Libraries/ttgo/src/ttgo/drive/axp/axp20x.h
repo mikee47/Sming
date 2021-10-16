@@ -733,10 +733,10 @@ public:
 	float getCoulombData();
 	uint8_t getCoulombRegister();
 	int setCoulombRegister(uint8_t val);
-	int EnableCoulombcounter(void);
-	int DisableCoulombcounter(void);
-	int StopCoulombcounter(void);
-	int ClearCoulombcounter(void);
+	int EnableCoulombcounter();
+	int DisableCoulombcounter();
+	int StopCoulombcounter();
+	int ClearCoulombcounter();
 
 	int setGPIOMode(axp_gpio_t gpio, axp_gpio_mode_t mode);
 	int setGPIOIrq(axp_gpio_t gpio, axp_gpio_irq_t irq);

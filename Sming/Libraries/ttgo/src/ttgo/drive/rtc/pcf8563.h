@@ -102,7 +102,7 @@ private:
 class RTC_Alarm
 {
 public:
-	RTC_Alarm(void);
+	RTC_Alarm();
 	RTC_Alarm(uint8_t minute, uint8_t hour, uint8_t day, uint8_t weekday);
 	uint8_t minute;
 	uint8_t hour;

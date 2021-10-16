@@ -187,7 +187,7 @@ public:
 	}
 
 #ifdef LILYGO_WATCH_HAS_BMA423
-	void bma423AttachInterrupt(void (*handle)(void))
+	void bma423AttachInterrupt(void (*handle)())
 	{
 		pinMode(BMA423_INT1, INPUT_PULLUP);
 		attachInterrupt(BMA423_INT1, handle, RISING);
@@ -417,7 +417,7 @@ public:
      * ***************************************/
 #ifdef LILYGO_WATCH_HAS_AXP202
 
-	void enableAudio(void)
+	void enableAudio()
 	{
 #if defined(LILYGO_WATCH_2020_V2)
 		power.setPowerOutPut(AXP202_LDO3, AXP202_ON);
@@ -426,7 +426,7 @@ public:
 #endif
 	}
 
-	void disableAudio(void)
+	void disableAudio()
 	{
 #if defined(LILYGO_WATCH_2020_V2)
 		power.setPowerOutPut(AXP202_LDO3, AXP202_OFF);
@@ -446,7 +446,7 @@ public:
 	}
 #endif
 
-	void powerAttachInterrupt(void (*handle)(void))
+	void powerAttachInterrupt(void (*handle)())
 	{
 		pinMode(AXP202_INT, INPUT_PULLUP);
 		attachInterrupt(AXP202_INT, handle, FALLING);
@@ -747,7 +747,7 @@ public:
 #ifdef LILYGO_WATCH_HAS_PCF8563
 	PCF8563_Class rtc;
 
-	void rtcAttachInterrupt(void (*rtc_cb)(void))
+	void rtcAttachInterrupt(void (*rtc_cb)())
 	{
 		pinMode(RTC_INT_PIN, INPUT_PULLUP); //need change to rtc_pin
 		attachInterrupt(RTC_INT_PIN, rtc_cb, FALLING);
@@ -1051,7 +1051,7 @@ public:
 #endif /*LILYGO_WATCH_2020_V1 & LILYGO_WATCH_2020_V2*/
 
 private:
-	void initHardware(void)
+	void initHardware()
 	{
 #if defined(LILYGO_LILYPI_V1)
 		pinMode(EXTERN_USB_EN, OUTPUT);
@@ -1260,7 +1260,7 @@ private:
 	// 	/*
 	//     Interrupt polling is only compatible with 2020-V1, 2020-V2, others are not currently adapted
 	//     */
-	// 	static void TOUCH_IRQ_HANDLE(void)
+	// 	static void TOUCH_IRQ_HANDLE()
 	// 	{
 	// 		portBASE_TYPE task_woken;
 	// 		if(_tpEvent) {

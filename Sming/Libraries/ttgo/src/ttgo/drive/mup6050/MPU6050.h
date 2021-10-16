@@ -159,72 +159,72 @@ public:
 	void setClockSource(mpu6050_clockSource_t source);
 	void setScale(mpu6050_dps_t scale);
 	void setRange(mpu6050_range_t range);
-	mpu6050_clockSource_t getClockSource(void);
-	mpu6050_dps_t getScale(void);
-	mpu6050_range_t getRange(void);
+	mpu6050_clockSource_t getClockSource();
+	mpu6050_dps_t getScale();
+	mpu6050_range_t getRange();
 	void setDHPFMode(mpu6050_dhpf_t dhpf);
 	void setDLPFMode(mpu6050_dlpf_t dlpf);
 	mpu6050_onDelay_t getAccelPowerOnDelay();
 	void setAccelPowerOnDelay(mpu6050_onDelay_t delay);
 
-	uint8_t getIntStatus(void);
+	uint8_t getIntStatus();
 
-	bool getIntZeroMotionEnabled(void);
+	bool getIntZeroMotionEnabled();
 	void setIntZeroMotionEnabled(bool state);
-	bool getIntMotionEnabled(void);
+	bool getIntMotionEnabled();
 	void setIntMotionEnabled(bool state);
-	bool getIntFreeFallEnabled(void);
+	bool getIntFreeFallEnabled();
 	void setIntFreeFallEnabled(bool state);
 
-	uint8_t getMotionDetectionThreshold(void);
+	uint8_t getMotionDetectionThreshold();
 	void setMotionDetectionThreshold(uint8_t threshold);
-	uint8_t getMotionDetectionDuration(void);
+	uint8_t getMotionDetectionDuration();
 	void setMotionDetectionDuration(uint8_t duration);
 
-	uint8_t getZeroMotionDetectionThreshold(void);
+	uint8_t getZeroMotionDetectionThreshold();
 	void setZeroMotionDetectionThreshold(uint8_t threshold);
-	uint8_t getZeroMotionDetectionDuration(void);
+	uint8_t getZeroMotionDetectionDuration();
 	void setZeroMotionDetectionDuration(uint8_t duration);
 
-	uint8_t getFreeFallDetectionThreshold(void);
+	uint8_t getFreeFallDetectionThreshold();
 	void setFreeFallDetectionThreshold(uint8_t threshold);
-	uint8_t getFreeFallDetectionDuration(void);
+	uint8_t getFreeFallDetectionDuration();
 	void setFreeFallDetectionDuration(uint8_t duration);
 
-	bool getSleepEnabled(void);
+	bool getSleepEnabled();
 	void setSleepEnabled(bool state);
-	bool getI2CMasterModeEnabled(void);
+	bool getI2CMasterModeEnabled();
 	void setI2CMasterModeEnabled(bool state);
-	bool getI2CBypassEnabled(void);
+	bool getI2CBypassEnabled();
 	void setI2CBypassEnabled(bool state);
 
-	float readTemperature(void);
-	Activites readActivites(void);
+	float readTemperature();
+	Activites readActivites();
 
-	int16_t getGyroOffsetX(void);
+	int16_t getGyroOffsetX();
 	void setGyroOffsetX(int16_t offset);
-	int16_t getGyroOffsetY(void);
+	int16_t getGyroOffsetY();
 	void setGyroOffsetY(int16_t offset);
-	int16_t getGyroOffsetZ(void);
+	int16_t getGyroOffsetZ();
 	void setGyroOffsetZ(int16_t offset);
 
-	int16_t getAccelOffsetX(void);
+	int16_t getAccelOffsetX();
 	void setAccelOffsetX(int16_t offset);
-	int16_t getAccelOffsetY(void);
+	int16_t getAccelOffsetY();
 	void setAccelOffsetY(int16_t offset);
-	int16_t getAccelOffsetZ(void);
+	int16_t getAccelOffsetZ();
 	void setAccelOffsetZ(int16_t offset);
 
 	void calibrateGyro(uint8_t samples = 50);
 	void setThreshold(uint8_t multiple = 1);
-	uint8_t getThreshold(void);
+	uint8_t getThreshold();
 
-	Vector readRawGyro(void);
-	Vector readNormalizeGyro(void);
+	Vector readRawGyro();
+	Vector readNormalizeGyro();
 
-	Vector readRawAccel(void);
-	Vector readNormalizeAccel(void);
-	Vector readScaledAccel(void);
+	Vector readRawAccel();
+	Vector readNormalizeAccel();
+	Vector readScaledAccel();
 
 private:
 	Vector ra, rg; // Raw vectors

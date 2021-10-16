@@ -75,7 +75,7 @@ void Air530::restart(Air530_RestartMode mode)
  * @note    Erase auxiliary positioning data in flash
  * @retval  None
  */
-void Air530::erase(void)
+void Air530::erase()
 {
 	sendCmd("$PGKC040*2B");
 }
@@ -85,7 +85,7 @@ void Air530::erase(void)
  * @note    Set Air530 to sleep
  * @retval  None
  */
-void Air530::sleep(void)
+void Air530::sleep()
 {
 	sendCmd("$PGKC051,0*37");
 }
@@ -95,7 +95,7 @@ void Air530::sleep(void)
  * @note    Set Air530 to stop
  * @retval  None
  */
-void Air530::stop(void)
+void Air530::stop()
 {
 	sendCmd("$PGKC051,1*36");
 }
@@ -105,7 +105,7 @@ void Air530::stop(void)
  * @note    wakeup Air530
  * @retval  None
  */
-void Air530::wakeup(void)
+void Air530::wakeup()
 {
 	if(wakeup_pin > 0) {
 		digitalWrite(wakeup_pin, HIGH);
@@ -121,7 +121,7 @@ void Air530::wakeup(void)
  * @note    Normal operation mode
  * @retval  None
  */
-void Air530::setNormalMode(void)
+void Air530::setNormalMode()
 {
 	sendCmd("$PGKC105,0*37");
 }
@@ -157,7 +157,7 @@ void Air530::setCycleLowPowerMode(uint32_t runMillis, uint32_t sleepMillis)
  * @note    Ultra-low power tracking mode, need to pull up WAKE to wake up
  * @retval  None
  */
-void Air530::setTrackingMode(void)
+void Air530::setTrackingMode()
 {
 	sendCmd("$PGKC105,4*33");
 }
@@ -167,7 +167,7 @@ void Air530::setTrackingMode(void)
  * @note    Automatic low power consumption mode, can wake up via serial port
  * @retval  None
  */
-void Air530::setAutoLowPowerMode(void)
+void Air530::setAutoLowPowerMode()
 {
 	sendCmd("$PGKC105,8*3F");
 }
@@ -177,7 +177,7 @@ void Air530::setAutoLowPowerMode(void)
  * @note    Automatic ultra-low power tracking mode, need to pull up WAKE to wake up
  * @retval  None
  */
-void Air530::setAutoTrackingMode(void)
+void Air530::setAutoTrackingMode()
 {
 	sendCmd("$PGKC105,9*3E");
 }
@@ -187,7 +187,7 @@ void Air530::setAutoTrackingMode(void)
  * @note    Enable QZSS NMEA format output
  * @retval  None
  */
-void Air530::enableQZSS_NMEA(void)
+void Air530::enableQZSS_NMEA()
 {
 	sendCmd("$PGKC113,0*30");
 }
@@ -197,7 +197,7 @@ void Air530::enableQZSS_NMEA(void)
  * @note    Disable QZSS NMEA format output
  * @retval  None
  */
-void Air530::disableQZSS_NMEA(void)
+void Air530::disableQZSS_NMEA()
 {
 	sendCmd("$PGKC113,1*31");
 }
@@ -207,7 +207,7 @@ void Air530::disableQZSS_NMEA(void)
  * @note    Enable QZSS function
  * @retval  None
  */
-void Air530::enableQZSS(void)
+void Air530::enableQZSS()
 {
 	sendCmd("$PGKC114,0*37");
 }
@@ -217,7 +217,7 @@ void Air530::enableQZSS(void)
  * @note    Disable QZSS function
  * @retval  None
  */
-void Air530::disableQZSS(void)
+void Air530::disableQZSS()
 {
 	sendCmd("$PGKC114,1*36");
 }
@@ -244,7 +244,7 @@ void Air530::setSearchMode(bool gps, bool glonass, bool beidou, bool galieo)
   */
 void Air530::setNMEABaud(uint32_t baud)
 {
-	(void)baud;
+	()baud;
 	// TODO: Don't change
 }
 
@@ -284,7 +284,7 @@ bool Air530::setPPS(Air530_1PPS_Mode mode, uint16_t ppsWidth, uint16_t ppsPeriod
  * @note    NMEA message interval
  * @retval  NMEA Interval(millisecond)
  */
-uint32_t Air530::getNMEAInterval(void)
+uint32_t Air530::getNMEAInterval()
 {
 	sendCmd("$PGKC201*2C");
 	_LOOP_TO_TIMEOUT(while(stream->available()) {
@@ -321,7 +321,7 @@ void Air530::setNMEAInterval(uint16_t ms)
  * @note    Turn on SBAS function
  * @retval  None
  */
-void Air530::enableSBAS(void)
+void Air530::enableSBAS()
 {
 	sendCmd("$PGKC239,0*3B");
 }
@@ -331,7 +331,7 @@ void Air530::enableSBAS(void)
  * @note    Turn off SBAS function
  * @retval None
  */
-void Air530::disableSBAS(void)
+void Air530::disableSBAS()
 {
 	sendCmd("$PGKC239,1*3A");
 }
@@ -341,7 +341,7 @@ void Air530::disableSBAS(void)
  * @note    Query whether SBAS is enabled
  * @retval  true is enable ,false is disable
  */
-bool Air530::getSBASEnable(void)
+bool Air530::getSBASEnable()
 {
 	sendCmd("$PGKC240*29");
 	_LOOP_TO_TIMEOUT(while(stream->available()) {
@@ -379,7 +379,7 @@ void Air530::setNMEAStatement(bool gll, bool rmc, bool vtg, bool gga, bool gsa, 
  * @note    Disable NMEA Output
  * @retval  None
  */
-void Air530::disableNMEAOutput(void)
+void Air530::disableNMEAOutput()
 {
 	setNMEAStatement(false, false, false, false, false, false, false, false);
 }
@@ -389,7 +389,7 @@ void Air530::disableNMEAOutput(void)
  * @note    Enable NMEA Output
  * @retval  None
  */
-void Air530::enableNMEAOutput(void)
+void Air530::enableNMEAOutput()
 {
 	setNMEAStatement(true, true, true, true, true, true, true, true);
 }
@@ -454,7 +454,7 @@ bool Air530::getDateTime(uint16_t& year, uint8_t& month, uint8_t& day, uint8_t& 
  * @note    Query the version number of the current software
  * @retval  version
  */
-const char* Air530::getSoftVersion(void)
+const char* Air530::getSoftVersion()
 {
 	sendCmd("$PGKC462*2F");
 	_LOOP_TO_TIMEOUT(while(stream->available()) {

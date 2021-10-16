@@ -22,15 +22,15 @@ public:
 
 	void begin(i2c_com_fptr_t r, i2c_com_fptr_t w, uint8_t addr = BBQ10KEYBOARD_DEFAULT_ADDR);
 
-	void reset(void);
+	void reset();
 
-	void attachInterrupt(uint8_t pin, void (*func)(void)) const;
+	void attachInterrupt(uint8_t pin, void (*func)()) const;
 	void detachInterrupt(uint8_t pin) const;
-	void clearInterruptStatus(void);
+	void clearInterruptStatus();
 
-	uint8_t status(void) const;
-	uint8_t keyCount(void) const;
-	KeyEvent keyEvent(void) const;
+	uint8_t status() const;
+	uint8_t keyCount() const;
+	KeyEvent keyEvent() const;
 
 	float backlight() const;
 	void setBacklight(float value);

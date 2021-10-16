@@ -391,7 +391,7 @@ int AXP20X_Class::setCoulombRegister(uint8_t val)
 	return AXP_PASS;
 }
 
-int AXP20X_Class::EnableCoulombcounter(void)
+int AXP20X_Class::EnableCoulombcounter()
 {
 	if(!_init)
 		return AXP_NOT_INIT;
@@ -400,7 +400,7 @@ int AXP20X_Class::EnableCoulombcounter(void)
 	return AXP_PASS;
 }
 
-int AXP20X_Class::DisableCoulombcounter(void)
+int AXP20X_Class::DisableCoulombcounter()
 {
 	if(!_init)
 		return AXP_NOT_INIT;
@@ -409,7 +409,7 @@ int AXP20X_Class::DisableCoulombcounter(void)
 	return AXP_PASS;
 }
 
-int AXP20X_Class::StopCoulombcounter(void)
+int AXP20X_Class::StopCoulombcounter()
 {
 	if(!_init)
 		return AXP_NOT_INIT;
@@ -418,7 +418,7 @@ int AXP20X_Class::StopCoulombcounter(void)
 	return AXP_PASS;
 }
 
-int AXP20X_Class::ClearCoulombcounter(void)
+int AXP20X_Class::ClearCoulombcounter()
 {
 	if(!_init)
 		return AXP_NOT_INIT;

@@ -81,7 +81,7 @@ public:
 	uint8_t readRegister8(uint8_t reg);
 	uint16_t readRegister16(uint8_t reg);
 	void writeRegister(uint8_t reg, uint8_t value);
-	uint16_t touched(void);
+	uint16_t touched();
 	// Add deprecated attribute so that the compiler shows a warning
 	void setThreshholds(uint8_t touch, uint8_t release) __attribute__((deprecated));
 	void setThresholds(uint8_t touch, uint8_t release);

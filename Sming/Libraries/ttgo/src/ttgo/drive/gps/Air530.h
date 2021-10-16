@@ -95,35 +95,35 @@ public:
      * @note    Erase auxiliary positioning data in flash
      * @retval  None
      */
-	void erase(void);
+	void erase();
 
 	/**
      * @brief   sleep
      * @note    Set Air530 to sleep
      * @retval  None
      */
-	void sleep(void);
+	void sleep();
 
 	/**
      * @brief   stop
      * @note    Set Air530 to stop
      * @retval  None
      */
-	void stop(void);
+	void stop();
 
 	/**
      * @brief   wakeup
      * @note    wakeup Air530
      * @retval  None
      */
-	void wakeup(void);
+	void wakeup();
 
 	/**
      * @brief   setNormalMode
      * @note    Normal operation mode
      * @retval  None
      */
-	void setNormalMode(void);
+	void setNormalMode();
 
 	/**
      * @brief   setCycleTrackingMode
@@ -148,49 +148,49 @@ public:
      * @note    Ultra-low power tracking mode, need to pull up WAKE to wake up
      * @retval  None
      */
-	void setTrackingMode(void);
+	void setTrackingMode();
 
 	/**
      * @brief   setAutoLowPowerMode
      * @note    Automatic low power consumption mode, can wake up via serial port
      * @retval  None
      */
-	void setAutoLowPowerMode(void);
+	void setAutoLowPowerMode();
 
 	/**
      * @brief   setAutoTrackingMode
      * @note    Automatic ultra-low power tracking mode, need to pull up WAKE to wake up
      * @retval  None
      */
-	void setAutoTrackingMode(void);
+	void setAutoTrackingMode();
 
 	/**
      * @brief   enableQZSS_NMEA
      * @note    Enable QZSS NMEA format output
      * @retval  None
      */
-	void enableQZSS_NMEA(void);
+	void enableQZSS_NMEA();
 
 	/**
      * @brief   disableQZSS_NMEA
      * @note    Disable QZSS NMEA format output
      * @retval  None
      */
-	void disableQZSS_NMEA(void);
+	void disableQZSS_NMEA();
 
 	/**
      * @brief   enableQZSS
      * @note    Enable QZSS function
      * @retval  None
      */
-	void enableQZSS(void);
+	void enableQZSS();
 
 	/**
      * @brief   disableQZSS
      * @note    Disable QZSS function
      * @retval  None
      */
-	void disableQZSS(void);
+	void disableQZSS();
 
 	/**
      * @brief  setSearchMode
@@ -234,7 +234,7 @@ public:
      * @note    NMEA message interval
      * @retval  NMEA Interval(millisecond)
      */
-	uint32_t getNMEAInterval(void);
+	uint32_t getNMEAInterval();
 
 	/**
     * @brief    setInterval
@@ -249,21 +249,21 @@ public:
      * @note    Turn on SBAS function
      * @retval  None
      */
-	void enableSBAS(void);
+	void enableSBAS();
 
 	/**
      * @brief   disableSBAS
      * @note    Turn off SBAS function
      * @retval None
      */
-	void disableSBAS(void);
+	void disableSBAS();
 
 	/**
      * @brief   getSBASEnable
      * @note    Query whether SBAS is enabled
      * @retval  true is enable ,false is disable
      */
-	bool getSBASEnable(void);
+	bool getSBASEnable();
 
 	/**
      * @brief  setNMEAStatement
@@ -285,14 +285,14 @@ public:
      * @note    Disable NMEA Output
      * @retval  None
      */
-	void disableNMEAOutput(void);
+	void disableNMEAOutput();
 
 	/**
      * @brief   enableNMEAOutput
      * @note    Enable NMEA Output
      * @retval  None
      */
-	void enableNMEAOutput(void);
+	void enableNMEAOutput();
 
 	// Command: 243
 	// Command: 244
@@ -332,7 +332,7 @@ public:
      * @note    Query the version number of the current software
      * @retval  version
      */
-	const char* getSoftVersion(void);
+	const char* getSoftVersion();
 
 	/**
      * @brief  setProbablyLoaction
