@@ -37,14 +37,14 @@ typedef FocalTech_Class CapacitiveTouch;
 #endif
 #endif /*LILYGO_WATCH_HAS_TOUCH*/
 
-#if !defined(EXTERNAL_TFT_ESPI_LIBRARY)
-#if defined(LILYGO_WATCH_HAS_DISPLAY) || defined(LILYGO_EINK_TOUCHSCREEN) || defined(LILYGO_WATCH_HAS_EINK)
-#include "libraries/TFT_eSPI/TFT_eSPI.h"
-#include "libraries/U8g2_for_Adafruit_GFX/src/U8g2_for_Adafruit_GFX.h"
-#endif
-#else //EXTERNAL_TFT_ESPI_LIBRARY
-#include <TFT_eSPI.h>
-#endif /*EXTERNAL_TFT_ESPI_LIBRARY*/
+// #if !defined(EXTERNAL_TFT_ESPI_LIBRARY)
+// #if defined(LILYGO_WATCH_HAS_DISPLAY) || defined(LILYGO_EINK_TOUCHSCREEN) || defined(LILYGO_WATCH_HAS_EINK)
+// #include "libraries/TFT_eSPI/TFT_eSPI.h"
+// #include "libraries/U8g2_for_Adafruit_GFX/src/U8g2_for_Adafruit_GFX.h"
+// #endif
+// #else //EXTERNAL_TFT_ESPI_LIBRARY
+// #include <TFT_eSPI.h>
+// #endif /*EXTERNAL_TFT_ESPI_LIBRARY*/
 
 #ifdef LILYGO_WATCH_HAS_BMA423
 #include "drive/bma423/bma.h"
@@ -151,7 +151,7 @@ public:
 	{
 		if(_ttgo == nullptr) {
 			_ttgo = new TTGOClass();
-			_tpEvent = xEventGroupCreate();
+			// _tpEvent = xEventGroupCreate();
 		}
 		return _ttgo;
 	}
@@ -196,23 +196,14 @@ public:
 		drv = new Adafruit_DRV2605();
 #endif /*LILYGO_WATCH_DRV2605*/
 
-		if(!(disable & NO_HARDWARE))
+		if(!(disable & NO_HARDWARE)) {
 			initHardware();
-
-		if(!(disable & NO_HARDWARE))
 			initPower();
-
-		if(!(disable & NO_HARDWARE))
-			initTFT();
-
-		if(!(disable & NO_HARDWARE))
-			initTouch();
-
-		if(!(disable & NO_HARDWARE))
+			// initTFT();
+			// initTouch();
 			initSensor();
-
-		if(!(disable & NO_HARDWARE))
 			initBlacklight();
+		}
 	}
 
 #ifdef LILYGO_WATCH_HAS_BMA423
@@ -240,161 +231,160 @@ public:
      * @brief  Get the touch screen coordinates,
      *  return true if pressed, false otherwise
      */
+	// 	bool getTouch(int16_t& x, int16_t& y)
+	// 	{
+	// 		uint16_t __x = 0, __y = 0;
+	// 		if(touch == nullptr) {
+	// 			return false;
+	// 		}
 
-	bool getTouch(int16_t& x, int16_t& y)
-	{
-		uint16_t __x = 0, __y = 0;
-		if(touch == nullptr) {
-			return false;
-		}
+	// #if defined(LILYGO_TOUCH_DRIVER_GTXXX)
+	// 		if(!touch->scanPoint()) {
+	// 			return false;
+	// 		}
+	// 		touch->getPoint(__x, __y, 0);
 
-#if defined(LILYGO_TOUCH_DRIVER_GTXXX)
-		if(!touch->scanPoint()) {
-			return false;
-		}
-		touch->getPoint(__x, __y, 0);
+	// #elif defined(LILYGO_TOUCH_DRIVER_FTXXX)
+	// 		if(!touch->getPoint(__x, __y)) {
+	// 			return false;
+	// 		}
+	// #endif /*LILYGO_TOUCH_DRIVER_GTXXX LILYGO_TOUCH_DRIVER_FTXXX*/
 
-#elif defined(LILYGO_TOUCH_DRIVER_FTXXX)
-		if(!touch->getPoint(__x, __y)) {
-			return false;
-		}
-#endif /*LILYGO_TOUCH_DRIVER_GTXXX LILYGO_TOUCH_DRIVER_FTXXX*/
+	// #if defined(LILYGO_BLOCK_ILI9481_MODULE)
+	// 		uint8_t rotation = tft->getRotation();
+	// 		switch(rotation) {
+	// 		case 1:
+	// 			x = __y;
+	// 			y = tft->height() - __x;
+	// 			break;
+	// 		case 2:
+	// 			x = tft->width() - __x;
+	// 			y = tft->height() - __y;
+	// 			break;
+	// 		case 3:
+	// 			x = tft->width() - __y;
+	// 			y = __x;
+	// 			break;
+	// 		case 0:
+	// 		default:
+	// 			x = __x;
+	// 			y = __y;
+	// 		}
+	// #elif defined(LILYGO_BLOCK_ST7796S_MODULE)
+	// 		uint8_t rotation = tft->getRotation();
+	// 		switch(rotation) {
+	// 		case 1:
+	// 			x = __y;
+	// 			y = tft->height() - __x;
+	// 			break;
+	// 		case 2:
+	// 			x = tft->width() - __x;
+	// 			y = tft->height() - __y;
+	// 			break;
+	// 		case 3:
+	// 			x = tft->width() - __y;
+	// 			y = __x;
+	// 			break;
+	// 		case 0:
+	// 		default:
+	// 			x = __x;
+	// 			y = __y;
+	// 		}
+	// #elif defined(LILYGO_WATCH_2019_WITH_TOUCH)
+	// 		uint8_t rotation = tft->getRotation();
+	// 		int16_t _x = map(__x, 0, 320, 0, 240);
+	// 		int16_t _y = map(__y, 0, 320, 0, 240);
+	// 		switch(rotation) {
+	// 		case 1:
+	// 			x = _y;
+	// 			y = TFT_HEIGHT - _x;
+	// 			break;
+	// 		case 2:
+	// 			x = TFT_WIDTH - _x;
+	// 			y = TFT_HEIGHT - _y;
+	// 			break;
+	// 		case 3:
+	// 			x = TFT_WIDTH - _y;
+	// 			y = _x;
+	// 			break;
+	// 		case 0:
+	// 		default:
+	// 			x = _x;
+	// 			y = _y;
+	// 		}
+	// #elif defined(LILYGO_WATCH_2020_V1) || defined(LILYGO_WATCH_2020_V2) || defined(LILYGO_WATCH_2020_V3)
 
-#if defined(LILYGO_BLOCK_ILI9481_MODULE)
-		uint8_t rotation = tft->getRotation();
-		switch(rotation) {
-		case 1:
-			x = __y;
-			y = tft->height() - __x;
-			break;
-		case 2:
-			x = tft->width() - __x;
-			y = tft->height() - __y;
-			break;
-		case 3:
-			x = tft->width() - __y;
-			y = __x;
-			break;
-		case 0:
-		default:
-			x = __x;
-			y = __y;
-		}
-#elif defined(LILYGO_BLOCK_ST7796S_MODULE)
-		uint8_t rotation = tft->getRotation();
-		switch(rotation) {
-		case 1:
-			x = __y;
-			y = tft->height() - __x;
-			break;
-		case 2:
-			x = tft->width() - __x;
-			y = tft->height() - __y;
-			break;
-		case 3:
-			x = tft->width() - __y;
-			y = __x;
-			break;
-		case 0:
-		default:
-			x = __x;
-			y = __y;
-		}
-#elif defined(LILYGO_WATCH_2019_WITH_TOUCH)
-		uint8_t rotation = tft->getRotation();
-		int16_t _x = map(__x, 0, 320, 0, 240);
-		int16_t _y = map(__y, 0, 320, 0, 240);
-		switch(rotation) {
-		case 1:
-			x = _y;
-			y = TFT_HEIGHT - _x;
-			break;
-		case 2:
-			x = TFT_WIDTH - _x;
-			y = TFT_HEIGHT - _y;
-			break;
-		case 3:
-			x = TFT_WIDTH - _y;
-			y = _x;
-			break;
-		case 0:
-		default:
-			x = _x;
-			y = _y;
-		}
-#elif defined(LILYGO_WATCH_2020_V1) || defined(LILYGO_WATCH_2020_V2) || defined(LILYGO_WATCH_2020_V3)
+	// #ifndef LILYGO_WATCH_2020_PANEL_V1
+	// 		uint8_t rotation = tft->getRotation();
+	// 		switch(rotation) {
+	// 		case 0:
+	// 			x = TFT_WIDTH - __x;
+	// 			y = TFT_HEIGHT - __y;
+	// 			break;
+	// 		case 1:
+	// 			x = TFT_WIDTH - __y;
+	// 			y = __x;
+	// 			break;
+	// 		case 3:
+	// 			x = __y;
+	// 			y = TFT_HEIGHT - __x;
+	// 			break;
+	// 		case 2:
+	// 		default:
+	// 			x = __x;
+	// 			y = __y;
+	// 		}
+	// #else  /*LILYGO_WATCH_2020_PANEL_V1*/
+	// 		uint8_t rotation = tft->getRotation();
+	// 		switch(rotation) {
+	// 		case 2:
+	// 			x = TFT_WIDTH - __x;
+	// 			y = TFT_HEIGHT - __y;
+	// 			break;
+	// 		case 1:
+	// 			x = __y;
+	// 			y = TFT_HEIGHT - __x;
+	// 			break;
+	// 		case 3:
+	// 			x = TFT_HEIGHT - __y;
+	// 			y = __x;
+	// 			break;
+	// 		case 0:
+	// 		default:
+	// 			x = __x;
+	// 			y = __y;
+	// 		}
+	// #endif /*LILYGO_WATCH_2020_PANEL_V1*/
 
-#ifndef LILYGO_WATCH_2020_PANEL_V1
-		uint8_t rotation = tft->getRotation();
-		switch(rotation) {
-		case 0:
-			x = TFT_WIDTH - __x;
-			y = TFT_HEIGHT - __y;
-			break;
-		case 1:
-			x = TFT_WIDTH - __y;
-			y = __x;
-			break;
-		case 3:
-			x = __y;
-			y = TFT_HEIGHT - __x;
-			break;
-		case 2:
-		default:
-			x = __x;
-			y = __y;
-		}
-#else  /*LILYGO_WATCH_2020_PANEL_V1*/
-		uint8_t rotation = tft->getRotation();
-		switch(rotation) {
-		case 2:
-			x = TFT_WIDTH - __x;
-			y = TFT_HEIGHT - __y;
-			break;
-		case 1:
-			x = __y;
-			y = TFT_HEIGHT - __x;
-			break;
-		case 3:
-			x = TFT_HEIGHT - __y;
-			y = __x;
-			break;
-		case 0:
-		default:
-			x = __x;
-			y = __y;
-		}
-#endif /*LILYGO_WATCH_2020_PANEL_V1*/
-
-#elif defined(LILYGO_EINK_GDEW0371W7)
-		uint8_t r = ePaper->getRotation();
-		switch(r) {
-		case 0:
-			x = __x;
-			y = __y;
-			break;
-		case 1:
-			x = __y;
-			y = GDEW0371W7_HEIGHT - __x;
-			break;
-		case 2:
-			x = GDEW0371W7_HEIGHT - __x;
-			y = GDEW0371W7_WIDTH - __y;
-			break;
-		case 3:
-			x = GDEW0371W7_WIDTH - __y;
-			y = __x;
-			break;
-		default:
-			x = __x;
-			y = __y;
-		}
-#else
-		x = __x;
-		y = __y;
-#endif
-		return true;
-	}
+	// #elif defined(LILYGO_EINK_GDEW0371W7)
+	// 		uint8_t r = ePaper->getRotation();
+	// 		switch(r) {
+	// 		case 0:
+	// 			x = __x;
+	// 			y = __y;
+	// 			break;
+	// 		case 1:
+	// 			x = __y;
+	// 			y = GDEW0371W7_HEIGHT - __x;
+	// 			break;
+	// 		case 2:
+	// 			x = GDEW0371W7_HEIGHT - __x;
+	// 			y = GDEW0371W7_WIDTH - __y;
+	// 			break;
+	// 		case 3:
+	// 			x = GDEW0371W7_WIDTH - __y;
+	// 			y = __x;
+	// 			break;
+	// 		default:
+	// 			x = __x;
+	// 			y = __y;
+	// 		}
+	// #else
+	// 		x = __x;
+	// 		y = __y;
+	// #endif
+	// 		return true;
+	// 	}
 
 	/*@brief  Cannot wake up after entering sleep mode,
     * can only be solved by restarting the power supply
@@ -609,31 +599,31 @@ public:
 	/******************************************
      *              DISPLAY
      * ***************************************/
-#ifdef LILYGO_WATCH_HAS_DISPLAY
-	void displayOff()
-	{
-		if(tft) {
-			tft->writecommand(0x10);
-		}
-#ifdef LILYGO_WATCH_HAS_TOUCH
-		touchToSleep();
-#endif /*LILYGO_WATCH_HAS_TOUCH*/
-	}
+	// #ifdef LILYGO_WATCH_HAS_DISPLAY
+	// 	void displayOff()
+	// 	{
+	// 		if(tft) {
+	// 			tft->writecommand(0x10);
+	// 		}
+	// #ifdef LILYGO_WATCH_HAS_TOUCH
+	// 		touchToSleep();
+	// #endif /*LILYGO_WATCH_HAS_TOUCH*/
+	// 	}
 
-	void displaySleep()
-	{
-		tft->writecommand(0x10);
-#ifdef LILYGO_WATCH_HAS_TOUCH
-		touchToMonitor();
-#endif /*LILYGO_WATCH_HAS_TOUCH*/
-	}
+	// 	void displaySleep()
+	// 	{
+	// 		tft->writecommand(0x10);
+	// #ifdef LILYGO_WATCH_HAS_TOUCH
+	// 		touchToMonitor();
+	// #endif /*LILYGO_WATCH_HAS_TOUCH*/
+	// 	}
 
-	void displayWakeup()
-	{
-		tft->writecommand(0x11);
-	}
+	// 	void displayWakeup()
+	// 	{
+	// 		tft->writecommand(0x11);
+	// 	}
 
-#endif /*LILYGO_WATCH_HAS_DISPLAY*/
+	// #endif /*LILYGO_WATCH_HAS_DISPLAY*/
 
 	/******************************************
      *              BACKLIGHT
@@ -699,7 +689,7 @@ public:
 			buf1 = (lv_color_t*)calloc(sizeof(lv_color_t), LVGL_BUFFER_SIZE);
 		}
 		if(!buf1) {
-			log_e("buf1 alloc failed\n");
+			debug_e("buf1 alloc failed\n");
 			return false;
 		}
 #ifdef TWATCH_LVGL_DOUBLE_BUFFER
@@ -709,7 +699,7 @@ public:
 			buf2 = (lv_color_t*)calloc(sizeof(lv_color_t), LVGL_BUFFER_SIZE);
 		}
 		if(!buf2) {
-			log_e("buf2 alloc failed\n");
+			debug_e("buf2 alloc failed\n");
 			free(buf1);
 			return false;
 		}
@@ -795,9 +785,9 @@ public:
 	AXP20X_Class* power = nullptr;
 #endif
 
-#if defined(LILYGO_WATCH_HAS_DISPLAY)
-	TFT_eSPI* tft = nullptr;
-#endif
+	// #if defined(LILYGO_WATCH_HAS_DISPLAY)
+	// 	TFT_eSPI* tft = nullptr;
+	// #endif
 
 #ifdef LILYGO_WATCH_HAS_BUZZER
 	Buzzer* buzzer = nullptr;
@@ -869,7 +859,7 @@ public:
 			sdhander->begin(SD_SCLK, SD_MISO, SD_MOSI, SD_CS);
 		}
 		if(!SD.begin(SD_CS, *sdhander)) {
-			log_e("SD Card Mount Failed");
+			debug_e("SD Card Mount Failed");
 			return false;
 		}
 		return true;
@@ -1121,7 +1111,7 @@ private:
 #if defined(LILYGO_WATCH_HAS_BMA423)
 		struct bma423_axes_remap remap_data;
 		if(!bma->begin()) {
-			log_e("Begin BMA423 FAIL");
+			debug_e("Begin BMA423 FAIL");
 			return false;
 		}
 
@@ -1160,171 +1150,170 @@ private:
 
 #elif defined(LILYGO_WATCH_HAS_MPU6050)
 		if(!mpu->begin(i2cReadBytes, i2cWriteBytes, MPU6050_SCALE_2000DPS, MPU6050_RANGE_2G)) {
-			log_e("Begin MPU6050 FAIL");
+			debug_e("Begin MPU6050 FAIL");
 			return false;
 		}
 #endif
 		return true;
 	}
 
-	void initTFT()
-	{
-// #if (defined(LILYGO_WATCH_HAS_DISPLAY) && !defined(LILYGO_WATCH_HAS_EINK)) || defined(LILYGO_BLOCK_ILI9488_MODULE) || defined(LILYGO_BLOCK_ST7796S_MODULE)
-#if defined(LILYGO_WATCH_HAS_DISPLAY)
-#if defined(EXTERNAL_TFT_ESPI_LIBRARY)
-		if(tft == nullptr) {
-			log_e("TFT Handler is NULL!!!");
-			return;
-		}
-#else /* EXTERNAL_TFT_ESPI_LIBRARY */
-		int16_t w = 240;
-		int16_t h = 240;
-		uint32_t drv = 0x7789;
-		uint32_t freq = 40000000;
-#if defined(LILYGO_BLOCK_ST7796S_MODULE) && (defined(LILYGO_WATCH_BLOCK) || defined(LILYGO_LILYPI_V1))
-		w = 320;
-		h = 480;
-		drv = 0x7796;
-		freq = 27000000;
-#elif defined(LILYGO_BLOCK_ILI9488_MODULE) && (defined(LILYGO_WATCH_BLOCK) || defined(LILYGO_LILYPI_V1))
-		w = 320;
-		h = 480;
-		drv = 0x9488;
-		freq = 27000000;
-#elif defined(LILYGO_BLOCK_ILI9481_MODULE) && (defined(LILYGO_WATCH_BLOCK) || defined(LILYGO_LILYPI_V1))
-		w = 320;
-		h = 480;
-		drv = 0x9481;
-		freq = 27000000;
-#elif defined(LILYGO_GC9A01A_MODULE) && defined(LILYGO_WATCH_BLOCK)
-		w = 240;
-		h = 240;
-		drv = 0x9A01;
-		freq = 27000000;
-		//Soft reset
-		pinMode(TWATCH_TFT_RST, OUTPUT);
-		digitalWrite(TWATCH_TFT_RST, HIGH);
-		delay(5);
-		digitalWrite(TWATCH_TFT_RST, LOW);
-		delay(20);
-		digitalWrite(TWATCH_TFT_RST, HIGH);
+	// 	void initTFT()
+	// 	{
+	// #if defined(LILYGO_WATCH_HAS_DISPLAY)
+	// #if defined(EXTERNAL_TFT_ESPI_LIBRARY)
+	// 		if(tft == nullptr) {
+	// 			debug_e("TFT Handler is NULL!!!");
+	// 			return;
+	// 		}
+	// #else /* EXTERNAL_TFT_ESPI_LIBRARY */
+	// 		int16_t w = 240;
+	// 		int16_t h = 240;
+	// 		uint32_t drv = 0x7789;
+	// 		uint32_t freq = 40000000;
+	// #if defined(LILYGO_BLOCK_ST7796S_MODULE) && (defined(LILYGO_WATCH_BLOCK) || defined(LILYGO_LILYPI_V1))
+	// 		w = 320;
+	// 		h = 480;
+	// 		drv = 0x7796;
+	// 		freq = 27000000;
+	// #elif defined(LILYGO_BLOCK_ILI9488_MODULE) && (defined(LILYGO_WATCH_BLOCK) || defined(LILYGO_LILYPI_V1))
+	// 		w = 320;
+	// 		h = 480;
+	// 		drv = 0x9488;
+	// 		freq = 27000000;
+	// #elif defined(LILYGO_BLOCK_ILI9481_MODULE) && (defined(LILYGO_WATCH_BLOCK) || defined(LILYGO_LILYPI_V1))
+	// 		w = 320;
+	// 		h = 480;
+	// 		drv = 0x9481;
+	// 		freq = 27000000;
+	// #elif defined(LILYGO_GC9A01A_MODULE) && defined(LILYGO_WATCH_BLOCK)
+	// 		w = 240;
+	// 		h = 240;
+	// 		drv = 0x9A01;
+	// 		freq = 27000000;
+	// 		//Soft reset
+	// 		pinMode(TWATCH_TFT_RST, OUTPUT);
+	// 		digitalWrite(TWATCH_TFT_RST, HIGH);
+	// 		delay(5);
+	// 		digitalWrite(TWATCH_TFT_RST, LOW);
+	// 		delay(20);
+	// 		digitalWrite(TWATCH_TFT_RST, HIGH);
 
-#endif /* (LILYGO_BLOCK_ST7796S_MODULE) && defined(LILYGO_WATCH_BLOCK) */
-		tft = new TFT_eSPI(w, h);
-		tft->setDriver(drv, freq);
-		tft->setPins(TWATCH_TFT_MOSI, TWATCH_TFT_MISO, TWATCH_TFT_SCLK, TWATCH_TFT_CS, TWATCH_TFT_DC);
-#endif /*EXTERNAL_TFT_ESPI_LIBRARY*/
+	// #endif /* (LILYGO_BLOCK_ST7796S_MODULE) && defined(LILYGO_WATCH_BLOCK) */
+	// 		tft = new TFT_eSPI(w, h);
+	// 		tft->setDriver(drv, freq);
+	// 		tft->setPins(TWATCH_TFT_MOSI, TWATCH_TFT_MISO, TWATCH_TFT_SCLK, TWATCH_TFT_CS, TWATCH_TFT_DC);
+	// #endif /*EXTERNAL_TFT_ESPI_LIBRARY*/
 
-		tft->init();
+	// 		tft->init();
 
-#if defined(ENABLE_LVGL_FLUSH_DMA)
-		tft->initDMA(); // To use SPI DMA you must call initDMA() to setup the DMA engine
-#endif
+	// #if defined(ENABLE_LVGL_FLUSH_DMA)
+	// 		tft->initDMA(); // To use SPI DMA you must call initDMA() to setup the DMA engine
+	// #endif
 
-#if defined(LILYGO_WATCH_2020_V1) || defined(LILYGO_WATCH_2020_V2) || defined(LILYGO_WATCH_2020_V3)
-		// Set default initial orientation
-		tft->setRotation(2);
-#endif /*LILYGO_WATCH_2020_V1*/
+	// #if defined(LILYGO_WATCH_2020_V1) || defined(LILYGO_WATCH_2020_V2) || defined(LILYGO_WATCH_2020_V3)
+	// 		// Set default initial orientation
+	// 		tft->setRotation(2);
+	// #endif /*LILYGO_WATCH_2020_V1*/
 
-		tft->fillScreen(TFT_BLACK);
+	// 		tft->fillScreen(TFT_BLACK);
 
-		tft->setTextFont(1);
+	// 		tft->setTextFont(1);
 
-#elif defined(LILYGO_EINK_GDEW0371W7)
-		/* sclk = 18 mosi = 23 miso = n/a */
-		SPI.begin(EINK_SPI_CLK, EINK_SPI_MISO, EINK_SPI_MOSI);
-		ePaper = new ePaperDisplay(GDEW0371W7, EINK_BUSY, EINK_RESET, EINK_DC, EINK_SS);
-#elif defined(LILYGO_EINK_GDEH0154D67_BL) || defined(LILYGO_EINK_GDEH0154D67_TP) || defined(LILYGO_EINK_GDEP015OC1)
-		log_i("GDEH0154D67 Init...");
+	// #elif defined(LILYGO_EINK_GDEW0371W7)
+	// 		/* sclk = 18 mosi = 23 miso = n/a */
+	// 		SPI.begin(EINK_SPI_CLK, EINK_SPI_MISO, EINK_SPI_MOSI);
+	// 		ePaper = new ePaperDisplay(GDEW0371W7, EINK_BUSY, EINK_RESET, EINK_DC, EINK_SS);
+	// #elif defined(LILYGO_EINK_GDEH0154D67_BL) || defined(LILYGO_EINK_GDEH0154D67_TP) || defined(LILYGO_EINK_GDEP015OC1)
+	// 		log_i("GDEH0154D67 Init...");
 
-		/* sclk = 18 mosi = 23 miso = n/a */
-		SPI.begin(EINK_SPI_CLK, EINK_SPI_MISO, EINK_SPI_MOSI);
-		io = new GxIO_Class(SPI, EINK_SS, EINK_DC, EINK_RESET);
-		ePaper = new GxEPD_Class(*io, EINK_RESET, EINK_BUSY);
-		ePaper->init();
-		ePaper->setRotation(0);
-		ePaper->fillScreen(GxEPD_WHITE);
-		ePaper->setTextColor(GxEPD_BLACK);
-		ePaper->setCursor(0, 0);
-#endif
-	}
+	// 		/* sclk = 18 mosi = 23 miso = n/a */
+	// 		SPI.begin(EINK_SPI_CLK, EINK_SPI_MISO, EINK_SPI_MOSI);
+	// 		io = new GxIO_Class(SPI, EINK_SS, EINK_DC, EINK_RESET);
+	// 		ePaper = new GxEPD_Class(*io, EINK_RESET, EINK_BUSY);
+	// 		ePaper->init();
+	// 		ePaper->setRotation(0);
+	// 		ePaper->fillScreen(GxEPD_WHITE);
+	// 		ePaper->setTextColor(GxEPD_BLACK);
+	// 		ePaper->setCursor(0, 0);
+	// #endif
+	// 	}
 
-	void initTouch()
-	{
-#if defined(TOUCH_RST)
-		pinMode(TOUCH_RST, OUTPUT);
-		digitalWrite(TOUCH_RST, LOW);
-		delay(8);
-		digitalWrite(TOUCH_RST, HIGH);
-#endif
+	// 	void initTouch()
+	// 	{
+	// #if defined(TOUCH_RST)
+	// 		pinMode(TOUCH_RST, OUTPUT);
+	// 		digitalWrite(TOUCH_RST, LOW);
+	// 		delay(8);
+	// 		digitalWrite(TOUCH_RST, HIGH);
+	// #endif
 
-#if defined(LILYGO_TOUCHSCREEN_CALLBACK_METHOD)
-		touch = new CapacitiveTouch();
-#if defined(LILYGO_TOUCH_DRIVER_GTXXX)
-		uint8_t address = 0x5D;
-		if(i2c->deviceProbe(0x5D)) {
-			address = 0x5D;
-		} else if(i2c->deviceProbe(0x14)) {
-			address = 0x14;
-		}
-		if(!touch->begin(i2cReadBytes_u16, i2cWriteBytes_u16, address)) {
-			log_e("Begin touch FAIL");
-		}
-#elif defined(LILYGO_TOUCH_DRIVER_FTXXX)
-		if(!touch->begin(i2cReadBytes, i2cWriteBytes)) {
-			log_e("Begin touch FAIL");
-		}
-		touch->enableINT();
-		/*
-        The time period of switching from active mode to monitor mode when there is no touching,
-        unit position, the manual indicates that the default value is 0xA,
-        and the default value is written here
-        */
-		touch->setMonitorTime(0x0A);
-		/*
-        Report rate in monitor mode,
-        unit location, default value is 0x28, 40ms?
-        */
-		touch->setMonitorPeriod(0x28);
+	// #if defined(LILYGO_TOUCHSCREEN_CALLBACK_METHOD)
+	// 		touch = new CapacitiveTouch();
+	// #if defined(LILYGO_TOUCH_DRIVER_GTXXX)
+	// 		uint8_t address = 0x5D;
+	// 		if(i2c->deviceProbe(0x5D)) {
+	// 			address = 0x5D;
+	// 		} else if(i2c->deviceProbe(0x14)) {
+	// 			address = 0x14;
+	// 		}
+	// 		if(!touch->begin(i2cReadBytes_u16, i2cWriteBytes_u16, address)) {
+	// 			debug_e("Begin touch FAIL");
+	// 		}
+	// #elif defined(LILYGO_TOUCH_DRIVER_FTXXX)
+	// 		if(!touch->begin(i2cReadBytes, i2cWriteBytes)) {
+	// 			debug_e("Begin touch FAIL");
+	// 		}
+	// 		touch->enableINT();
+	// 		/*
+	//         The time period of switching from active mode to monitor mode when there is no touching,
+	//         unit position, the manual indicates that the default value is 0xA,
+	//         and the default value is written here
+	//         */
+	// 		touch->setMonitorTime(0x0A);
+	// 		/*
+	//         Report rate in monitor mode,
+	//         unit location, default value is 0x28, 40ms?
+	//         */
+	// 		touch->setMonitorPeriod(0x28);
 
-#endif /*LILYGO_TOUCH_DRIVER_XXXXX*/
+	// #endif /*LILYGO_TOUCH_DRIVER_XXXXX*/
 
-#elif defined(LILYGO_WATCH_HAS_TOUCH)
-		touch = new CapacitiveTouch();
-		Wire1.begin(TOUCH_SDA, TOUCH_SCL);
-		if(!touch->begin(Wire1)) {
-			log_e("Begin touch FAIL");
-		}
-#endif /*initTouch*/
+	// #elif defined(LILYGO_WATCH_HAS_TOUCH)
+	// 		touch = new CapacitiveTouch();
+	// 		Wire1.begin(TOUCH_SDA, TOUCH_SCL);
+	// 		if(!touch->begin(Wire1)) {
+	// 			debug_e("Begin touch FAIL");
+	// 		}
+	// #endif /*initTouch*/
 
-#if(defined(LILYGO_WATCH_2020_V1) || defined(LILYGO_WATCH_2020_V2) || defined(LILYGO_WATCH_2020_V3) ||                 \
-	defined(LILYGO_WATCH_2019_WITH_TOUCH)) &&                                                                          \
-	defined(LILYGO_WATCH_LVGL)
-		/*
-            Interrupt polling is only compatible with 2020-V1, 2020-V2, others are not currently adapted
-        */
-		pinMode(TOUCH_INT, INPUT);
-		attachInterrupt(TOUCH_INT, TOUCH_IRQ_HANDLE, FALLING);
-#endif /*LILYGO_WATCH_2020_V1 & LILYGO_WATCH_2020_V2*/
-	}
+	// #if(defined(LILYGO_WATCH_2020_V1) || defined(LILYGO_WATCH_2020_V2) || defined(LILYGO_WATCH_2020_V3) ||                 \
+// 	defined(LILYGO_WATCH_2019_WITH_TOUCH)) &&                                                                          \
+// 	defined(LILYGO_WATCH_LVGL)
+	// 		/*
+	//             Interrupt polling is only compatible with 2020-V1, 2020-V2, others are not currently adapted
+	//         */
+	// 		pinMode(TOUCH_INT, INPUT);
+	// 		attachInterrupt(TOUCH_INT, TOUCH_IRQ_HANDLE, FALLING);
+	// #endif /*LILYGO_WATCH_2020_V1 & LILYGO_WATCH_2020_V2*/
+	// 	}
 
-#if(defined(LILYGO_WATCH_2020_V1) || defined(LILYGO_WATCH_2020_V2) || defined(LILYGO_WATCH_2020_V3) ||                 \
-	defined(LILYGO_WATCH_2019_WITH_TOUCH)) &&                                                                          \
-	defined(LILYGO_WATCH_LVGL)
-	/*
-    Interrupt polling is only compatible with 2020-V1, 2020-V2, others are not currently adapted
-    */
-	static void TOUCH_IRQ_HANDLE(void)
-	{
-		portBASE_TYPE task_woken;
-		if(_ttgo->_tpEvent) {
-			xEventGroupSetBitsFromISR(_ttgo->_tpEvent, TOUCH_IRQ_BIT, &task_woken);
-			if(task_woken == pdTRUE) {
-				portYIELD_FROM_ISR();
-			}
-		}
-	}
-#endif /*LILYGO_WATCH_2020_V1 & LILYGO_WATCH_2020_V2*/
+	// #if(defined(LILYGO_WATCH_2020_V1) || defined(LILYGO_WATCH_2020_V2) || defined(LILYGO_WATCH_2020_V3) ||                 \
+// 	defined(LILYGO_WATCH_2019_WITH_TOUCH)) &&                                                                          \
+// 	defined(LILYGO_WATCH_LVGL)
+	// 	/*
+	//     Interrupt polling is only compatible with 2020-V1, 2020-V2, others are not currently adapted
+	//     */
+	// 	static void TOUCH_IRQ_HANDLE(void)
+	// 	{
+	// 		portBASE_TYPE task_woken;
+	// 		if(_ttgo->_tpEvent) {
+	// 			xEventGroupSetBitsFromISR(_ttgo->_tpEvent, TOUCH_IRQ_BIT, &task_woken);
+	// 			if(task_woken == pdTRUE) {
+	// 				portYIELD_FROM_ISR();
+	// 			}
+	// 		}
+	// 	}
+	// #endif /*LILYGO_WATCH_2020_V1 & LILYGO_WATCH_2020_V2*/
 
 	void initPower()
 	{
@@ -1339,7 +1328,7 @@ private:
 #ifdef LILYGO_WATCH_HAS_AXP202
 		int ret = power->begin(i2cReadBytes, i2cWriteBytes);
 		if(ret == AXP_FAIL) {
-			log_e("AXP Power begin failed");
+			debug_e("AXP Power begin failed");
 		} else {
 			//Change the shutdown time to 4 seconds
 			power->setShutdownTime(AXP_POWER_OFF_TIME_4S);
@@ -1463,7 +1452,7 @@ private:
 
 	I2CBus* i2c = nullptr;
 	static TTGOClass* _ttgo;
-	static EventGroupHandle_t _tpEvent;
+	// static EventGroupHandle_t _tpEvent;
 
 #if defined(LILYGO_WATCH_LVGL)
 	Ticker* tickTicker = nullptr;
@@ -1502,34 +1491,34 @@ protected:
 		lv_disp_flush_ready(disp_drv);
 	}
 
-#if defined(LILYGO_WATCH_LVGL) && defined(LILYGO_WATCH_HAS_TOUCH)
-	static bool touchpad_read(lv_indev_drv_t* indev_drv, lv_indev_data_t* data)
-	{
-#if(defined(LILYGO_WATCH_2020_V1) || defined(LILYGO_WATCH_2020_V2) || defined(LILYGO_WATCH_2020_V3) ||                 \
-	defined(LILYGO_WATCH_2019_WITH_TOUCH)) &&                                                                          \
-	defined(LILYGO_WATCH_LVGL)
-		/*
-            Interrupt polling is only compatible with 2020-V1, 2020-V2,2019, others are not currently adapted
-        */
-		static int16_t x, y;
-		if(xEventGroupGetBits(_ttgo->_tpEvent) & TOUCH_IRQ_BIT) {
-			xEventGroupClearBits(_ttgo->_tpEvent, TOUCH_IRQ_BIT);
-			data->state = _ttgo->getTouch(x, y) ? LV_INDEV_STATE_PR : LV_INDEV_STATE_REL;
-			data->point.x = x;
-			data->point.y = y;
-		} else {
-			data->state = LV_INDEV_STATE_REL;
-			data->point.x = x;
-			data->point.y = y;
-		}
-#else
-		data->state = _ttgo->getTouch(data->point.x, data->point.y) ? LV_INDEV_STATE_PR : LV_INDEV_STATE_REL;
-#endif /*LILYGO_WATCH_2020_V1 & LILYGO_WATCH_2020_V2*/
+	// #if defined(LILYGO_WATCH_LVGL) && defined(LILYGO_WATCH_HAS_TOUCH)
+	// 	static bool touchpad_read(lv_indev_drv_t* indev_drv, lv_indev_data_t* data)
+	// 	{
+	// #if(defined(LILYGO_WATCH_2020_V1) || defined(LILYGO_WATCH_2020_V2) || defined(LILYGO_WATCH_2020_V3) ||                 \
+// 	defined(LILYGO_WATCH_2019_WITH_TOUCH)) &&                                                                          \
+// 	defined(LILYGO_WATCH_LVGL)
+	// 		/*
+	//             Interrupt polling is only compatible with 2020-V1, 2020-V2,2019, others are not currently adapted
+	//         */
+	// 		static int16_t x, y;
+	// 		if(xEventGroupGetBits(_ttgo->_tpEvent) & TOUCH_IRQ_BIT) {
+	// 			xEventGroupClearBits(_ttgo->_tpEvent, TOUCH_IRQ_BIT);
+	// 			data->state = _ttgo->getTouch(x, y) ? LV_INDEV_STATE_PR : LV_INDEV_STATE_REL;
+	// 			data->point.x = x;
+	// 			data->point.y = y;
+	// 		} else {
+	// 			data->state = LV_INDEV_STATE_REL;
+	// 			data->point.x = x;
+	// 			data->point.y = y;
+	// 		}
+	// #else
+	// 		data->state = _ttgo->getTouch(data->point.x, data->point.y) ? LV_INDEV_STATE_PR : LV_INDEV_STATE_REL;
+	// #endif /*LILYGO_WATCH_2020_V1 & LILYGO_WATCH_2020_V2*/
 
-		return false; /*Return false because no moare to be read*/
-	}
+	// 		return false; /*Return false because no moare to be read*/
+	// 	}
 
-#endif /*LILYGO_WATCH_LVGL , LILYGO_WATCH_HAS_TOUCH*/
+	// #endif /*LILYGO_WATCH_LVGL , LILYGO_WATCH_HAS_TOUCH*/
 
 #endif /*LILYGO_WATCH_LVGL , LILYGO_WATCH_HAS_DISPLAY*/
 };
