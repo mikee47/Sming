@@ -29,13 +29,7 @@ github:https://github.com/lewisxhe/FocalTech_Library
 /////////////////////////////////////////////////////////////////
 #pragma once
 
-#ifdef ARDUINO
-#include <Arduino.h>
 #include <Wire.h>
-#else
-#include <stdint.h>
-#include <string.h>
-#endif
 
 #define FOCALTECH_SLAVE_ADDRESS (0x38)
 #define GT9XX_SLAVE_ADDRESS (0x14)
@@ -63,16 +57,10 @@ typedef enum {
 	FOCALTECH_PMODE_DEEPSLEEP = 3, // ~100uA  The reset pin must be pulled down to wake up
 } PowerMode_t;
 
-typedef uint8_t (*iic_com_fptr_t)(int dev_addr, uint16_t reg_addr, uint8_t* data, int len);
-typedef uint8_t (*iic_com_fptr_u8_t)(uint8_t dev_addr, uint8_t reg_addr, uint8_t* data, uint8_t len);
-
 class GT9xx_Class
 {
 public:
-#ifdef ARDUINO
-	bool begin(TwoWire& port = Wire, uint8_t addr = GT9XX_SLAVE_ADDRESS);
-#endif
-	bool begin(iic_com_fptr_t read_cb, iic_com_fptr_t write_cb, uint8_t addr = GT9XX_SLAVE_ADDRESS);
+	bool begin(TwoWire& port, uint8_t addr = GT9XX_SLAVE_ADDRESS);
 
 	void softReset(void);
 	void setPins(int rst, int interrupt);
@@ -96,23 +84,15 @@ private:
 	GT9xx_t data[5];
 	uint8_t _address;
 	bool initialization = false;
-	iic_com_fptr_t _readCallbackFunc = nullptr;
-	iic_com_fptr_t _writeCallbackFunc = nullptr;
 	int _rst = -1;
 	int _interrupt = -1;
-#ifdef ARDUINO
 	TwoWire* _i2cPort;
-#endif
 };
 
 class FocalTech_Class
 {
 public:
-#ifdef ARDUINO
-	bool begin(TwoWire& port = Wire, uint8_t addr = FOCALTECH_SLAVE_ADDRESS);
-#endif
-
-	bool begin(iic_com_fptr_u8_t read_cb, iic_com_fptr_u8_t write_cb, uint8_t addr = FOCALTECH_SLAVE_ADDRESS);
+	bool begin(TwoWire& port, uint8_t addr = FOCALTECH_SLAVE_ADDRESS);
 
 	void setTheshold(uint8_t value);
 	uint8_t getThreshold(void);
@@ -161,10 +141,6 @@ private:
 
 	uint8_t _address;
 	bool initialization = false;
-	iic_com_fptr_u8_t _readCallbackFunc = nullptr;
-	iic_com_fptr_u8_t _writeCallbackFunc = nullptr;
 
-#ifdef ARDUINO
 	TwoWire* _i2cPort;
-#endif
 };

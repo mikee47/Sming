@@ -43,12 +43,12 @@ bool BMA::begin()
 	delay(20);
 
 	if(bma423_init(&_dev) != BMA4_OK) {
-		log_e("bma423_init FAIL");
+		debug_e("bma423_init FAIL");
 		return false;
 	}
 
 	if(bma423_write_config_file(&_dev) != BMA4_OK) {
-		log_e("bma423_write_config_file FAIL");
+		debug_e("bma423_write_config_file FAIL");
 		return false;
 	}
 
@@ -193,7 +193,7 @@ void BMA::attachInterrupt()
 	cfg.perf_mode = BMA4_CONTINUOUS_MODE;
 
 	if(bma4_set_accel_config(&cfg, &_dev)) {
-		log_e("[bma4] set accel config fail");
+		debug_e("[bma4] set accel config fail");
 		return;
 	}
 	// // rslt |= bma423_reset_step_counter(&_dev);

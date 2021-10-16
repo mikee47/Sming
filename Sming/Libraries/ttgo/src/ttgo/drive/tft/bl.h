@@ -7,6 +7,7 @@
 class PWMBase
 {
 public:
+	static constexpr ledc_mode_t mode{LEDC_LOW_SPEED_MODE};
 	static constexpr ledc_timer_t timerNum{LEDC_TIMER_0};
 
 	PWMBase(uint8_t pin, uint8_t channel)
@@ -17,14 +18,14 @@ public:
 
 	virtual ~PWMBase()
 	{
-		ledc_stop(LEDC_LOW_SPEED_MODE, _channel, 0);
+		ledc_stop(mode, _channel, 0);
 		pinMode(_pin, INPUT);
 	}
 
 	virtual void begin()
 	{
 		ledc_timer_config_t ledc_timer = {
-			.speed_mode = LEDC_LOW_SPEED_MODE,
+			.speed_mode = mode,
 			.duty_resolution = LEDC_TIMER_8_BIT,
 			.timer_num = timerNum,
 			.freq_hz = 12000,
@@ -34,7 +35,7 @@ public:
 
 		ledc_channel_config_t ledc_channel = {
 			.gpio_num = _pin,
-			.speed_mode = LEDC_LOW_SPEED_MODE,
+			.speed_mode = mode,
 			.channel = _channel,
 			.intr_type = LEDC_INTR_DISABLE,
 			.timer_sel = timerNum,
@@ -42,12 +43,12 @@ public:
 			.hpoint = 0,
 		};
 		ledc_channel_config(&ledc_channel);
-		ledc_set_duty(LEDC_LOW_SPEED_MODE, _channel, 0);
+		ledc_set_duty(mode, _channel, 0);
 	}
 
 	virtual void adjust(uint8_t level)
 	{
-		ledc_set_duty(LEDC_LOW_SPEED_MODE, _channel, level);
+		ledc_set_duty(mode, _channel, level);
 	}
 
 protected:
@@ -118,8 +119,8 @@ public:
 
 	virtual void onec(unsigned duration = 200)
 	{
-		ledc_set_freq(LEDC_LOW_SPEED_MODE, timerNum, _freq);
-		_tick.initializeMs(duration, [this]() { ledc_stop(LEDC_LOW_SPEED_MODE, _channel, 0); });
+		ledc_set_freq(mode, timerNum, _freq);
+		_tick.initializeMs(duration, [this]() { ledc_stop(mode, _channel, 0); });
 		_tick.startOnce();
 	}
 

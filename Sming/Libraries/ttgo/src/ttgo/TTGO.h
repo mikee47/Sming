@@ -13,16 +13,16 @@ Written by Lewis he //https://github.com/lewisxhe
 
 #pragma once
 
-#include <SPI.h>
+// #include <SPI.h>
 
 #ifdef LILYGO_WATCH_LVGL
 #include <Ticker.h>
 #endif
 
-#ifdef LILYGO_WATCH_HAS_SDCARD
-#include <FS.h>
-#include <SD.h>
-#endif
+// #ifdef LILYGO_WATCH_HAS_SDCARD
+// #include <FS.h>
+// #include <SD.h>
+// #endif
 
 #ifndef LILYGO_BLOCK_ILI9481_MODULE
 #define LILYGO_TOUCH_DRIVER_FTXXX
@@ -147,13 +147,9 @@ typedef FocalTech_Class CapacitiveTouch;
 class TTGOClass
 {
 public:
-	static TTGOClass* getWatch()
+	TTGOClass()
 	{
-		if(_ttgo == nullptr) {
-			_ttgo = new TTGOClass();
-			// _tpEvent = xEventGroupCreate();
-		}
-		return _ttgo;
+		// _tpEvent = xEventGroupCreate();
 	}
 
 #if defined(EXTERNAL_TFT_ESPI_LIBRARY)
@@ -1090,10 +1086,6 @@ public:
 #endif /*LILYGO_WATCH_2020_V1 & LILYGO_WATCH_2020_V2*/
 
 private:
-	TTGOClass(){};
-
-	~TTGOClass(){};
-
 	void initHardware(void)
 	{
 #if defined(LILYGO_LILYPI_V1)
@@ -1306,8 +1298,8 @@ private:
 	// 	static void TOUCH_IRQ_HANDLE(void)
 	// 	{
 	// 		portBASE_TYPE task_woken;
-	// 		if(_ttgo->_tpEvent) {
-	// 			xEventGroupSetBitsFromISR(_ttgo->_tpEvent, TOUCH_IRQ_BIT, &task_woken);
+	// 		if(_tpEvent) {
+	// 			xEventGroupSetBitsFromISR(_tpEvent, TOUCH_IRQ_BIT, &task_woken);
 	// 			if(task_woken == pdTRUE) {
 	// 				portYIELD_FROM_ISR();
 	// 			}
@@ -1317,6 +1309,7 @@ private:
 
 	void initPower()
 	{
+debug_i("initPower()");
 #ifdef LILYGO_WATCH_HAS_ADC
 		esp_adc_cal_characteristics_t adc_chars;
 		if(esp_adc_cal_characterize(HAL_ADC_UNIT, ADC_ATTEN_DB_11, ADC_WIDTH_BIT_12, 1100, &adc_chars) ==
@@ -1326,7 +1319,7 @@ private:
 #endif /*LILYGO_WATCH_HAS_ADC*/
 
 #ifdef LILYGO_WATCH_HAS_AXP202
-		int ret = power->begin(i2cReadBytes, i2cWriteBytes);
+		int ret = power->begin();
 		if(ret == AXP_FAIL) {
 			debug_e("AXP Power begin failed");
 		} else {
@@ -1402,56 +1395,55 @@ private:
 #endif /*LILYGO_WATCH_HAS_BACKLIGHT*/
 	}
 
-	/**
-     * @brief  8-bit register interface write function
-     */
-	static uint8_t i2cWriteBytes(uint8_t devAddress, uint8_t regAddress, uint8_t* data, uint8_t len)
-	{
-		_ttgo->writeBytes(devAddress, regAddress, data, len);
-		return true;
-	}
+	// /**
+    //  * @brief  8-bit register interface write function
+    //  */
+	// static uint8_t i2cWriteBytes(uint8_t devAddress, uint8_t regAddress, uint8_t* data, uint8_t len)
+	// {
+	// 	writeBytes(devAddress, regAddress, data, len);
+	// 	return true;
+	// }
 
-	/**
-      * @brief  8-bit register interface read function
-      */
-	static uint8_t i2cReadBytes(uint8_t devAddress, uint8_t regAddress, uint8_t* data, uint8_t len)
-	{
-		_ttgo->readBytes(devAddress, regAddress, data, len);
-		return true;
-	}
+	// /**
+    //   * @brief  8-bit register interface read function
+    //   */
+	// static uint8_t i2cReadBytes(uint8_t devAddress, uint8_t regAddress, uint8_t* data, uint8_t len)
+	// {
+	// 	readBytes(devAddress, regAddress, data, len);
+	// 	return true;
+	// }
 
-	/**
-     * @brief  16-bit register interface write function
-     */
-	static uint8_t i2cWriteBytes_u16(int devAddress, uint16_t regAddress, uint8_t* data, int len)
-	{
-		configASSERT(_ttgo->i2c);
-		return _ttgo->i2c->writeBytes_u16(devAddress, regAddress, data, len);
-	}
+	// /**
+    //  * @brief  16-bit register interface write function
+    //  */
+	// static uint8_t i2cWriteBytes_u16(int devAddress, uint16_t regAddress, uint8_t* data, int len)
+	// {
+	// 	configASSERT(i2c);
+	// 	return i2c->writeBytes_u16(devAddress, regAddress, data, len);
+	// }
 
-	/**
-     * @brief  16-bit register interface read function
-     */
-	static uint8_t i2cReadBytes_u16(int devAddress, uint16_t regAddress, uint8_t* data, int len)
-	{
-		configASSERT(_ttgo->i2c);
-		return _ttgo->i2c->readBytes_u16(devAddress, regAddress, data, len);
-	}
+	// /**
+    //  * @brief  16-bit register interface read function
+    //  */
+	// static uint8_t i2cReadBytes_u16(int devAddress, uint16_t regAddress, uint8_t* data, int len)
+	// {
+	// 	configASSERT(i2c);
+	// 	return i2c->readBytes_u16(devAddress, regAddress, data, len);
+	// }
 
 #ifdef LILYGO_WATCH_HAS_NFC
 	static void nfcWriteBytes(uint8_t devAddress, uint8_t regAddress, uint8_t* data, uint16_t len)
 	{
-		_ttgo->writeBytes(devAddress, regAddress, data, len);
+		writeBytes(devAddress, regAddress, data, len);
 	}
 
 	static void nfcReadBytes(uint8_t devAddress, uint8_t* data, uint16_t len)
 	{
-		_ttgo->readBytes(devAddress, data, len, 1);
+		readBytes(devAddress, data, len, 1);
 	}
 #endif /*LILYGO_WATCH_HAS_NFC*/
 
 	I2CBus* i2c = nullptr;
-	static TTGOClass* _ttgo;
 	// static EventGroupHandle_t _tpEvent;
 
 #if defined(LILYGO_WATCH_LVGL)
@@ -1478,15 +1470,15 @@ protected:
 		uint32_t size = (area->x2 - area->x1 + 1) * (area->y2 - area->y1 + 1);
 		// Use DMA for transfer
 #if defined(ENABLE_LVGL_FLUSH_DMA)
-		_ttgo->tft->startWrite();
-		_ttgo->tft->setAddrWindow(area->x1, area->y1, (area->x2 - area->x1 + 1),
+		tft->startWrite();
+		tft->setAddrWindow(area->x1, area->y1, (area->x2 - area->x1 + 1),
 								  (area->y2 - area->y1 + 1)); /* set the working window */
-		_ttgo->tft->pushPixelsDMA((uint16_t*)color_p, size);
-		_ttgo->tft->endWrite();
+		tft->pushPixelsDMA((uint16_t*)color_p, size);
+		tft->endWrite();
 #else
-		_ttgo->tft->setAddrWindow(area->x1, area->y1, (area->x2 - area->x1 + 1),
+		tft->setAddrWindow(area->x1, area->y1, (area->x2 - area->x1 + 1),
 								  (area->y2 - area->y1 + 1)); /* set the working window */
-		_ttgo->tft->pushColors((uint16_t*)color_p, size, false);
+		tft->pushColors((uint16_t*)color_p, size, false);
 #endif
 		lv_disp_flush_ready(disp_drv);
 	}
@@ -1501,9 +1493,9 @@ protected:
 	//             Interrupt polling is only compatible with 2020-V1, 2020-V2,2019, others are not currently adapted
 	//         */
 	// 		static int16_t x, y;
-	// 		if(xEventGroupGetBits(_ttgo->_tpEvent) & TOUCH_IRQ_BIT) {
-	// 			xEventGroupClearBits(_ttgo->_tpEvent, TOUCH_IRQ_BIT);
-	// 			data->state = _ttgo->getTouch(x, y) ? LV_INDEV_STATE_PR : LV_INDEV_STATE_REL;
+	// 		if(xEventGroupGetBits(_tpEvent) & TOUCH_IRQ_BIT) {
+	// 			xEventGroupClearBits(_tpEvent, TOUCH_IRQ_BIT);
+	// 			data->state = getTouch(x, y) ? LV_INDEV_STATE_PR : LV_INDEV_STATE_REL;
 	// 			data->point.x = x;
 	// 			data->point.y = y;
 	// 		} else {
@@ -1512,7 +1504,7 @@ protected:
 	// 			data->point.y = y;
 	// 		}
 	// #else
-	// 		data->state = _ttgo->getTouch(data->point.x, data->point.y) ? LV_INDEV_STATE_PR : LV_INDEV_STATE_REL;
+	// 		data->state = getTouch(data->point.x, data->point.y) ? LV_INDEV_STATE_PR : LV_INDEV_STATE_REL;
 	// #endif /*LILYGO_WATCH_2020_V1 & LILYGO_WATCH_2020_V2*/
 
 	// 		return false; /*Return false because no moare to be read*/

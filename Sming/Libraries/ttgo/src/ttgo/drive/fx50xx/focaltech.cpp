@@ -73,19 +73,6 @@ bool FocalTech_Class::begin(TwoWire& port, uint8_t addr)
 {
 	_i2cPort = &port;
 	_address = addr;
-	_readCallbackFunc = nullptr;
-	_writeCallbackFunc = nullptr;
-	return probe();
-}
-
-bool FocalTech_Class::begin(iic_com_fptr_u8_t read_cb, iic_com_fptr_u8_t write_cb, uint8_t addr)
-{
-	if(read_cb == nullptr || write_cb == nullptr) {
-		return false;
-	}
-	_readCallbackFunc = read_cb;
-	_writeCallbackFunc = write_cb;
-	_address = addr;
 	return probe();
 }
 
