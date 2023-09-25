@@ -810,6 +810,47 @@ public:
 	long toInt(void) const;
 	float toFloat(void) const;
 
+	/*
+	 * Helper class using SFINAE to identify *any* class with a `join` method
+	 *
+	 * https://stackoverflow.com/a/257382
+	 */
+	template <typename T> class has_join
+	{
+		template <typename C> static uint8_t test(decltype(&C::join));
+		template <typename C> static uint32_t test(...);
+
+	public:
+		enum { value = (sizeof(test<T>(0)) == 1) };
+	};
+
+	/**
+	 * @brief Join elements of an array using this string as the separator
+	 * @param array Object which has 'join' method
+	 * @retval String
+	 */
+	template <typename T> typename std::enable_if<has_join<T>::value, String>::type join(const T& array)
+	{
+		return array.join(*this);
+	}
+
+	/**
+	 * @brief Join elements of an array using this string as the separator
+	 * @param array Iterable object whose elements may be concatenated to String (e.g. int, float, implicit String() operator)
+	 * @retval String
+	 */
+	template <typename T> typename std::enable_if<!has_join<T>::value, String>::type join(const T& array)
+	{
+		String s;
+		for(auto e : array) {
+			if(s) {
+				s += *this;
+			}
+			s += e;
+		}
+		return s;
+	}
+
 	/// Max chars. (excluding NUL terminator) we can store in SSO mode
 	static constexpr size_t SSO_CAPACITY = STRING_OBJECT_SIZE - 2;
 

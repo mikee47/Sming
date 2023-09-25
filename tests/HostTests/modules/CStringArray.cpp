@@ -229,7 +229,7 @@ public:
 			REQUIRE(csa.join() == "a,");
 
 			csa.add(F("test\0again"));
-			REQUIRE_EQ(csa.join("}+{"), "a}+{}+{test}+{again");
+			REQUIRE_EQ(String("}+{").join(csa), "a}+{}+{test}+{again");
 			REQUIRE_EQ(csa.join(nullptr), "atestagain");
 		}
 	}

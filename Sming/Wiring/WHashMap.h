@@ -398,6 +398,20 @@ public:
 		nil = nullv;
 	}
 
+	String join(const String& separator = ",") const
+	{
+		String s;
+		for(auto e : *this) {
+			if(s) {
+				s += separator;
+			}
+			s += e.key();
+			s += '=';
+			s += e.value();
+		}
+		return s;
+	}
+
 	Iterator<false> begin()
 	{
 		return Iterator<false>(*this, 0);

@@ -177,6 +177,10 @@ public:
 			REQUIRE(vector.addElement(new String("banana")));
 			REQUIRE_EQ(vector.count(), 4);
 			REQUIRE_EQ(vector.capacity(), 13);
+
+			String s1 = F(", ").join(vector);
+			String s2 = F("value(a): gobbed, cabbage, value(d): gobbed, banana");
+			REQUIRE_EQ(s1, s2);
 		}
 
 		TEST_CASE("std::vector<String>")
@@ -198,6 +202,10 @@ public:
 			}
 
 			print(vector);
+
+			String s1 = F(", ").join(vector);
+			String s2 = F("value(a): gobbed, value(b): gobbed, value(c): gobbed, value(d): gobbed");
+			REQUIRE_EQ(s1, s2);
 		}
 
 		TEST_CASE("Vector<uint8_t>")
