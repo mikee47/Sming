@@ -10,14 +10,17 @@ endif
 
 export IDF_PATH := $(call FixPath,$(IDF_PATH))
 
-# Extract IDF version
-ifndef IDF_VER
-# e.g. v5.2-beta1-265-g405b8b5512 or v5.0.5-173-g9d6770dfbb
+# Extract IDF version e.g. v5.2-beta1-265-g405b8b5512 or v5.0.5-173-g9d6770dfbb
 IDF_VER := $(shell (cd $$IDF_PATH && git describe --always --tags --dirty) | cut -c 1-31)
-endif
 # Now just vmajor.minor
 IDF_VERSION := $(subst ., ,$(firstword $(subst -, ,$(IDF_VER))))
 IDF_VERSION := $(firstword $(IDF_VERSION)).$(word 2,$(IDF_VERSION))
+
+IDF_BRANCH := $(shell (cd $$IDF_PATH && git branch --show-current))
+
+ifeq (,$(filter sming/%,$(IDF_BRANCH)))
+$(error Selected IDF $(IDF_PATH) is on branch '$(IDF_BRANCH)': try 'git checkout sming/release/$(IDF_VERSION)')
+endif
 
 # By default, downloaded tools will be installed under $HOME/.espressif directory
 # (%USERPROFILE%/.espressif on Windows). This path can be modified by setting
@@ -177,3 +180,11 @@ endif
 
 # => Tools
 MEMANALYZER = $(PYTHON) $(ARCH_TOOLS)/memanalyzer.py $(OBJDUMP)$(TOOL_EXT)
+
+.PHONY: update-idf
+update-idf: ##Update ESP IDF with any changes
+	$(info $(IDF_BRANCH))
+	$(Q) cd $$IDF_PATH && \
+	$(GIT) pull && \
+	$(GIT) submodule update --init --recursive && \
+	$(ESP32_PYTHON) tools/idf_tools.py --non-interactive install-python-env
