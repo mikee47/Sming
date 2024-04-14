@@ -175,9 +175,9 @@ public:
 
 	virtual ~CThread();
 
-	bool execute()
+	bool execute(pthread_attr_t* attr = nullptr)
 	{
-		return pthread_create(&m_thread, NULL, thread_start, this) == 0;
+		return pthread_create(&m_thread, attr, thread_start, this) == 0;
 	}
 
 	bool detach()
