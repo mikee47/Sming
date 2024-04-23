@@ -19,6 +19,9 @@ time_t SystemClockClass::now(TimeZone timeType) const
 	uint32_t systemTime = RTC.getRtcSeconds();
 
 	if(timeType == eTZ_Local) {
+		if(checkTimeZoneOffset) {
+			checkTimeZoneOffset(systemTime);
+		}
 		systemTime += timeZoneOffsetSecs;
 	}
 

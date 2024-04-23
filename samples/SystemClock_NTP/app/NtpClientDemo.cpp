@@ -38,6 +38,21 @@ time_t getNextSunriseSet(bool isSunrise)
 	return t;
 }
 
+void checkTimeZoneOffset(time_t systemTime)
+{
+	static time_t nextChange;
+	static const TimeChangeRule* rule;
+
+	if(!rule) {
+		tz.toLocal(systemTime, &rule);
+	} else if(systemTime < nextChange) {
+		return;
+	}
+
+	SystemClock.setTimeZoneOffset(rule->offset * SECS_PER_MIN);
+	nextChange = tz.getNextChange(systemTime, &rule);
+}
+
 } // namespace
 
 void NtpClientDemo::ntpResult(NtpClient& client, time_t ntpTime)
@@ -46,9 +61,10 @@ void NtpClientDemo::ntpResult(NtpClient& client, time_t ntpTime)
 	 * Update the system clock and calculate the correct time offset,
 	 * accounting for time zone and daylight savings.
 	 */
-	auto localTime = tz.toLocal(ntpTime);
 	SystemClock.setTime(ntpTime, eTZ_UTC);
-	SystemClock.setTimeZoneOffset(localTime - ntpTime);
+
+	// Now we've set the clock, we can determine the initial active timezone and maintain the offset
+	SystemClock.onCheckTimeZoneOffset(checkTimeZoneOffset);
 
 	/*
 	 * Display the new time
@@ -64,4 +80,21 @@ void NtpClientDemo::ntpResult(NtpClient& client, time_t ntpTime)
 	DateTime sunset = getNextSunriseSet(false);
 	Serial << _F("Next sunrise at ") << sunrise.toShortTimeString() << _F(", sunset at ") << sunset.toShortTimeString()
 		   << endl;
+
+	/*
+	 * Display points at which daylight savings changes.
+	 */
+	DateTime dt(ntpTime);
+
+	auto& dstRule = tz.getRule(true);
+	DateTime dstDateTime = dstRule(dt.Year);
+	Serial << dstRule.tag << _F(" starts ") << dstDateTime.toHTTPDate() << endl;
+
+	auto& stdRule = tz.getRule(false);
+	DateTime stdDateTime = stdRule(dt.Year);
+	Serial << stdRule.tag << _F(" starts ") << stdDateTime.toHTTPDate() << endl;
+
+	const TimeChangeRule* rule;
+	time_t nextChange = tz.getNextChange(dt, &rule);
+	Serial << _F("Next change to ") << rule->tag << _F(" is ") << DateTime(nextChange).toHTTPDate() << endl;
 }
