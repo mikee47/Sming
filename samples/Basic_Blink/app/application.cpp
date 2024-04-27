@@ -4,14 +4,27 @@
 #include <LittleFS.h>
 #include <IFS/FileCopier.h>
 
-namespace
-{
 enum class MigrateResult {
 	failure,
 	alreadyUpgraded,
 	success,
 };
 
+String toString(MigrateResult r)
+{
+	switch(r) {
+	case MigrateResult::failure:
+		return "failure";
+	case MigrateResult::alreadyUpgraded:
+		return "Already upgraded";
+	case MigrateResult::success:
+		return "success";
+	}
+	return "BAD RESULT";
+}
+
+namespace
+{
 MigrateResult migrateFilesystem()
 {
 	/*
@@ -71,10 +84,19 @@ MigrateResult migrateFilesystem()
 	// Copy files
 	IFS::FileCopier copier(*srcFilesystem, *dstFilesystem);
 
-	int err{FS_OK};
 	copier.onError([&](const IFS::FileCopier::ErrorInfo& info) -> bool {
-		Serial << info << endl;
-		err = info.errorCode;
+		IFS::FileSystem::Info fsi{};
+		info.fileSys.getinfo(fsi);
+
+		/*
+		 * SPIFFS doesn't have a root directory entry
+		 */
+		if(fsi.type == IFS::FileSystem::Type::SPIFFS && info.operation == IFS::FileCopier::Operation::open &&
+		   !info.path) {
+			return true;
+		}
+
+		Serial << fsi.partition.name() << ": " << info << endl;
 		return false;
 	});
 
@@ -100,5 +122,9 @@ MigrateResult migrateFilesystem()
 
 void init()
 {
-	migrateFilesystem();
+	Serial.begin(COM_SPEED_SERIAL);
+	Serial.systemDebugOutput(true);
+
+	auto result = migrateFilesystem();
+	Serial << "Migrate result: " << result << endl;
 }
