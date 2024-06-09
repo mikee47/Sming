@@ -162,8 +162,9 @@ export PROJECT_SOC
 # $3 -> Build directory
 # $4 -> Output library directory
 define ParseComponent
+ifeq (,$$(filter $1,$$(PARSED_COMPONENTS)))
 ifneq (,$$(filter $(SMING_SOC),$$(PROJECT_SOC)))
-$(if $V,$(info -- Parsing $1))
+$$(if $V,$$(info -- Parsing $1))
 $(if $2,,$(error Component '$1' not found))
 SUBMODULES				+= $(filter $2,$(ALL_SUBMODULES))
 CMP_$1_PATH				:= $2
@@ -215,16 +216,14 @@ CMP_$1_RELINK_VARS		:= $$(COMPONENT_RELINK_VARS)
 PYTHON_REQUIREMENTS		+= $$(call AbsoluteSourcePath,$2,$$(COMPONENT_PYTHON_REQUIREMENTS))
 APPCODE					+= $$(call AbsoluteSourcePath,$2,$$(CMP_$1_APPCODE))
 COMPONENTS				+= $$(filter-out $$(COMPONENTS),$$(CMP_$1_DEPENDS))
+PARSED_COMPONENTS		+= $1
 ifneq (App,$1)
 COMPONENTS_EXTRA_INCDIR	+= $$(call AbsoluteSourcePath,$2,$$(CMP_$1_INCDIRS))
 # Recursively parse any dependencies
-DEPENDENCIES			:= $$(filter-out $$(PARSED_COMPONENTS),$$(CMP_$1_DEPENDS))
-ifneq (,$$(DEPENDENCIES))
-PARSED_COMPONENTS		+= $$(DEPENDENCIES)
-$$(call ParseComponentList,$$(DEPENDENCIES))
-endif
+$$(call ParseComponentList,$$(CMP_$1_DEPENDS))
 endif # App
 endif # PROJECT_SOC
+endif # PARSED_COMPONENTS
 endef # ParseComponent
 
 # Build a list of all available Components
