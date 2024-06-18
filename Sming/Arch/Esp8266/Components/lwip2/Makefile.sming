@@ -1,6 +1,8 @@
 # Modified version of lwip2/makefiles/Makefile.build-lwip2
 # Make from ./lwip2 directory
 
+.NOTPARALLEL:
+
 include makefiles/Makefile.defs
 
 export LWIP_ESP=glue-esp/lwip-1.4-arduino/include
@@ -45,6 +47,6 @@ $(LWIP_LIB_RELEASE): $(LWIP_LIB)
 	@cp $< $@
 
 $(LWIP_LIB):
-	$(Q) $(MAKE) -f makefiles/Makefile.glue-esp
-	$(Q) $(MAKE) -f makefiles/Makefile.glue
+	$(Q) $(MAKE) -j1 -f makefiles/Makefile.glue-esp
+	$(Q) $(MAKE) -j1 -f makefiles/Makefile.glue
 	$(Q) $(MAKE) -C lwip2-src/src -f ../../makefiles/Makefile.lwip2
