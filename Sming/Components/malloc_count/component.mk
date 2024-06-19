@@ -41,6 +41,19 @@ MC_DEFSYMS += \
 	__wrap_pvPortZalloc=mc_zalloc \
 	__wrap_pvPortZallocIram=mc_zalloc \
 	__wrap_vPortFree=mc_free
+else ifeq ($(SMING_ARCH),Esp32)
+MC_WRAP_FUNCS += \
+	heap_caps_malloc \
+	heap_caps_free \
+	heap_caps_realloc \
+	heap_caps_malloc_default \
+	heap_caps_realloc_default
+MC_DEFSYMS += \
+	__wrap_heap_caps_malloc=mc_malloc \
+	__wrap_heap_caps_free=mc_free \
+	__wrap_heap_caps_realloc=mc_realloc \
+	__wrap_heap_caps_malloc_default=mc_malloc \
+	__wrap_heap_caps_realloc_default=mc_realloc
 endif
 
 EXTRA_LDFLAGS := \
