@@ -32,6 +32,9 @@ else ifeq ($(IDF_VERSION),v5.0)
 	@printf "\033[47;1;34mNOTE! ESP-IDF 5.0 not recommended for new designs.\033[0m Please consider upgrading to v5.2.\n"
 endif
 
+# Force libcxx to appear before libstdc++ because some unwind code is wrapped by libcxx.
+LIBS := cxx $(filter-out cxx,$(LIBS))
+
 $(TARGET_OUT): $(COMPONENTS_AR)
 	$(info $(notdir $(PROJECT_DIR)): Linking $@)
 	$(Q) $(LD) $(addprefix -L,$(LIBDIRS)) $(LDFLAGS) -Wl,--start-group $(COMPONENTS_AR) $(addprefix -l,$(LIBS)) -Wl,--end-group -o $@
