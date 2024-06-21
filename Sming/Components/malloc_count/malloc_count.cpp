@@ -353,27 +353,9 @@ static __attribute__((destructor)) void finish()
 
 #ifdef ENABLE_MALLOC_COUNT
 
-/****************************************************/
-/* exported symbols that overlay the libc functions */
-/****************************************************/
-
-extern "C" void* WRAP(malloc)(size_t) __attribute__((alias("mc_malloc")));
-extern "C" void* WRAP(calloc)(size_t, size_t) __attribute__((alias("mc_calloc")));
-extern "C" void* WRAP(realloc)(void*, size_t) __attribute__((alias("mc_realloc")));
-extern "C" void WRAP(free)(void*) __attribute__((alias("mc_free")));
-
 using namespace MallocCount;
 
-#ifdef ARCH_ESP8266
-
-extern "C" void* WRAP(pvPortMalloc)(size_t) __attribute__((alias("mc_malloc")));
-extern "C" void* WRAP(pvPortCalloc)(size_t, size_t) __attribute__((alias("mc_calloc")));
-extern "C" void* WRAP(pvPortRealloc)(void*, size_t) __attribute__((alias("mc_realloc")));
-extern "C" void* WRAP(pvPortZalloc)(size_t) __attribute__((alias("mc_zalloc")));
-extern "C" void* WRAP(pvPortZallocIram)(size_t) __attribute__((alias("mc_zalloc")));
-extern "C" void WRAP(vPortFree)(void*) __attribute__((alias("mc_free")));
-
-#else
+#ifndef ARCH_ESP8266
 
 void* operator new(size_t size)
 {

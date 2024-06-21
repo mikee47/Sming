@@ -19,6 +19,12 @@ MC_WRAP_FUNCS := \
 	realloc \
 	free \
 	strdup
+MC_DEFSYMS := \
+	__wrap_malloc=mc_malloc \
+	__wrap_calloc=mc_calloc \
+	__wrap_realloc=mc_realloc \
+	__wrap_free=mc_free
+
 ifeq ($(SMING_ARCH),Esp8266)
 MC_WRAP_FUNCS += \
 	realloc \
@@ -28,8 +34,17 @@ MC_WRAP_FUNCS += \
 	pvPortZalloc \
 	pvPortZallocIram \
 	vPortFree
+MC_DEFSYMS += \
+	__wrap_pvPortMalloc=mc_malloc \
+	__wrap_pvPortCalloc=mc_calloc \
+	__wrap_pvPortRealloc=mc_realloc \
+	__wrap_pvPortZalloc=mc_zalloc \
+	__wrap_pvPortZallocIram=mc_zalloc \
+	__wrap_vPortFree=mc_free
 endif
 
-EXTRA_LDFLAGS := $(call UndefWrap,$(MC_WRAP_FUNCS))
+EXTRA_LDFLAGS := \
+	$(call UndefWrap,$(MC_WRAP_FUNCS)) \
+	$(call DefSym,$(MC_DEFSYMS))
 
 endif
