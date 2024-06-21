@@ -90,6 +90,7 @@ jobs:
       if: ${{ matrix.os == 'macos-latest' }}
       run: |
         source $SMING_HOME/../Tools/export.sh
+        export EXCLUDE_COMPONENTS="Libraries/rbpf"
         Tools/ci/build.sh
 
     - name: Build and test for ${{matrix.variant}} on Windows

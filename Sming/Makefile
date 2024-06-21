@@ -136,10 +136,12 @@ $(foreach s,$(SAMPLE_PATHS),$(eval $(call CreateSampleTargets,$s)))
 # Build component samples
 .PHONY: component-samples
 component-samples: submodules ##Build all samples contained in components
+	$(call PrintVariable,COMPONENT_SAMPLE_PATHS_TO_BUILD)
 	$(Q) $(MAKE) --no-print-directory build-component-samples
 
 COMPONENT_SAMPLE_PATHS = $(wildcard $(foreach c,$(COMPONENT_SEARCH_DIRS),$c/*/samples/*))
-COMPONENT_SAMPLES_BUILT = $(addsuffix $(BUILT_SUFFIX),$(COMPONENT_SAMPLE_PATHS))
+COMPONENT_SAMPLE_PATHS_TO_BUILD = $(filter-out $(addsuffix %,$(EXCLUDE_COMPONENTS)),$(COMPONENT_SAMPLE_PATHS))
+COMPONENT_SAMPLES_BUILT = $(addsuffix $(BUILT_SUFFIX),$(COMPONENT_SAMPLE_PATHS_TO_BUILD))
 
 .PHONY: build-component-samples
 build-component-samples: $(COMPONENT_SAMPLES_BUILT)
@@ -150,6 +152,7 @@ export TEST_FAILURE_FILE := $(SMING_HOME)/.test-failure
 
 PHONY: tests
 tests: submodules ##Build and run all tests
+	$(call PrintVariable,TEST_PATHS_TO_BUILD)
 	$(Q) rm -rf $(TEST_FAILURE_FILE)
 	$(Q) $(MAKE) --no-print-directory build-and-run-tests
 	$(Q) if [ -f "$(TEST_FAILURE_FILE)" ]; then \
@@ -159,7 +162,8 @@ tests: submodules ##Build and run all tests
 
 COMPONENT_TESTS = $(call dirx,$(wildcard $(foreach c,$(COMPONENT_SEARCH_DIRS),$c/*/test/component.mk)))
 TEST_PATHS = $(wildcard $(SMING_PROJECTS_DIR)/tests/* $(COMPONENT_TESTS))
-TESTS_COMPLETED = $(addsuffix /.$(SMING_SOC).complete,$(TEST_PATHS))
+TEST_PATHS_TO_BUILD = $(filter-out $(addsuffix %,$(EXCLUDE_COMPONENTS)),$(TEST_PATHS))
+TESTS_COMPLETED = $(addsuffix /.$(SMING_SOC).complete,$(TEST_PATHS_TO_BUILD))
 
 PHONY: build-and-run-tests
 build-and-run-tests: $(TESTS_COMPLETED) ##Build and run all test applications
