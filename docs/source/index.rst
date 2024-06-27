@@ -6,7 +6,7 @@ Welcome to Sming Framework
 **Let's do smart things!!!**
 
 Sming is an asynchronous embedded C/C++ framework with superb performance and multiple network features.
-Sming is open source, modular and supports :doc:`multiple architectures <features>` including ESP8266 and ESP32.
+Sming is open source, modular and supports :doc:`multiple architectures <features>` including ESP8266, ESP32 and RP2040.
 
 |samples|_
 
@@ -16,25 +16,27 @@ Sming is open source, modular and supports :doc:`multiple architectures <feature
 
 Summary
 -------
--  Superb performance and memory usage (Sming compiles to native firmware!)
--  Fast and user friendly development
+-  Superb performance and memory usage: Sming compiles to native firmware!
+-  Fast and user-friendly C++ development
 -  Integrated :doc:`host emulator <arch/host/index>` to assist with developing, testing and debugging
    libraries and applications on a PC before uploading them to an actual microcontroller.
    Try it out online `here <https://killercoda.com/slaff/scenario/sming-host-emulator>`__.
 -  Built-in powerful wireless modules
 -  Compatible with standard :doc:`libraries` - use popular hardware in few lines of code
+-  Integrated :component:`FlashString` support for direct use of structured data stored in flash memory.
+   Features :c:macro:`IMPORT_FSTR` macro for linking external binary files: no conversion to C arrays required!
 -  Simple yet powerful hardware API wrappers
 
    -  Standard Arduino-style wrappers for simplicity and flexibility
    -  :library:`HardwareSPI` library provides advanced asynchronous SPI device master capability
       including use of ESP8266 'overlapped' mode for reduced pin usage and dual/quad I/O support.
    -  :library:`Graphics` implements asynchronous display control model with low memory usage,
-      transparency (alpha-blending) and flexible scripted resource management.
+      transparency (alpha-blending), flexible scripted resource management and graphical layout editor.
 
 -  Modular C++ installable file system interface
 
    -  Supports popular :library:`SPIFFS <Spiffs>` and :library:`LittleFS <LittleFS>` filing systems
-   -  New :component:`FWFS <IFS>` read-only filesystem can be used as base file system,
+   -  New :component:`FWFS <IFS>` read-only high-performance filesystem can be used as base file system,
       with read/write filesystems mounted in sub-directories
    -  Integrated metadata support (file times, security descriptors, user metadata)
    -  Access to Host (linux / Windows / MacOS) filing system via same API
