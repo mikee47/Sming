@@ -261,7 +261,13 @@ def print_table(table: Table):
     print()
 
 
-def print_warnings(log: Log):
+def print_warnings(log: Log, exclude_file: str):
+    exclude = None
+    if exclude_file is not None:
+        with open(exclude_file, 'r') as f:
+            s = '|'.join(line.strip() for line in f)
+            exclude = re.compile(s, re.IGNORECASE)
+
     warnings = {}
     for job in log.jobs:
         for location, details in job.warnings.items():
@@ -270,21 +276,34 @@ def print_warnings(log: Log):
                 x = location_warnings.setdefault(det, [])
                 x.append(job.name)
 
-    print(f'{len(warnings)} warnings found:')
+    print(f'{len(warnings)} warnings found.')
+
+    exclude_count = 0
+    if exclude:
+        unfiltered_warnings = warnings
+        warnings = {}
+        for location, details in unfiltered_warnings.items():
+            filtered_details = []
+            for det in details:
+                if not exclude.match(f'{location}\t{det}'):
+                    filtered_details.append(det)
+            if filtered_details:
+                warnings[location] = filtered_details
+            else:
+                exclude_count += 1
+        print(f'{exclude_count} locations excluded.')
+
     loc_width = min(2 + max(len(loc) for loc in warnings), 80)
     loc_pad = ''.ljust(loc_width)
-    for location in sorted(warnings):
+    for location in sorted(warnings, key=lambda s: s.lower()):
         if len(location) > loc_width:
             print(f'\t{location}')
             locstr = loc_pad
         else:
             locstr = f'{location}'.ljust(loc_width)
         for det in sorted(warnings[location]):
-            jobs = warnings[location][det]
             print(f'\t{locstr}{det}')
             locstr = loc_pad
-            # if len(jobs) < len(log.jobs):
-            #     print(''.join(f'\t\t\t{job}\n' for job in jobs))
 
 
 def fetch_logs(filename: str, repo: str = None, branch: str = None):
@@ -334,6 +353,7 @@ def main():
     parser.add_argument('-b', '--branch', help='Specify branch to fetch')
     parser.add_argument('-c', '--compare', help='Second log to compare')
     parser.add_argument('-w', '--warnings', action='store_true', help='Summarise warnings')
+    parser.add_argument('-x', '--exclude', help='File containing source locations to exclude')
 
     args = parser.parse_args()
 
@@ -343,7 +363,7 @@ def main():
     log1 = scan_log(args.filename)
     if args.compare is None:
         if args.warnings:
-            print_warnings(log1)
+            print_warnings(log1, args.exclude)
         else:
             for job in log1.jobs:
                 print(job.caption)

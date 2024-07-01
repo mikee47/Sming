@@ -52,3 +52,13 @@ To fetch a specific build::
 To explicitly specify the repository to fetch from::
 
       python3 scanlog.py custom-fixes.txt --fetch --branch feature/custom-fixes --repo SmingHub/Sming
+
+To list all source locations with warnings::
+
+      python3 scanlog.py last-build.txt -w
+
+To filter out warnings::
+
+      python3 scanlog.py last-build.txt -w --exclude warn-exclude.lst
+
+The named exclusion file contains a list of regular expressions to match against.
