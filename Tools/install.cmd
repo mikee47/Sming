@@ -61,7 +61,7 @@ echo.
 
 :install
 
-@powershell -NoProfile -ExecutionPolicy unrestricted %~dp0update-path.ps1 "C:\MinGW\bin,C:\MinGW\msys\1.0\bin"
+@powershell -NoProfile -ExecutionPolicy unrestricted update-path.ps1 "C:\MinGW\bin,C:\MinGW\msys\1.0\bin"
 
 call %~dp0export.cmd
 

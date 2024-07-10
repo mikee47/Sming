@@ -1,6 +1,7 @@
 @echo off
 
 set CUR_DIR=%CD%
+echo CURDIR is "%CUR_DIR%", with "%0"
 cd %~dp0..\Sming
 set SMING_HOME=%CD%
 cd %CUR_DIR%
