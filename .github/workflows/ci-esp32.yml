@@ -87,7 +87,7 @@ jobs:
     - name: Build and test for ${{matrix.variant}} with IDF v${{matrix.idf_version}} on Windows
       if: matrix.os == 'windows-latest'
       run: |
-        Tools/export.cmd
+        call Tools/export.cmd
         Tools/ci/build.cmd
 
     - name: Compiler Cache stats

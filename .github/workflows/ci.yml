@@ -83,7 +83,7 @@ jobs:
     - name: Build and test for ${{matrix.variant}} on Windows
       if: matrix.os == 'windows-latest'
       run: |
-        Tools/export.cmd
+        call Tools/export.cmd
         Tools/ci/build.cmd
 
     - name: Compiler Cache stats
