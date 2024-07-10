@@ -4,14 +4,11 @@ REM
 
 set TOOLS_DIR=D:\opt
 
-cd "%~dp0"
-call ..\export.cmd
-
 if "%BUILD_DOCS%" == "true" (
     set INSTALL_OPTS=doc
 )
 
-call ..\install.cmd %SMING_ARCH% %INSTALL_OPTS%
+call "%~dp0\..\install.cmd" %SMING_ARCH% %INSTALL_OPTS%
 if errorlevel 1 goto :EOF
 
 REM Configure ccache
