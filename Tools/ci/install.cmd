@@ -2,7 +2,7 @@ REM
 REM Windows CI install script
 REM
 
-set TOOLS_DIR="D:\opt"
+set TOOLS_DIR=D:\opt
 
 cd "%~dp0"
 call ..\export.cmd
