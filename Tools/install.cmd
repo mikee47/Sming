@@ -1,11 +1,27 @@
+@echo off
+
 REM
 REM Windows install script
 REM
-REM GIT, Python3 and Chocolatey must be installed and in the system path
-REM
+
+where /q winget
+if errorlevel 1 (
+    echo Winget is required: See https://learn.microsoft.com/en-us/windows/package-manager/winget/
+    goto :EOF
+)
+
+REM Install required standard packages
+winget install --silent --no-upgrade --accept-package-agreements --source winget ^
+    git.git ^
+    python.python.3.12 ^
+    ninja-build.ninja ^
+    ccache.ccache ^
+    7zip.7zip
 
 set DOWNLOADS=downloads
-mkdir %DOWNLOADS%
+if not exist "%DOWNLOADS%" (
+    mkdir %DOWNLOADS%
+)
 
 set SMINGTOOLS=https://github.com/SmingHub/SmingTools/releases/download/1.0
 
@@ -17,8 +33,6 @@ echo.
 echo ** Installing common python requirements
 echo.
 python -m pip install --upgrade pip -r %SMING_HOME%\..\Tools\requirements.txt
-
-choco install ninja ccache
 
 if exist "C:\MinGW\bin" goto :mingw_installed
 

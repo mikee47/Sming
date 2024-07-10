@@ -10,7 +10,7 @@ REM Microsoft have kindly set up some hoops for us to jump through
 REM (presumably making this 'secure'). OK, lets jump now.
 REM Warning: Get the fire extinguisher, hoops may be on fire.
 @powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))"
-if "%errorlevel%" == "1" then goto :EOF
+if errorlevel 1 goto :EOF
 
 SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin
 
