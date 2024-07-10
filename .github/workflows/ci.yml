@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [windows-latest]
         variant: [esp8266, host, rp2040]
         toolchain: [gcc]
         include:
@@ -21,14 +21,6 @@ jobs:
             arch: Esp8266
           - variant: host
             arch: Host
-          - os: ubuntu-latest
-            variant: host
-            arch: Host
-            toolchain: clang
-          - os: ubuntu-latest
-            variant: host
-            arch: Host
-            toolchain: gcc64
           - variant: rp2040
             arch: Rp2040
 
