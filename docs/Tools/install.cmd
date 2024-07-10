@@ -2,7 +2,7 @@ REM Docs install.cmd
 
 where /q doxygen
 if errorlevel 1 (
-    winget install doxygen graphviz
+    choco install doxygen graphviz
 )
 
 python -m pip install --upgrade pip wheel

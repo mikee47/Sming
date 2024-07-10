@@ -4,20 +4,14 @@ REM
 REM Windows install script
 REM
 
-where /q winget
+where /q choco
 if errorlevel 1 (
-    echo Winget is required: See https://learn.microsoft.com/en-us/windows/package-manager/winget/
-    goto :EOF
+    @powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))"
+    if errorlevel 1 goto :EOF
 )
 
 REM Install required standard packages
-winget install --silent --no-upgrade --accept-package-agreements --source winget ^
-    git.git ^
-    python.python.3.12 ^
-    ninja-build.ninja ^
-    ccache.ccache ^
-    7zip.7zip ^
-    Kitware.CMake
+choco install git python ninja-build ccache 7zip cmake -y
 
 set DOWNLOADS=downloads
 if not exist "%DOWNLOADS%" (
