@@ -23,8 +23,6 @@ set SMINGTOOLS=https://github.com/SmingHub/SmingTools/releases/download/1.0
 REM Leave file endings alone
 git config --global --add core.autocrlf input
 
-call %~dp0export.cmd
-
 echo.
 echo.
 echo ** Installing common python requirements
@@ -49,6 +47,9 @@ echo ** MinGW found, not re-installing
 echo.
 
 :install
+
+@powershell -NoProfile -ExecutionPolicy unrestricted %~dp0update-path.ps1 "C:\MinGW\bin,C:\MinGW\msys\1.0\bin"
+call %~dp0export.cmd
 
 if "%1" == "" goto :EOF
 if "%1" == "all" (
