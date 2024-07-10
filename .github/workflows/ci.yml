@@ -61,12 +61,6 @@ jobs:
       run: |
         Tools/ci/install.sh
 
-    - name: Install winget
-      if: matrix.os == 'windows-latest'
-      uses: Cyberboss/install-winget@v1
-      with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     - name: Install build tools for Windows
       if: matrix.os == 'windows-latest'
       run: |
