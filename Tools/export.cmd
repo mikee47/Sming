@@ -27,15 +27,8 @@ if errorlevel 1 (
 
 where /q mingw-get
 if errorlevel 1 (
-    python "%~dp0update-path.py" C:\MinGW\msys\1.0\bin C:\MinGW\bin > new_path.lst
-    if errorlevel 1 (
-        del new_path.lst
-        goto :EOF
-    )
-    for /f "delims==" %%a in (new_path.lst) do (
-      path %%a
-    )
-    del new_path.lst
+    echo ERROR! MinGW not found in path.
+    goto :EOF
 )
 
 where /q cmake

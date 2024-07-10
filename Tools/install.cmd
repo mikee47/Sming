@@ -11,7 +11,20 @@ if errorlevel 1 (
 )
 
 REM Install required standard packages
-choco install git python ninja-build ccache 7zip cmake -yr
+set PKGLIST=
+where git
+if errorlevel 1 PKGLIST=%PKGLIST% git
+where python
+if errorlevel 1 PKGLIST=%PKGLIST% python
+where ninja
+if errorlevel 1 PKGLIST=%PKGLIST% ninja-build
+where ccache
+if errorlevel 1 PKGLIST=%PKGLIST% ccache
+where 7z
+if errorlevel 1 PKGLIST=%PKGLIST% 7zip
+where cmake
+if errorlevel 1 PKGLIST=%PKGLIST% cmake
+if "%PKGLIST%" NEQ "" choco install %PKGLIST% -yr
 
 set DOWNLOADS=downloads
 if not exist "%DOWNLOADS%" (
@@ -49,6 +62,7 @@ echo.
 :install
 
 @powershell -NoProfile -ExecutionPolicy unrestricted %~dp0update-path.ps1 "C:\MinGW\bin,C:\MinGW\msys\1.0\bin"
+
 call %~dp0export.cmd
 
 if "%1" == "" goto :EOF
