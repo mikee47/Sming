@@ -1,6 +1,6 @@
 set CUR_DIR=%CD%
 cd %~dp0..\Sming
-set SMING_HOME="%CD%"
+set SMING_HOME=%CD%
 cd %CUR_DIR%
 
 if "%TOOLS_DIR%"=="" (
@@ -34,6 +34,11 @@ if errorlevel 1 (
       path %%a
     )
     del new_path.lst
+)
+
+where /q cmake
+if errorlevel 1 (
+    echo WARNING! Cmake not found in path.
 )
 
 where /q ninja

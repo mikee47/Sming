@@ -16,7 +16,8 @@ winget install --silent --no-upgrade --accept-package-agreements --source winget
     python.python.3.12 ^
     ninja-build.ninja ^
     ccache.ccache ^
-    7zip.7zip
+    7zip.7zip ^
+    Kitware.CMake
 
 set DOWNLOADS=downloads
 if not exist "%DOWNLOADS%" (
