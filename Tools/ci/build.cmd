@@ -3,6 +3,8 @@ REM Windows build script
 REM Don't leak this
 set SMING_SECRET=
 
+call %~dp0..\export.cmd
+
 REM Build documentation job
 if "%BUILD_DOCS%"=="true" (
     make -C %SMING_HOME%\..\docs html || goto :error

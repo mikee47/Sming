@@ -48,7 +48,7 @@ echo.
 echo.
 echo ** Installing MinGW
 echo.
-rmdir /s /q c:\MinGW
+if exist c:\MinGW rmdir /s /q c:\MinGW
 curl -Lo %DOWNLOADS%\MinGW.7z %SMINGTOOLS%/MinGW-2020-10-19.7z
 7z -oC:\ x %DOWNLOADS%\MinGW.7z
 
