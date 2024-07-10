@@ -11,7 +11,7 @@ if errorlevel 1 (
 )
 
 REM Install required standard packages
-choco install git python ninja-build ccache 7zip cmake -y
+choco install git python ninja-build ccache 7zip cmake -yr
 
 set DOWNLOADS=downloads
 if not exist "%DOWNLOADS%" (
@@ -22,6 +22,8 @@ set SMINGTOOLS=https://github.com/SmingHub/SmingTools/releases/download/1.0
 
 REM Leave file endings alone
 git config --global --add core.autocrlf input
+
+call %~dp0export.cmd
 
 echo.
 echo.
