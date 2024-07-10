@@ -12,6 +12,7 @@ if "%BUILD_DOCS%" == "true" (
 )
 
 call ..\install.cmd %SMING_ARCH% %INSTALL_OPTS%
+if errorlevel 1 goto :EOF
 
 REM Configure ccache
 ccache --set-config cache_dir="%CI_BUILD_DIR%\.ccache"

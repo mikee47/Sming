@@ -67,18 +67,24 @@ jobs:
       run: |
         Tools/ci/install.sh
 
+    - name: Install winget
+      if: matrix.os == 'windows-latest'
+      uses: Cyberboss/install-winget@v1
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Install build tools for Windows
       if: matrix.os == 'windows-latest'
       run: |
-         Tools/ci/install.cmd
+        Tools/ci/install.cmd
 
     - name: Build and test for ${{matrix.variant}} on Ubuntu / MacOS
-      env:
-        CLANG_FORMAT: clang-format-8
       if: matrix.os != 'windows-latest'
       run: |
         source $SMING_HOME/../Tools/export.sh
         Tools/ci/build.sh
+      env:
+        CLANG_FORMAT: clang-format-8
 
     - name: Build and test for ${{matrix.variant}} on Windows
       if: matrix.os == 'windows-latest'
