@@ -19,7 +19,7 @@ set PICO_TOOLCHAIN_PATH=%TOOLS_DIR%\rp2040
 
 where /q mingw-get
 if errorlevel 1 (
-    set PATH=C:\MinGW\msys\1.0\bin;C:\MinGW\bin;%PATH%
+    set PATH="C:\MinGW\msys\1.0\bin;C:\MinGW\bin;%PATH%"
 )
 
 where /q python
