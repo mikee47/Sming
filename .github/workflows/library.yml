@@ -129,7 +129,6 @@ jobs:
       if: matrix.os == 'windows-latest'
       run: |
         cd $env:SMING_HOME/..
-        . Tools/ci/setenv.ps1
         Tools/ci/install.cmd
 
     - name: Build and Test for ${{matrix.arch}} on Ubuntu / MacOS
@@ -143,5 +142,5 @@ jobs:
     - name: Build and Test for ${{matrix.arch}} on Windows
       if: matrix.os == 'windows-latest'
       run: |
-        . "$env:SMING_HOME/../Tools/ci/setenv.ps1"
+        "$env:SMING_HOME/../Tools/export.cmd"
         make -j $env:NUMBER_OF_PROCESSORS -f $env:CI_MAKEFILE

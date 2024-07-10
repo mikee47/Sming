@@ -89,7 +89,6 @@ jobs:
     - name: Install build tools for Windows
       if: matrix.os == 'windows-latest'
       run: |
-         . Tools/ci/setenv.ps1
          Tools/ci/install.cmd
 
     - name: Build and test for ${{matrix.variant}} with IDF v${{matrix.idf_version}} on Ubuntu / MacOS
@@ -101,7 +100,7 @@ jobs:
     - name: Build and test for ${{matrix.variant}} with IDF v${{matrix.idf_version}} on Windows
       if: matrix.os == 'windows-latest'
       run: |
-        . Tools/ci/setenv.ps1
+        Tools/export.cmd
         Tools/ci/build.cmd
 
     - name: Compiler Cache stats
