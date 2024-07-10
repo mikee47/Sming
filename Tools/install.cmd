@@ -1,8 +1,10 @@
-@echo off
+REM @echo off
 
 REM
 REM Windows install script
 REM
+
+set
 
 where /q winget
 if errorlevel 1 (
