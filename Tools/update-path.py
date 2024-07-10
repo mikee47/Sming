@@ -18,7 +18,7 @@ def main():
             continue
         if item in path_list:
             continue
-        if 'WinGet\Packages' in item:
+        if 'WinGet\\Packages' in item:
             continue
         path_list.append(item)
 
