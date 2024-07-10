@@ -6,6 +6,8 @@ REM
 
 set
 
+dir c:\windows\system32\w*
+
 where /q winget
 if errorlevel 1 (
     echo Winget is required: See https://learn.microsoft.com/en-us/windows/package-manager/winget/

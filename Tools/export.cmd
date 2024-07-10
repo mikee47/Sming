@@ -4,7 +4,7 @@ set SMING_HOME="%CD%"
 cd %CUR_DIR%
 
 if "%TOOLS_DIR%"=="" (
-set TOOLS_DIR=C:\tools
+    set TOOLS_DIR=C:\tools
 )
 
 REM Esp8266 
@@ -19,9 +19,8 @@ set PICO_TOOLCHAIN_PATH=%TOOLS_DIR%\rp2040
 
 where /q mingw-get
 if errorlevel 1 (
-    set PATH="C:\MinGW\msys\1.0\bin;C:\MinGW\bin;%PATH%"
+    path "C:\MinGW\msys\1.0\bin;C:\MinGW\bin;%PATH%"
 )
-
 where /q python
 if errorlevel 1 (
     echo WARNING! Python not found in path.
