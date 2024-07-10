@@ -17,13 +17,23 @@ set IDF_TOOLS_PATH=%TOOLS_DIR%\esp32
 REM Rp2040
 set PICO_TOOLCHAIN_PATH=%TOOLS_DIR%\rp2040
 
-where /q mingw-get
-if errorlevel 1 (
-    path "C:\MinGW\msys\1.0\bin;C:\MinGW\bin;%PATH%"
-)
 where /q python
 if errorlevel 1 (
-    echo WARNING! Python not found in path.
+    echo ERROR! Python not found in path.
+    goto :EOF
+)
+
+where /q mingw-get
+if errorlevel 1 (
+    python "%~dp0update-path.py" C:\MinGW\msys\1.0\bin C:\MinGW\bin > new_path.lst
+    if errorlevel 1 (
+        del new_path.lst
+        goto :EOF
+    )
+    for /f "delims==" %%a in (new_path.lst) do (
+      path %%a
+    )
+    del new_path.lst
 )
 
 where /q ninja
