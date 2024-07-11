@@ -154,9 +154,9 @@ void* CTimerThread::thread_routine()
 		 * Typical scheduler minimum timeslice
 		 * @todo Determine this value by asking OS
 		 */
-		const unsigned SCHED_MIN = 1500;
-		if(interval > SCHED_MIN) {
-			if(sem.timedwait(interval - SCHED_MIN)) {
+		const unsigned minSchedInterval = 1500;
+		if(interval > minSchedInterval) {
+			if(sem.timedwait(interval - minSchedInterval)) {
 				continue; // state changed
 			}
 			if(errno != ETIMEDOUT) {

@@ -65,7 +65,6 @@
 
 void keyb_restore();
 void keyb_raw();
-int getch();
 int getkey();
 
 // For debugging

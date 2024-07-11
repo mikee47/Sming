@@ -267,21 +267,19 @@ void keyb_raw()
 #endif
 }
 
-int getch()
-{
 #ifdef __WIN32
+int getchar()
+{
 	return _kbhit() ? _getch() : -1;
-#else
-	return getchar();
-#endif
 }
+#endif
 
 int getkey()
 {
 	static CKeycode kc;
 	int c = 0;
 	for(;;) {
-		c = getch();
+		c = getchar();
 		if(c == KEY_NONE) {
 			break;
 		}

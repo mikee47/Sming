@@ -1,0 +1,33 @@
+diff --git a/src/Arch/Host/FileSystem.cpp b/src/Arch/Host/FileSystem.cpp
+index 3d0c06a..f24fe1d 100644
+--- a/src/Arch/Host/FileSystem.cpp
++++ b/src/Arch/Host/FileSystem.cpp
+@@ -31,7 +31,13 @@
+ #include <sys/utime.h>
+ #include "Windows/xattr.h"
+ #include "Windows/fsync.h"
++#include <windef.h>
+ #include <winbase.h>
++#undef stat
++#undef fstat
++#undef lseek
++#undef ftruncate
++
+ template <typename... Args> int stat64(Args... args)
+ {
+ 	return _stati64(args...);
+diff --git a/src/HostUtil.cpp b/src/HostUtil.cpp
+index 16abed9..63306cd 100644
+--- a/src/HostUtil.cpp
++++ b/src/HostUtil.cpp
+@@ -72,9 +72,7 @@ int mapFlags(OpenFlags flags)
+ String getErrorString(int err)
+ {
+ 	if(Error::isSystem(err)) {
+-		char buffer[256]{};
+-		auto r = strerror_r(-Error::toSystem(err), buffer, sizeof(buffer));
+-		return get_error_string(r, buffer);
++		return strerror(-Error::toSystem(err));
+ 	}
+ 
+ 	return IFS::Error::toString(err);

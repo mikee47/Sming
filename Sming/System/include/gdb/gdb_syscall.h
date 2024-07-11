@@ -46,6 +46,11 @@
 #undef st_mtime
 #undef st_ctime
 
+// And mingw
+#undef stat
+#undef fstat
+#undef lseek
+
 /**
  * @brief GDB uses a specific version of the stat structure, 64 bytes in size
  */

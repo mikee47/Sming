@@ -13,17 +13,16 @@ if errorlevel 1 (
 REM Install required standard packages
 set PKGLIST=
 where git
-if errorlevel 1 PKGLIST=%PKGLIST% git
-where python
-if errorlevel 1 PKGLIST=%PKGLIST% python
+if errorlevel 1 set PKGLIST=%PKGLIST% git
+set PKGLIST=%PKGLIST% python
 where ninja
-if errorlevel 1 PKGLIST=%PKGLIST% ninja-build
+if errorlevel 1 set PKGLIST=%PKGLIST% ninja-build
 where ccache
-if errorlevel 1 PKGLIST=%PKGLIST% ccache
+if errorlevel 1 set PKGLIST=%PKGLIST% ccache
 where 7z
-if errorlevel 1 PKGLIST=%PKGLIST% 7zip
+if errorlevel 1 set PKGLIST=%PKGLIST% 7zip
 where cmake
-if errorlevel 1 PKGLIST=%PKGLIST% cmake
+if errorlevel 1 set PKGLIST=%PKGLIST% cmake
 if "%PKGLIST%" NEQ "" choco install %PKGLIST% -yr
 
 set DOWNLOADS=downloads

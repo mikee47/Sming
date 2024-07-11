@@ -9,7 +9,7 @@
 ifeq ($(OS),Windows_NT)
 # Powershell does weird things to this variable, revert to default
 override MAKE	:= make
-FixPath			= $(if $(findstring :,$1),$(subst //,/,$(subst \,/,/$(subst :,,$1))),$(abspath $1))
+FixPath			= $(if $(findstring :,$1),$(subst //,/,$(subst \,/,$1)),$(abspath $1))
 else
 FixPath			= $1
 endif
@@ -111,7 +111,7 @@ dirx = $(patsubst %/,%,$(dir $1))
 # $1 -> source root directory
 # $2 -> file path(s)
 define AbsoluteSourcePath
-$(foreach f,$2,$(abspath $(if $(filter /%,$f),$f,$1/$f)))
+$(foreach f,$2,$(abspath $(if $(filter C:/%,$f),$f,$1/$f)))
 endef
 
 # Run a command in a new terminal window

@@ -98,7 +98,7 @@ void suspend_main_thread()
 {
 	assert(!isMainThread());
 
-#ifdef __WIN32
+#ifdef __WIN32XX
 	SuspendThread(pthread_getw32threadhandle_np(mainThread));
 #else
 
@@ -116,7 +116,7 @@ void resume_main_thread()
 {
 	assert(!isMainThread());
 
-#ifdef __WIN32
+#ifdef __WIN32XX
 	ResumeThread(pthread_getw32threadhandle_np(mainThread));
 #else
 	assert(mainThreadSignalled);
