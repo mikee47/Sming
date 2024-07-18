@@ -1,0 +1,49 @@
+name: Install build tools
+inputs:
+  token:
+    description: Github token
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Setup python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.INSTALL_IDF_VER == '4.3' && '3.8' || '3.12' }}
+
+    - name: Fix permissions
+      if: matrix.os != 'windows-latest'
+      run: |
+        sudo chown $USER /opt
+      shell: bash
+
+    - name: Configure environment
+      run: |
+        "CI_BUILD_DIR=${{ github.workspace }}" >> $env:GITHUB_ENV
+        "CLANG_FORMAT=clang-format-8" >> $env:GITHUB_ENV
+        "IDF_SKIP_CHECK_SUBMODULES=1" >> $env:GITHUB_ENV
+      shell: pwsh
+
+    - name: Cache ESP-IDF and build tools
+      if: env.SMING_ARCH == 'Esp32'
+      uses: actions/cache@v4
+      with:
+        path: |
+          /opt/esp-idf-${{ env.INSTALL_IDF_VER }}
+          /opt/esp32
+        key: ${{ matrix.os }}-idf-${{ env.INSTALL_IDF_VER }}
+
+    - name: Install build tools for Ubuntu / MacOS
+      if: matrix.os != 'windows-latest'
+      run: |
+        cd $SMING_HOME/..
+        Tools/ci/install.sh
+      shell: bash
+
+    - name: Install build tools for Windows
+      if: matrix.os == 'windows-latest'
+      run: |
+        cd ${{ env.SMING_HOME }}/..
+        . Tools/ci/setenv.ps1
+        Tools/ci/install.cmd
+      shell: pwsh

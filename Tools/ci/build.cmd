@@ -18,9 +18,13 @@ set MAKE_PARALLEL=make -j%NUMBER_OF_PROCESSORS%
 
 REM Move samples and tests into directory outside of the Sming repo.
 set SMING_PROJECTS_DIR=%CI_BUILD_DIR%\projects
-mkdir %SMING_PROJECTS_DIR%
-move ..\samples %SMING_PROJECTS_DIR%
-move ..\tests %SMING_PROJECTS_DIR%
+if exist "%SMING_PROJECTS_DIR%" (
+    make samples-clean component-samples-clean tests-clean
+) else (
+    mkdir %SMING_PROJECTS_DIR%
+    move ..\samples %SMING_PROJECTS_DIR%
+    move ..\tests %SMING_PROJECTS_DIR%
+)
 
 REM Full compile checks please
 set STRICT=1

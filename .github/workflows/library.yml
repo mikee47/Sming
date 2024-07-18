@@ -69,15 +69,11 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      CI_BUILD_DIR: ${{ github.workspace }}
       SMING_ARCH: ${{ matrix.arch }}
       SMING_SOC: ${{ matrix.variant }}
       INSTALL_IDF_VER: ${{ matrix.idf_version || '5.2' }}
       CLANG_BUILD: ${{ matrix.toolchain == 'clang' && '15' || '0' }}
       BUILD64: ${{ matrix.toolchain == 'gcc64' && 1 || 0 }}
-      ENABLE_CCACHE: 1
-      CCACHE_DIR: ${{ github.workspace }}/.ccache
-      CCACHE_MAXSIZE: 500M
 
     steps:
     - name: Fix autocrlf setting
@@ -86,11 +82,6 @@ jobs:
 
     - name: Checkout code
       uses: actions/checkout@v4
-
-    - name: Setup python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.12"
 
     - name: Create library alias
       if: inputs.alias
@@ -109,72 +100,25 @@ jobs:
         "COMPONENT_SEARCH_DIRS=" + (Resolve-Path "..").path >> $env:GITHUB_ENV
         "CI_MAKEFILE=" + (Resolve-Path "../../sming/Tools/ci/library/Makefile") >> $env:GITHUB_ENV
 
-    - name: Fix permissions
-      if: matrix.os != 'windows-latest'
-      run: |
-        sudo chown $USER /opt
-
-    - name: Cache ESP-IDF and build tools
-      if: matrix.arch == 'Esp32'
-      uses: actions/cache@v4
-      with:
-        path: |
-          /opt/esp-idf-${{ env.INSTALL_IDF_VER }}
-          /opt/esp32
-        key: ${{ matrix.os }}-idf-${{ env.INSTALL_IDF_VER }}
-
-    - name: Install build tools for Ubuntu / MacOS
-      if: matrix.os != 'windows-latest'
-      run: |
-        $SMING_HOME/../Tools/ci/install.sh
-
-    - name: Install build tools for Windows
-      if: matrix.os == 'windows-latest'
-      run: |
-        cd $env:SMING_HOME/..
-        . Tools/ci/setenv.ps1
-        Tools/ci/install.cmd
+    - name: Install build tools
+      uses: ./../../sming/.github/actions/install-tools
 
     - name: Restore Compiler Cache
-      id: ccache
-      uses: actions/cache/restore@v4
-      with:
-        path: ${{ env.CCACHE_DIR }}
-        key: ${{ matrix.os }}-ccache-${{ matrix.toolchain }}-${{ matrix.variant }}-${{ matrix.arch == 'Esp32' && env.INSTALL_IDF_VER || '' }}
+      uses: ./../../sming/.github/actions/ccache-restore
 
     - name: Build and Test for ${{matrix.arch}} on Ubuntu / MacOS
-      env:
-        CLANG_FORMAT: clang-format-8
       if: matrix.os != 'windows-latest'
       run: |
-        ccache -z
-        . $SMING_HOME/../Tools/export.sh
+        . "$SMING_HOME/../Tools/export.sh"
         make -j$(nproc) -f $CI_MAKEFILE
 
     - name: Build and Test for ${{matrix.arch}} on Windows
       if: matrix.os == 'windows-latest'
       run: |
-        ccache -z
         . "$env:SMING_HOME/../Tools/ci/setenv.ps1"
         make -j $env:NUMBER_OF_PROCESSORS -f $env:CI_MAKEFILE
 
-    - name: Compiler Cache stats
-      run: |
-        ccache --evict-older-than 14400s
-        ccache -sv
-
-    - name: Delete Previous Compiler Cache
-      if: github.ref_name == github.event.repository.default_branch && steps.ccache.outputs.cache-hit
-      continue-on-error: true
-      run: |
-        gh extension install actions/gh-actions-cache
-        gh actions-cache delete "${{ steps.ccache.outputs.cache-primary-key }}" --branch ${{ github.ref_name }} --confirm
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Save Compiler Cache
-      if: github.ref_name == github.event.repository.default_branch || !steps.ccache.outputs.cache-hit
-      uses: actions/cache/save@v4
+    - name: Update Compiler Cache
+      uses: ./../../sming/.github/actions/ccache-update
       with:
-        path: ${{ env.CCACHE_DIR }}
-        key: ${{ steps.ccache.outputs.cache-primary-key }}
+        token: ${{ secrets.GITHUB_TOKEN }}

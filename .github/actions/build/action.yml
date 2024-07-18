@@ -1,0 +1,17 @@
+name: Build and test
+runs:
+  using: composite
+  steps:
+    - name: Build and test for ${{ inputs.soc }} on Ubuntu / MacOS
+      if: matrix.os != 'windows-latest'
+      run: |
+        . Tools/export.sh
+        Tools/ci/build.sh
+      shell: bash
+
+    - name: Build and test for ${{ inputs.soc }} on Windows
+      if: matrix.os == 'windows-latest'
+      run: |
+        . Tools/ci/setenv.ps1
+        Tools/ci/build.cmd
+      shell: pwsh

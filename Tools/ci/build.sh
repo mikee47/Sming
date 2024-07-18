@@ -22,10 +22,14 @@ env
 
 # Move samples and tests into directory outside of the Sming repo.
 export SMING_PROJECTS_DIR=$HOME/projects
-mkdir -p "$SMING_PROJECTS_DIR"
-cd "$SMING_HOME/.."
-mv samples "$SMING_PROJECTS_DIR"
-mv tests "$SMING_PROJECTS_DIR"
+if [ -e "$SMING_PROJECTS_DIR" ]; then
+    make samples-clean component-samples-clean tests-clean
+else
+    mkdir -p "$SMING_PROJECTS_DIR"
+    cd ..
+    mv samples "$SMING_PROJECTS_DIR"
+    mv tests "$SMING_PROJECTS_DIR"
+fi
 
 # Full compile checks please
 export STRICT=1

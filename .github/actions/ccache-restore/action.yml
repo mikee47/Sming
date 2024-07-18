@@ -1,0 +1,30 @@
+name: Restore Compiler Cache
+runs:
+  using: composite
+  steps:
+    # For use by ccache-update
+    - name: Configure workflow environment
+      run: |
+        "CCACHE_DIR=${{ github.workspace }}/.ccache" >> $env:GITHUB_ENV
+        if ($env:SMING_ARCH -eq 'Esp32') {
+          $toolchain = "idf" + $env:INSTALL_IDF_VER
+        } else {
+          $toolchain = "${{ matrix.toolchain }}"
+        }
+        "CCACHE_KEY=${{ matrix.os }}-ccache-${{ env.SMING_ARCH }}-$toolchain" >> $env:GITHUB_ENV
+        "ENABLE_CCACHE=1" >> $env:GITHUB_ENV
+      shell: pwsh
+
+    - name: Restore Cache
+      id: ccache
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ env.CCACHE_DIR }}
+        key: ${{ env.CCACHE_KEY }}
+        restore-keys: ${{ env.CCACHE_KEY }}-tmp
+
+    - name: Prepare Cache
+      run: |
+        "CCACHE_RESTORE_HIT=${{ steps.ccache.outputs.cache-hit }}" >> $env:GITHUB_ENV
+        ccache -z
+      shell: pwsh
