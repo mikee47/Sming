@@ -8,7 +8,7 @@ runs:
   steps:
     - name: Compiler Cache stats
       run: |
-        ccache --evict-older-than 14400s
+        ccache --evict-older-than 1d
         ccache -sv
       shell: pwsh
 
