@@ -14,7 +14,10 @@ if "%BUILD_DOCS%" == "true" (
 )
 
 REM Python and CMake are preconfigured
-choco install ninja ccache -y --no-progress || goto :error
+for %%P in (ninja ccache) do (
+    where /q %%P
+    if errorlevel 1 choco install %%P -y --no-progress || goto :error
+)
 
 call %~dp0..\mingw-install.cmd || goto :error
 

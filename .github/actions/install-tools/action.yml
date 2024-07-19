@@ -33,6 +33,25 @@ runs:
           /opt/esp32
         key: ${{ matrix.os }}-idf-${{ env.INSTALL_IDF_VER }}
 
+    - name: Cache Windows Tools
+      if: matrix.os == 'windows-latest'
+      uses: actions/cache@v4
+      with:
+        path: |
+          C:\MinGW
+          C:\ProgramData\chocolatey\bin\ninja.exe
+          C:\ProgramData\chocolatey\lib\ninja
+          C:\ProgramData\chocolatey\bin\ccache.exe
+          C:\ProgramData\chocolatey\lib\ccache
+        key: ${{ matrix.os }}-tools-common
+
+    - name: Cache Rp2040 build tools
+      if: env.SMING_ARCH == 'Rp2040'
+      uses: actions/cache@v4
+      with:
+        path: /opt/rp2040
+        key: ${{ matrix.os }}-tools-${{ matrix.arch }}
+
     - name: Install build tools for Ubuntu / MacOS
       if: matrix.os != 'windows-latest'
       run: |
