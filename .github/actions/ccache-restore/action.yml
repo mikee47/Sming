@@ -21,7 +21,6 @@ runs:
       with:
         path: ${{ env.CCACHE_DIR }}
         key: ${{ env.CCACHE_KEY }}
-        restore-keys: ${{ env.CCACHE_KEY }}-tmp
 
     - name: Prepare Cache
       run: |
