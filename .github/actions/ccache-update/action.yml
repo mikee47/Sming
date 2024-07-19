@@ -22,7 +22,7 @@ runs:
           $saveKey = $env:CCACHE_KEY + '-tmp'
         }
         "CCACHE_SAVE_KEY=$saveKey" >> $env:GITHUB_ENV
-        if ($saveKey) {
+        if ($saveKey && $env:CCACHE_MATCHED_KEY) {
           gh extension install actions/gh-actions-cache
           gh actions-cache delete $saveKey --branch ${{ github.ref_name }} --confirm
         }
