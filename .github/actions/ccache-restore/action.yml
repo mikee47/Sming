@@ -25,6 +25,6 @@ runs:
 
     - name: Prepare Cache
       run: |
-        "CCACHE_RESTORE_HIT=${{ steps.ccache.outputs.cache-hit && '1' || '0' }}" >> $env:GITHUB_ENV
+        "CCACHE_MATCHED_KEY=${{ steps.ccache.outputs.cache-matched-key }}" >> $env:GITHUB_ENV
         ccache -z
       shell: pwsh
