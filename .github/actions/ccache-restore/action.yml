@@ -11,7 +11,7 @@ runs:
         } else {
           $toolchain = "${{ matrix.toolchain }}"
         }
-        "CCACHE_KEY=${{ matrix.os }}-ccache-${{ env.SMING_ARCH }}-$toolchain" >> $env:GITHUB_ENV
+        "CCACHE_KEY=${{ matrix.os }}-ccache-$toolchain-${{ matrix.variant }}" >> $env:GITHUB_ENV
         "ENABLE_CCACHE=1" >> $env:GITHUB_ENV
       shell: pwsh
 

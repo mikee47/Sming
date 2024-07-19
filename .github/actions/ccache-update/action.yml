@@ -15,16 +15,16 @@ runs:
     - name: Delete Previous Cache
       run: |
         if ("${{ github.ref_name }}" -eq "${{ github.event.repository.default_branch }}") {
-          $cacheKey = $env:CCACHE_KEY
+          $saveKey = $env:CCACHE_KEY
         } elseif ($env:CCACHE_MATCHED_KEY -eq $env:CCACHE_KEY) {
-          $cacheKey = ""
+          $saveKey = ""
         } else {
-          $cacheKey = $env:CCACHE_KEY + '-tmp'
+          $saveKey = $env:CCACHE_KEY + '-tmp'
         }
-        "CCACHE_SAVE_KEY=$cacheKey" >> $env:GITHUB_ENV
-        if ($cacheKey) {
+        "CCACHE_SAVE_KEY=$saveKey" >> $env:GITHUB_ENV
+        if ($saveKey) {
           gh extension install actions/gh-actions-cache
-          gh actions-cache delete $cacheKey --branch ${{ github.ref_name }} --confirm
+          gh actions-cache delete $saveKey --branch ${{ github.ref_name }} --confirm
         }
         exit 0
       env:
