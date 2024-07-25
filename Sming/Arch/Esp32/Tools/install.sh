@@ -66,7 +66,7 @@ if [ -n "$CI_BUILD_DIR" ] && [ -d "$IDF_TOOLS_PATH/tools" ]; then
     printf "\n\n** Skipping IDF tools installation: '%s/tools' exists\n\n" "$IDF_TOOLS_PATH"
 else
     # Be specific about which tools we want to install for each IDF version
-    IDF_TOOL_PACKAGES=$(tr '\n' ' ' < "$SMING_HOME/Arch/Esp32/Tools/idf_tools-${INSTALL_IDF_VER}.lst")
+    IDF_TOOL_PACKAGES=$(tr '\n' ' ' < "$SMING_HOME/Arch/Esp32/Tools/idf_tools-${INSTALL_IDF_VER:0:3}.lst")
     echo "Install: $IDF_TOOL_PACKAGES"
     python3 "$IDF_PATH/tools/idf_tools.py" --non-interactive install $IDF_TOOL_PACKAGES
     if [ -n "$VIRTUAL_ENV" ]; then

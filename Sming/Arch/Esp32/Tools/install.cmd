@@ -54,7 +54,7 @@ if "%CI_BUILD_DIR%" NEQ "" (
 )
 
 REM Be specific about which tools we want to install for each IDF version
-tr '\n' ' ' < "%~dp0idf_tools-%INSTALL_IDF_VER%.lst" > toolver.txt || goto :EOF
+tr '\n' ' ' < "%~dp0idf_tools-%INSTALL_IDF_VER:~0,3%.lst" > toolver.txt || goto :EOF
 for /f "tokens=*" %%x in (toolver.txt) do set IDF_TOOL_PACKAGES=%%x
 del toolver.txt
 echo Install: %IDF_TOOL_PACKAGES%
