@@ -24,6 +24,8 @@ def update_intellisense():
     else:
         properties = load_template('intellisense/properties.json', appPath)
 
+    properties['env']['SMING_HOME'] = env['SMING_HOME']
+
     env.update(get_property(properties, 'env', {}))
     configurations = get_property(properties, 'configurations', [])
 
