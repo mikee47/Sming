@@ -221,6 +221,10 @@
 	path = Sming/Libraries/CsvReader
 	url = https://github.com/mikee47/CsvReader
 	ignore = dirty
+[submodule "Libraries.DataLog"]
+	path = Sming/Libraries/DataLog
+	url = https://github.com/mikee47/DataLog
+	ignore = dirty
 [submodule "Libraries.DFRobotDFPlayerMini"]
 	path = Sming/Libraries/DFRobotDFPlayerMini
 	url = https://github.com/DFRobot/DFRobotDFPlayerMini.git
