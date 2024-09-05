@@ -199,8 +199,8 @@ public:
 	explicit String(long long, unsigned char base = DEC, unsigned char width = 0, char pad = '0');
 	explicit String(unsigned long, unsigned char base = DEC, unsigned char width = 0, char pad = '0');
 	explicit String(unsigned long long, unsigned char base = DEC, unsigned char width = 0, char pad = '0');
-	explicit String(float, unsigned char decimalPlaces = 2);
-	explicit String(double, unsigned char decimalPlaces = 2);
+	explicit String(float, int8_t decimalPlaces = 2);
+	explicit String(double, int8_t decimalPlaces = 2);
 	/** @} */
 
 	~String(void)
@@ -337,8 +337,8 @@ public:
 	bool concat(long long num, unsigned char base = DEC, unsigned char width = 0, char pad = '0');
 	bool concat(unsigned long num, unsigned char base = DEC, unsigned char width = 0, char pad = '0');
 	bool concat(unsigned long long num, unsigned char base = DEC, unsigned char width = 0, char pad = '0');
-	bool concat(float num);
-	bool concat(double num);
+	bool concat(float num, int8_t decimalPlaces = 2);
+	bool concat(double num, int8_t decimalPlaces = 2);
 
 	template <typename E>
 	constexpr typename std::enable_if<std::is_enum<E>::value && !std::is_convertible<E, int>::value, bool>::type

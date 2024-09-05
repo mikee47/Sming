@@ -81,15 +81,15 @@ String::String(unsigned long long value, unsigned char base, unsigned char width
 	*this = buf;
 }
 
-String::String(float value, unsigned char decimalPlaces) : String()
+String::String(float value, int8_t decimalPlaces) : String()
 {
-	char buf[33];
+	char buf[64];
 	*this = dtostrf(value, 0, decimalPlaces, buf);
 }
 
-String::String(double value, unsigned char decimalPlaces) : String()
+String::String(double value, int8_t decimalPlaces) : String()
 {
-	char buf[33];
+	char buf[64];
 	*this = dtostrf(value, 0, decimalPlaces, buf);
 }
 
@@ -421,17 +421,17 @@ bool String::concat(unsigned long long num, unsigned char base, unsigned char wi
 	return concat(buf, strlen(buf));
 }
 
-bool String::concat(float num)
+bool String::concat(float num, int8_t decimalPlaces)
 {
-	char buf[20];
-	char* string = dtostrf(num, 4, 2, buf);
+	char buf[64];
+	char* string = dtostrf(num, 0, decimalPlaces, buf);
 	return concat(string, strlen(string));
 }
 
-bool String::concat(double num)
+bool String::concat(double num, int8_t decimalPlaces)
 {
-	char buf[20];
-	char* string = dtostrf(num, 4, 2, buf);
+	char buf[64];
+	char* string = dtostrf(num, 0, decimalPlaces, buf);
 	return concat(string, strlen(string));
 }
 
