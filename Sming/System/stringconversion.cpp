@@ -122,14 +122,12 @@ char* dtostrf_p(double floatVar, int minStringWidthIncDecimalPoint, int numDigit
 		return outputBuffer;
 	}
 
-	if(floatVar > 4294967040.0) {
-		// constant determined empirically
+	if(floatVar > (double)std::numeric_limits<int64_t>::max()) {
 		strcpy(outputBuffer, "OVF");
 		return outputBuffer;
 	}
 
-	if(floatVar < -4294967040.0) {
-		// constant determined empirically
+	if(floatVar < (double)std::numeric_limits<int64_t>::min()) {
 		strcpy(outputBuffer, "ovf");
 		return outputBuffer;
 	}
@@ -140,12 +138,12 @@ char* dtostrf_p(double floatVar, int minStringWidthIncDecimalPoint, int numDigit
 	char* buf = num;
 
 	if(floatVar < 0.0) {
-		*buf++ = '-';
+		*buf++ = '-'; // print "-" sign
 		floatVar = -floatVar;
 	}
 
-	// Prevent overflow!
-	int16_t processedFracLen = numDigitsAfterDecimal;
+	//  Prevent overflow!
+	int processedFracLen = numDigitsAfterDecimal;
 	if(processedFracLen < 0) {
 		processedFracLen = 9;
 	} else if(processedFracLen > 9) {
@@ -153,9 +151,8 @@ char* dtostrf_p(double floatVar, int minStringWidthIncDecimalPoint, int numDigit
 	}
 
 	// Extract the integer part of the number and print it
-
-	int16_t i = processedFracLen;
-	unsigned long mult = 1;
+	int i = processedFracLen;
+	unsigned mult = 1;
 	while(i-- > 0) {
 		mult *= 10;
 	}
@@ -163,41 +160,42 @@ char* dtostrf_p(double floatVar, int minStringWidthIncDecimalPoint, int numDigit
 	// round the number
 	floatVar += 0.5 / (float)mult;
 
-	unsigned long int_part = (unsigned long)floatVar;
+	auto int_part = uint64_t(floatVar);
 
-	char* s = ultoa(int_part, buf, 10);
+	// print the int part into num
+	char* s = ulltoa(int_part, buf, 10);
 
 	// adjust end pointer
-	buf += strlen(s); //go to end of string
+	buf += strlen(s); // go to end of string
 
-	//deal with digits after the decimal
+	// deal with digits after the decimal
 	if(numDigitsAfterDecimal != 0) {
-		*buf++ = '.'; // print the decimal point
+		*buf++ = '.'; //  print the decimal point
 
-		//print the fraction part into temp
+		// print the fraction part into temp
 		char temp[40];
 		s = ultoa(((floatVar - int_part) * mult), temp, 10);
 
 		i = processedFracLen - strlen(s) + 1;
 
-		//print the first zeros of the fraction part
+		// print the first zeros of the fraction part
 		while(--i > 0) {
 			*buf++ = '0';
 		}
 
-		//print the fraction part
+		// print the fraction part
 		while(*s) {
 			*buf++ = *s++;
 		}
 
-		//trim back on the last fraction zeroes
+		// trim back on the last fraction zeroes
 		while(*(buf - 1) == '0') {
 			--buf;
 			--processedFracLen;
 		}
 
-		if(numDigitsAfterDecimal > 0) {
-			i = numDigitsAfterDecimal - processedFracLen;
+		if(numDigitsAfterDecimal) {
+			i = std::max(1, numDigitsAfterDecimal) - processedFracLen;
 
 			// padding fraction zeroes
 			while(i-- > 0) {
@@ -206,10 +204,10 @@ char* dtostrf_p(double floatVar, int minStringWidthIncDecimalPoint, int numDigit
 		}
 	}
 
-	//terminate num
+	// terminate num
 	*buf = 0;
 
-	//switch buf to outputBuffer
+	// switch buf to outputBuffer
 	buf = outputBuffer;
 
 	// generate width space padding
@@ -218,13 +216,13 @@ char* dtostrf_p(double floatVar, int minStringWidthIncDecimalPoint, int numDigit
 		*buf++ = pad;
 	}
 
-	//Write output buffer
+	// Write output buffer
 	s = num;
 	while(*s) {
 		*buf++ = *s++;
 	}
 
-	//termninate outputBuffer
+	// termninate outputBuffer
 	*buf = 0;
 
 	return outputBuffer;
