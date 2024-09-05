@@ -12,6 +12,7 @@
 #include <cstdlib>
 #include <cstdint>
 #include <cstring>
+#include <algorithm>
 #include "stringconversion.h"
 #include "stringutil.h"
 
@@ -143,16 +144,11 @@ char* dtostrf_p(double floatVar, int minStringWidthIncDecimalPoint, int numDigit
 	}
 
 	//  Prevent overflow!
-	int processedFracLen = numDigitsAfterDecimal;
-	if(processedFracLen < 0) {
-		processedFracLen = 9;
-	} else if(processedFracLen > 9) {
-		processedFracLen = 9;
-	}
+	int processedFracLen = std::min(16, abs(numDigitsAfterDecimal));
 
 	// Extract the integer part of the number and print it
 	int i = processedFracLen;
-	unsigned mult = 1;
+	uint64_t mult = 1;
 	while(i-- > 0) {
 		mult *= 10;
 	}
@@ -174,7 +170,7 @@ char* dtostrf_p(double floatVar, int minStringWidthIncDecimalPoint, int numDigit
 
 		// print the fraction part into temp
 		char temp[40];
-		s = ultoa(((floatVar - int_part) * mult), temp, 10);
+		s = ulltoa(((floatVar - int_part) * mult), temp, 10);
 
 		i = processedFracLen - strlen(s) + 1;
 
