@@ -108,17 +108,6 @@ char* ulltoa_wp(unsigned long long val, char* buffer, unsigned int base, int wid
 char* dtostrf_p(double floatVar, int minStringWidthIncDecimalPoint, int numDigitsAfterDecimal, char* outputBuffer,
 				char pad)
 {
-	char temp[40];
-	char num[40];
-	unsigned long mult = 1;
-	unsigned long int_part;
-	int16_t i;
-	int16_t processedFracLen = numDigitsAfterDecimal;
-
-	if(processedFracLen < 0) {
-		processedFracLen = 9;
-	}
-
 	if(outputBuffer == nullptr) {
 		return nullptr;
 	}
@@ -145,36 +134,40 @@ char* dtostrf_p(double floatVar, int minStringWidthIncDecimalPoint, int numDigit
 		return outputBuffer;
 	}
 
-	//start building the number
-	//buf will be the end pointer
+	// start building the number
+	// buf will be the end pointer
+	char num[40];
 	char* buf = num;
 
 	if(floatVar < 0.0) {
-		*buf++ = '-'; //print "-" sign
+		*buf++ = '-';
 		floatVar = -floatVar;
+	}
+
+	// Prevent overflow!
+	int16_t processedFracLen = numDigitsAfterDecimal;
+	if(processedFracLen < 0) {
+		processedFracLen = 9;
+	} else if(processedFracLen > 9) {
+		processedFracLen = 9;
 	}
 
 	// Extract the integer part of the number and print it
 
-	if(processedFracLen > 9) {
-		processedFracLen = 9; // Prevent overflow!
-	}
-
-	i = processedFracLen;
-
+	int16_t i = processedFracLen;
+	unsigned long mult = 1;
 	while(i-- > 0) {
 		mult *= 10;
 	}
 
-	//round the number
+	// round the number
 	floatVar += 0.5 / (float)mult;
 
-	int_part = (unsigned long)floatVar;
+	unsigned long int_part = (unsigned long)floatVar;
 
-	//print the int part into num
 	char* s = ultoa(int_part, buf, 10);
 
-	//adjust end pointer
+	// adjust end pointer
 	buf += strlen(s); //go to end of string
 
 	//deal with digits after the decimal
@@ -182,6 +175,7 @@ char* dtostrf_p(double floatVar, int minStringWidthIncDecimalPoint, int numDigit
 		*buf++ = '.'; // print the decimal point
 
 		//print the fraction part into temp
+		char temp[40];
 		s = ultoa(((floatVar - int_part) * mult), temp, 10);
 
 		i = processedFracLen - strlen(s) + 1;
