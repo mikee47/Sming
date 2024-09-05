@@ -125,103 +125,113 @@ char* dtostrf_p(double floatVar, int minStringWidthIncDecimalPoint, int numDigit
 
 	if(std::isnan(floatVar)) {
 		strcpy(outputBuffer, "NaN");
-	} else if(std::isinf(floatVar)) {
+		return outputBuffer;
+	}
+
+	if(std::isinf(floatVar)) {
 		strcpy(outputBuffer, "Inf");
-	} else if(floatVar > 4294967040.0) {
+		return outputBuffer;
+	}
+
+	if(floatVar > 4294967040.0) {
 		// constant determined empirically
 		strcpy(outputBuffer, "OVF");
-	} else if(floatVar < -4294967040.0) {
+		return outputBuffer;
+	}
+
+	if(floatVar < -4294967040.0) {
 		// constant determined empirically
 		strcpy(outputBuffer, "ovf");
-	} else {
-		//start building the number
-		//buf will be the end pointer
-		char* buf = num;
+		return outputBuffer;
+	}
 
-		if(floatVar < 0.0) {
-			*buf++ = '-'; //print "-" sign
-			floatVar = -floatVar;
-		}
+	//start building the number
+	//buf will be the end pointer
+	char* buf = num;
 
-		// Extract the integer part of the number and print it
+	if(floatVar < 0.0) {
+		*buf++ = '-'; //print "-" sign
+		floatVar = -floatVar;
+	}
 
-		if(processedFracLen > 9) {
-			processedFracLen = 9; // Prevent overflow!
-		}
+	// Extract the integer part of the number and print it
 
-		i = processedFracLen;
+	if(processedFracLen > 9) {
+		processedFracLen = 9; // Prevent overflow!
+	}
 
-		while(i-- > 0) {
-			mult *= 10;
-		}
+	i = processedFracLen;
 
-		//round the number
-		floatVar += 0.5 / (float)mult;
+	while(i-- > 0) {
+		mult *= 10;
+	}
 
-		int_part = (unsigned long)floatVar;
+	//round the number
+	floatVar += 0.5 / (float)mult;
 
-		//print the int part into num
-		char* s = ultoa(int_part, buf, 10);
+	int_part = (unsigned long)floatVar;
 
-		//adjust end pointer
-		buf += strlen(s); //go to end of string
+	//print the int part into num
+	char* s = ultoa(int_part, buf, 10);
 
-		//deal with digits after the decimal
-		if(numDigitsAfterDecimal != 0) {
-			*buf++ = '.'; // print the decimal point
+	//adjust end pointer
+	buf += strlen(s); //go to end of string
 
-			//print the fraction part into temp
-			s = ultoa(((floatVar - int_part) * mult), temp, 10);
+	//deal with digits after the decimal
+	if(numDigitsAfterDecimal != 0) {
+		*buf++ = '.'; // print the decimal point
 
-			i = processedFracLen - strlen(s) + 1;
+		//print the fraction part into temp
+		s = ultoa(((floatVar - int_part) * mult), temp, 10);
 
-			//print the first zeros of the fraction part
-			while(--i > 0) {
-				*buf++ = '0';
-			}
+		i = processedFracLen - strlen(s) + 1;
 
-			//print the fraction part
-			while(*s) {
-				*buf++ = *s++;
-			}
-
-			//trim back on the last fraction zeroes
-			while(*(buf - 1) == '0') {
-				--buf;
-				--processedFracLen;
-			}
-
-			if(numDigitsAfterDecimal > 0) {
-				i = numDigitsAfterDecimal - processedFracLen;
-
-				// padding fraction zeroes
-				while(i-- > 0) {
-					*buf++ = '0';
-				}
-			}
-		}
-
-		//terminate num
-		*buf = 0;
-
-		//switch buf to outputBuffer
-		buf = outputBuffer;
-
-		// generate width space padding
-		i = minStringWidthIncDecimalPoint - strlen(num) + 1;
+		//print the first zeros of the fraction part
 		while(--i > 0) {
-			*buf++ = pad;
+			*buf++ = '0';
 		}
 
-		//Write output buffer
-		s = num;
+		//print the fraction part
 		while(*s) {
 			*buf++ = *s++;
 		}
 
-		//termninate outputBuffer
-		*buf = 0;
+		//trim back on the last fraction zeroes
+		while(*(buf - 1) == '0') {
+			--buf;
+			--processedFracLen;
+		}
+
+		if(numDigitsAfterDecimal > 0) {
+			i = numDigitsAfterDecimal - processedFracLen;
+
+			// padding fraction zeroes
+			while(i-- > 0) {
+				*buf++ = '0';
+			}
+		}
 	}
+
+	//terminate num
+	*buf = 0;
+
+	//switch buf to outputBuffer
+	buf = outputBuffer;
+
+	// generate width space padding
+	i = minStringWidthIncDecimalPoint - strlen(num) + 1;
+	while(--i > 0) {
+		*buf++ = pad;
+	}
+
+	//Write output buffer
+	s = num;
+	while(*s) {
+		*buf++ = *s++;
+	}
+
+	//termninate outputBuffer
+	*buf = 0;
 
 	return outputBuffer;
 }
