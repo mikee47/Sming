@@ -15,7 +15,6 @@
 #include "stringconversion.h"
 #include "stringutil.h"
 
-
 char* ltoa_wp(long val, char* buffer, int base, int width, char pad)
 {
 	char* buf_ptr = buffer;
@@ -43,22 +42,19 @@ char* ultoa_wp(unsigned long val, char* buffer, unsigned int base, int width, ch
 	for(; val != 0 && i != 0; --i, p++, val /= base) {
 		buf[i] = hexchar(val % base);
 	}
-	if (p == 0) {
+	if(p == 0) {
 		buf[i--] = '0'; // case for zero
 	}
 
-	if(width != 0)
-	{
+	if(width != 0) {
 		width -= (nulpos - i - 1);
-		if(width > 0)
-		{
+		if(width > 0) {
 			memset(buffer, pad, width);
-		}
-		else {
+		} else {
 			width = 0;
 		}
 	}
-	memcpy(buffer + width, &buf[i+1], nulpos - i);
+	memcpy(buffer + width, &buf[i + 1], nulpos - i);
 
 	return buffer;
 }
@@ -90,74 +86,79 @@ char* ulltoa_wp(unsigned long long val, char* buffer, unsigned int base, int wid
 	for(; val != 0 && i != 0; --i, p++, val /= base) {
 		buf[i] = hexchar(val % base);
 	}
-	if (p == 0) {
+	if(p == 0) {
 		buf[i--] = '0'; // case for zero
 	}
 
-	if(width != 0)
-	{
+	if(width != 0) {
 		width -= (nulpos - i - 1);
-		if(width > 0)
-		{
+		if(width > 0) {
 			memset(buffer, pad, width);
-		}
-		else {
+		} else {
 			width = 0;
 		}
 	}
-	memcpy(buffer + width, &buf[i+1], nulpos - i);
+	memcpy(buffer + width, &buf[i + 1], nulpos - i);
 
 	return buffer;
 }
 
 // Author zitron: http://forum.arduino.cc/index.php?topic=37391#msg276209
 // modified by ADiea: remove dependencies strcat, floor, round; reorganize+speedup code
-char *dtostrf_p(double floatVar, int minStringWidthIncDecimalPoint, int numDigitsAfterDecimal, char *outputBuffer, char pad)
+char* dtostrf_p(double floatVar, int minStringWidthIncDecimalPoint, int numDigitsAfterDecimal, char* outputBuffer,
+				char pad)
 {
-	char temp[40], num[40];
-	unsigned long mult = 1, int_part;
-	int16_t i, processedFracLen = numDigitsAfterDecimal;
+	char temp[40];
+	char num[40];
+	unsigned long mult = 1;
+	unsigned long int_part;
+	int16_t i;
+	int16_t processedFracLen = numDigitsAfterDecimal;
 
-	if(processedFracLen < 0)
+	if(processedFracLen < 0) {
 		processedFracLen = 9;
+	}
 
-	if (outputBuffer == nullptr)
+	if(outputBuffer == nullptr) {
 		return nullptr;
+	}
 
-	if (std::isnan(floatVar))
+	if(std::isnan(floatVar)) {
 		strcpy(outputBuffer, "NaN");
-	else if (std::isinf(floatVar))
+	} else if(std::isinf(floatVar)) {
 		strcpy(outputBuffer, "Inf");
-	else if (floatVar > 4294967040.0)  // constant determined empirically
+	} else if(floatVar > 4294967040.0) {
+		// constant determined empirically
 		strcpy(outputBuffer, "OVF");
-	else if (floatVar < -4294967040.0)   // constant determined empirically
+	} else if(floatVar < -4294967040.0) {
+		// constant determined empirically
 		strcpy(outputBuffer, "ovf");
-	else
-	{
+	} else {
 		//start building the number
 		//buf will be the end pointer
 		char* buf = num;
 
-		if (floatVar < 0.0)
-		{
-			*buf++ = '-';  //print "-" sign
+		if(floatVar < 0.0) {
+			*buf++ = '-'; //print "-" sign
 			floatVar = -floatVar;
 		}
 
 		// Extract the integer part of the number and print it
 
-		if (processedFracLen > 9)
+		if(processedFracLen > 9) {
 			processedFracLen = 9; // Prevent overflow!
+		}
 
 		i = processedFracLen;
 
-		while (i-- > 0)
+		while(i-- > 0) {
 			mult *= 10;
+		}
 
 		//round the number
-		floatVar += 0.5 / (float) mult;
+		floatVar += 0.5 / (float)mult;
 
-		int_part = (unsigned long) floatVar;
+		int_part = (unsigned long)floatVar;
 
 		//print the int part into num
 		char* s = ultoa(int_part, buf, 10);
@@ -166,37 +167,37 @@ char *dtostrf_p(double floatVar, int minStringWidthIncDecimalPoint, int numDigit
 		buf += strlen(s); //go to end of string
 
 		//deal with digits after the decimal
-		if (numDigitsAfterDecimal != 0)
-		{
+		if(numDigitsAfterDecimal != 0) {
 			*buf++ = '.'; // print the decimal point
 
 			//print the fraction part into temp
-			s = ultoa( ((floatVar - int_part) * mult), temp, 10);
+			s = ultoa(((floatVar - int_part) * mult), temp, 10);
 
 			i = processedFracLen - strlen(s) + 1;
 
 			//print the first zeros of the fraction part
-			while (--i > 0)
+			while(--i > 0) {
 				*buf++ = '0';
+			}
 
 			//print the fraction part
-			while (*s)
+			while(*s) {
 				*buf++ = *s++;
+			}
 
 			//trim back on the last fraction zeroes
-			while(*(buf - 1) == '0')
-			{
+			while(*(buf - 1) == '0') {
 				--buf;
 				--processedFracLen;
 			}
 
-			if(numDigitsAfterDecimal > 0)
-			{
+			if(numDigitsAfterDecimal > 0) {
 				i = numDigitsAfterDecimal - processedFracLen;
 
 				// padding fraction zeroes
-				while (i-- > 0)
+				while(i-- > 0) {
 					*buf++ = '0';
+				}
 			}
 		}
 
@@ -208,15 +209,15 @@ char *dtostrf_p(double floatVar, int minStringWidthIncDecimalPoint, int numDigit
 
 		// generate width space padding
 		i = minStringWidthIncDecimalPoint - strlen(num) + 1;
-		while (--i > 0)
-		{
+		while(--i > 0) {
 			*buf++ = pad;
 		}
 
 		//Write output buffer
 		s = num;
-		while (*s)
+		while(*s) {
 			*buf++ = *s++;
+		}
 
 		//termninate outputBuffer
 		*buf = 0;
