@@ -128,10 +128,10 @@ class Path:
         '/Users/runner/projects/',
         '/Users/runner/work/Sming/Sming/Sming/',
         # Windows
-        '/d/a/Sming/Sming/projects/',
-        '/d/a/Sming/Sming/Sming/',
-        'd:/a/Sming/Sming/projects/',
-        'd:/a/Sming/Sming/Sming/',
+        '/[cd]/a/Sming/Sming/projects/',
+        '/[cd]/a/Sming/Sming/Sming/',
+        '[cd]:/a/Sming/Sming/projects/',
+        '[cd]:/a/Sming/Sming/Sming/',
     ]
     REMOVE = re.compile('|'.join(f'^{s}' for s in IGNORE_PREFIX), re.IGNORECASE)
     SUBST = re.compile(r'^d:/opt/esp-idf-\d.\d', re.IGNORECASE)
