@@ -17,4 +17,22 @@ DECLARE_FSTR(ut_template1_out1_rst) // emit_contents = true
 DECLARE_FSTR(image_png)
 DECLARE_FSTR(multipart_result)
 
+#define FRUIT_ELEMENT_MAP(XX)                                                                                          \
+	XX(apple)                                                                                                          \
+	XX(banana)                                                                                                         \
+	XX(kiwi)                                                                                                           \
+	XX(orange)                                                                                                         \
+	XX(passion)                                                                                                        \
+	XX(pear)                                                                                                           \
+	XX(tomato)
+
+enum class Fruit {
+#define XX(tag) tag,
+	FRUIT_ELEMENT_MAP(XX)
+#undef XX
+		MAX
+};
+
 } // namespace Resource
+
+extern String toString(Resource::Fruit f);

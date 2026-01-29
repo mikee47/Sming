@@ -2,30 +2,7 @@
 #include <Data/BitSet.h>
 #include <Data/CStringArray.h>
 
-#define FRUIT_ELEMENT_MAP(XX)                                                                                          \
-	XX(apple)                                                                                                          \
-	XX(banana)                                                                                                         \
-	XX(kiwi)                                                                                                           \
-	XX(orange)                                                                                                         \
-	XX(passion)                                                                                                        \
-	XX(pear)                                                                                                           \
-	XX(tomato)
-
-enum class Fruit {
-#define XX(n) n,
-	FRUIT_ELEMENT_MAP(XX)
-#undef XX
-		MAX
-};
-
-#define XX(n) #n "\0"
-DEFINE_FSTR_LOCAL(fruitStrings, FRUIT_ELEMENT_MAP(XX))
-#undef XX
-
-String toString(Fruit f)
-{
-	return CStringArray(fruitStrings)[unsigned(f)];
-}
+using Resource::Fruit;
 
 using FruitBasket = BitSet<uint8_t, Fruit, size_t(Fruit::MAX)>;
 

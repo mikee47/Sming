@@ -47,6 +47,20 @@ public:
 				Serial << range.random() << endl;
 			}
 		}
+
+		TEST_CASE("Enum")
+		{
+			using Resource::Fruit;
+
+			constexpr TRange<Fruit> range(Fruit::kiwi, Fruit::pear);
+			static_assert(range.contains(Fruit::orange));
+			static_assert(range.clip(Fruit::orange) == Fruit::orange);
+			static_assert(range.clip(Fruit::banana) == Fruit::kiwi);
+			static_assert(range.clip(Fruit::tomato) == Fruit::pear);
+			for(unsigned i = 0; i < 10; ++i) {
+				Serial << range.random() << endl;
+			}
+		}
 	}
 };
 

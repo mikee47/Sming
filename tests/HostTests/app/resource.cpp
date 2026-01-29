@@ -1,4 +1,5 @@
 #include <resource.h>
+#include <WString.h>
 
 namespace Resource
 {
@@ -15,3 +16,17 @@ RESOURCE(image_png, "image.png")
 RESOURCE(multipart_result, "multipart-result.txt")
 
 } // namespace Resource
+
+String toString(Resource::Fruit f)
+{
+	using Resource::Fruit;
+	switch(f) {
+#define XX(tag)                                                                                                        \
+	case Fruit::tag:                                                                                                   \
+		return F(#tag);
+		FRUIT_ELEMENT_MAP(XX)
+#undef XX
+	default:
+		return nullptr;
+	}
+}

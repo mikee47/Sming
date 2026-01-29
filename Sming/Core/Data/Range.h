@@ -20,6 +20,7 @@
  * Values in the range meet the criteria (min <= value <= max)
  */
 template <typename T> struct TRange {
+	using BaseType = typename std::conditional<std::is_enum<T>::value, unsigned, T>::type;
 	T min{};
 	T max{};
 
@@ -60,7 +61,7 @@ template <typename T> struct TRange {
 
 		Iterator& operator++()
 		{
-			++value;
+			value = T(BaseType(value) + 1);
 			return *this;
 		}
 
@@ -110,12 +111,12 @@ template <typename T> struct TRange {
 		if(max <= min) {
 			return min;
 		}
-		uint64_t n = 1 + max - min;
-		T value = os_random();
+		uint64_t n = 1 + BaseType(max) - BaseType(min);
+		uint64_t value = os_random();
 		if(n > std::numeric_limits<uint32_t>::max()) {
 			value |= uint64_t(os_random()) << 32;
 		}
-		return min + value % n;
+		return T(BaseType(min) + value % n);
 	}
 
 	Iterator begin() const
@@ -125,7 +126,7 @@ template <typename T> struct TRange {
 
 	Iterator end() const
 	{
-		return Iterator{T(max + 1)};
+		return Iterator{T(BaseType(max) + 1)};
 	}
 
 	String toString() const
