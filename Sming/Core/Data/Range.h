@@ -107,10 +107,10 @@ template <typename T> struct TRange {
 	 */
 	T random() const
 	{
-		uint64_t n = 1 + max - min;
-		if(n == 0) {
-			return 0;
+		if(max <= min) {
+			return min;
 		}
+		uint64_t n = 1 + max - min;
 		T value = os_random();
 		if(n > std::numeric_limits<uint32_t>::max()) {
 			value |= uint64_t(os_random()) << 32;
