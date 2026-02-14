@@ -1,5 +1,7 @@
 #include <SmingCore.h>
 #include <NtpClientDemo.h>
+#include <ZonedClock.h>
+#include <tzdata.h>
 
 // If you want, you can define WiFi settings globally in Eclipse Environment Variables
 #ifndef WIFI_SSID
@@ -12,6 +14,11 @@ namespace
 [[maybe_unused]] void onNtpReceive(NtpClient& client, time_t timestamp);
 
 SimpleTimer printTimer;
+
+ZonedClock london = TZ::Europe::London();
+ZonedClock berlin = TZ::Europe::Berlin();
+ZonedClock moscow = TZ::Europe::Moscow();
+ZonedClock sydney = TZ::Australia::Sydney();
 
 // Option 1
 // Use this option if you want to have full control of NtpTime client
@@ -45,10 +52,30 @@ NtpClientDemo* demo;
 // or use
 // ntpClientDemo dm1;
 
+void printClock(const ZonedClock& clock)
+{
+	Serial << clock.getLocation() << ": " << clock.now().toString();
+	if(clock.getTimezone().hasDaylightSavings()) {
+		auto change = clock.getNextChange();
+		Serial << _F(", Next Change ") << change.toString() << " (" << change.toUtc().toString() << ")" << endl;
+	} else {
+		Serial << _F(" (no daylight savings)") << endl;
+	}
+}
+
 void onPrintSystemTime()
 {
-	Serial << _F("Local Time: ") << SystemClock.getSystemTimeString(eTZ_Local) << _F(", UTC Time: ")
-		   << SystemClock.getSystemTimeString(eTZ_UTC) << endl;
+	Serial << _F("\0337"   // Save cursor position
+				 "\033[H"  // Home
+				 "\033[0r" // Set scrolling region
+	);
+	printClock(london);
+	printClock(berlin);
+	printClock(moscow);
+	printClock(sydney);
+	Serial << _F("\033[6r" // Set scrolling region
+				 "\0338"   // Restore cursor position
+	);
 }
 
 // Called when time has been received by NtpClient (option 1 or 2)
@@ -69,6 +96,8 @@ void connectFail(const String& ssid, MacAddress bssid, WifiDisconnectReason reas
 
 void gotIP(IpAddress ip, IpAddress netmask, IpAddress gateway)
 {
+	Serial << _F("Connected as ") << ip << endl;
+
 	// Set specific parameters if started by option 1 or 2
 	// Set client to do automatic time requests every 60 seconds.
 	// NOTE: you should have longer interval in a real world application
@@ -99,7 +128,35 @@ void init()
 {
 	Serial.begin(SERIAL_BAUD_RATE);
 	Serial.systemDebugOutput(true); // Allow debug print to serial
-	Serial.println(_F("Sming. Let's do smart things!"));
+
+	if(0) {
+		DateTime dt1;
+
+		auto printChange = [&]() {
+			auto change = london.getTimezone().getNextChange(dt1);
+			Serial << dt1.toFullDateTimeString() << " -> " << change.toString() << endl;
+		};
+
+		dt1.setTime(1774746000 - 1);
+		printChange();
+
+		dt1.setTime(0, 0, 0, 31, dtDecember, 2025);
+		printChange();
+		dt1.setTime(0, 0, 0, 1, dtJanuary, 2026);
+		printChange();
+		dt1.setTime(0, 0, 1, 29, dtMarch, 2026);
+		printChange();
+		dt1.setTime(0, 0, 1, 25, dtOctober, 2026);
+		printChange();
+
+		abort();
+	}
+
+	Serial << _F("\033[H"  // Home
+				 "\033[0J" // Erase screen
+				 "\033[5B" // Down 5 lines
+				 )
+		   << _F("Sming. Let's do smart things!") << endl;
 
 	// Station - WiFi client
 	WifiStation.enable(true);
