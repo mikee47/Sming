@@ -2,6 +2,7 @@
 #include <NtpClientDemo.h>
 #include <ZonedClock.h>
 #include <tzdata.h>
+#include <WVector.h>
 
 // If you want, you can define WiFi settings globally in Eclipse Environment Variables
 #ifndef WIFI_SSID
@@ -15,10 +16,13 @@ namespace
 
 SimpleTimer printTimer;
 
-ZonedClock london = TZ::Europe::London();
-ZonedClock berlin = TZ::Europe::Berlin();
-ZonedClock moscow = TZ::Europe::Moscow();
-ZonedClock sydney = TZ::Australia::Sydney();
+DEFINE_FSTR_LOCAL(zoneNames, "Europe/London\0"
+							 "Europe/Berlin\0"
+							 "Europe/Moscow\0"
+							 "Australia/Sydney\0"
+							 "Asia/Qatar\0")
+
+Vector<ZonedClock> clocks;
 
 // Option 1
 // Use this option if you want to have full control of NtpTime client
@@ -69,12 +73,12 @@ void onPrintSystemTime()
 				 "\033[H"  // Home
 				 "\033[0r" // Set scrolling region
 	);
-	printClock(london);
-	printClock(berlin);
-	printClock(moscow);
-	printClock(sydney);
-	Serial << _F("\033[6r" // Set scrolling region
-				 "\0338"   // Restore cursor position
+	for(auto& clock : clocks) {
+		printClock(clock);
+	}
+	Serial << _F("UTC: ") << ZonedTime(SystemClock.now(eTZ_UTC)).toString() << endl;
+	Serial << _F("\033[10r" // Set scrolling region
+				 "\0338"	// Restore cursor position
 	);
 }
 
@@ -129,34 +133,20 @@ void init()
 	Serial.begin(SERIAL_BAUD_RATE);
 	Serial.systemDebugOutput(true); // Allow debug print to serial
 
-	if(0) {
-		DateTime dt1;
-
-		auto printChange = [&]() {
-			auto change = london.getTimezone().getNextChange(dt1);
-			Serial << dt1.toFullDateTimeString() << " -> " << change.toString() << endl;
-		};
-
-		dt1.setTime(1774746000 - 1);
-		printChange();
-
-		dt1.setTime(0, 0, 0, 31, dtDecember, 2025);
-		printChange();
-		dt1.setTime(0, 0, 0, 1, dtJanuary, 2026);
-		printChange();
-		dt1.setTime(0, 0, 1, 29, dtMarch, 2026);
-		printChange();
-		dt1.setTime(0, 0, 1, 25, dtOctober, 2026);
-		printChange();
-
-		abort();
-	}
-
-	Serial << _F("\033[H"  // Home
-				 "\033[0J" // Erase screen
-				 "\033[5B" // Down 5 lines
+	Serial << _F("\033[H"   // Home
+				 "\033[0J"  // Erase screen
+				 "\033[10B" // Down 10 lines
 				 )
 		   << _F("Sming. Let's do smart things!") << endl;
+
+	for(auto name : CStringArray(zoneNames)) {
+		auto zone = TZ::findZone(name);
+		if(!zone) {
+			Serial << "Error! Zone '" << name << "' not found" << endl;
+			continue;
+		}
+		clocks.add(*zone);
+	}
 
 	// Station - WiFi client
 	WifiStation.enable(true);
