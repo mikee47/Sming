@@ -131,7 +131,7 @@ public:
 	/**
 	 * @brief Determine if the response status indicates success
 	 */
-	bool isSuccess()
+	bool isSuccess() const
 	{
 		return (code >= HTTP_STATUS_OK && code < HTTP_STATUS_BAD_REQUEST);
 	}
